@@ -1,6 +1,6 @@
 <template>
-  <section class="w-full h-full overflow-y-auto flex-1 p-4 md:p-10 bg-lightGray">
-    <h1 class="text-xl md:text-2xl font-bold text-gray-800 mb-4 md:mb-6">Панель викладача</h1>
+  <section class="w-full h-full overflow-y-auto flex-1 p-3 md:p-10 bg-lightGray">
+    <h1 class="text-lg md:text-2xl font-bold text-gray-800 mb-4 md:mb-6">Панель викладача</h1>
 
     <div v-if="!currentTeacher" class="text-center py-16 text-gray-500">
       <p>Викладач не знайдено</p>
@@ -8,7 +8,7 @@
 
     <div v-else class="space-y-6">
       <!-- Профіль викладача -->
-      <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+      <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-4 md:p-6">
         <div class="flex flex-col sm:flex-row items-start gap-4 sm:gap-6">
           <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-savoy/20 flex items-center justify-center flex-shrink-0">
             <span class="text-savoy text-2xl sm:text-3xl font-bold">
@@ -33,40 +33,40 @@
       </div>
 
       <!-- Проєкти, що очікують затвердження -->
-      <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-        <h3 class="text-xl font-bold text-gray-800 mb-4">
+      <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-4 md:p-6">
+        <h3 class="text-lg md:text-xl font-bold text-gray-800 mb-4">
           Проєкти, що очікують затвердження ({{ pendingProjects.length }})
         </h3>
         
         <div v-if="pendingProjects.length === 0" class="text-center py-8 text-gray-500">
-          <p>Немає проєктів, що очікують затвердження</p>
+          <p class="text-sm md:text-base">Немає проєктів, що очікують затвердження</p>
         </div>
 
-        <div v-else class="space-y-4">
+        <div v-else class="space-y-3 md:space-y-4">
           <div
             v-for="project in pendingProjects"
             :key="project.id"
-            class="p-4 border border-gray-200 rounded-lg hover:border-savoy transition-colors cursor-pointer"
+            class="p-3 md:p-4 border border-gray-200 rounded-lg hover:border-savoy transition-colors cursor-pointer"
             @click="navigateToProject(project.id)"
           >
-            <div class="flex items-start justify-between mb-3">
-              <div class="flex-1">
-                <h4 class="font-bold text-gray-800 text-lg mb-1">{{ project.name }}</h4>
-                <p class="text-sm text-gray-600 mb-2">{{ project.description }}</p>
-                <div class="flex items-center gap-4 text-sm text-gray-500">
-                  <span>{{ project.category }}</span>
+            <div class="flex flex-col sm:flex-row items-start justify-between gap-3 mb-3">
+              <div class="flex-1 min-w-0">
+                <h4 class="font-bold text-gray-800 text-base md:text-lg mb-1 line-clamp-2">{{ project.name }}</h4>
+                <p class="text-xs md:text-sm text-gray-600 mb-2 line-clamp-2">{{ project.description }}</p>
+                <div class="flex flex-wrap items-center gap-2 md:gap-4 text-xs md:text-sm text-gray-500">
+                  <span class="px-2 py-1 bg-gray-100 rounded">{{ project.category }}</span>
                   <span>{{ getComplexityText(project.complexity) }}</span>
                   <span v-if="project.recommendations">
                     {{ project.recommendations.length }} рекомендацій
                   </span>
                 </div>
               </div>
-              <span class="px-3 py-1 bg-yellow-100 text-yellow-700 rounded-lg text-xs font-semibold">
+              <span class="px-2 md:px-3 py-1 bg-yellow-100 text-yellow-700 rounded-lg text-xs font-semibold whitespace-nowrap flex-shrink-0">
                 Очікує затвердження
               </span>
             </div>
             <button
-              class="mt-3 w-full px-4 py-2 bg-savoy text-white rounded-lg hover:bg-savoy/90 transition-colors"
+              class="mt-2 w-full px-4 py-2 bg-savoy text-white rounded-lg hover:bg-savoy/90 transition-colors text-sm md:text-base font-semibold"
               @click.stop="navigateToProject(project.id)"
             >
               Переглянути та затвердити
@@ -76,25 +76,25 @@
       </div>
 
       <!-- Активні проєкти -->
-      <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-        <h3 class="text-xl font-bold text-gray-800 mb-4">Активні проєкти</h3>
+      <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-4 md:p-6">
+        <h3 class="text-lg md:text-xl font-bold text-gray-800 mb-4">Активні проєкти</h3>
         
         <div v-if="activeProjects.length === 0" class="text-center py-8 text-gray-500">
-          <p>Немає активних проєктів</p>
+          <p class="text-sm md:text-base">Немає активних проєктів</p>
         </div>
 
         <div v-else class="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
           <div
             v-for="project in activeProjects"
             :key="project.id"
-            class="p-4 border border-gray-200 rounded-lg hover:border-savoy transition-colors cursor-pointer"
+            class="p-3 md:p-4 border border-gray-200 rounded-lg hover:border-savoy transition-colors cursor-pointer"
             @click="navigateToProject(project.id)"
           >
-            <h4 class="font-bold text-gray-800 mb-2">{{ project.name }}</h4>
-            <p class="text-sm text-gray-600 mb-3 line-clamp-2">{{ project.description }}</p>
-            <div class="flex items-center justify-between text-sm">
+            <h4 class="font-bold text-gray-800 mb-2 text-sm md:text-base line-clamp-2">{{ project.name }}</h4>
+            <p class="text-xs md:text-sm text-gray-600 mb-3 line-clamp-2">{{ project.description }}</p>
+            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 text-xs md:text-sm">
               <span class="text-gray-500">Команда: {{ project.team.length }} студентів</span>
-              <span class="px-2 py-1 bg-green-100 text-green-700 rounded text-xs font-semibold">
+              <span class="px-2 py-1 bg-green-100 text-green-700 rounded text-xs font-semibold whitespace-nowrap">
                 Активний
               </span>
             </div>

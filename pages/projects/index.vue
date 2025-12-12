@@ -1,11 +1,11 @@
 <template>
-  <section class="w-full h-full overflow-y-auto flex-1 p-4 md:p-10 bg-lightGray">
-    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 md:mb-8 gap-4">
-      <h1 class="text-xl md:text-2xl font-bold text-gray-800">Мої проєкти</h1>
+  <section class="w-full h-full overflow-y-auto flex-1 p-3 md:p-10 bg-lightGray">
+    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-4 md:mb-8 gap-3">
+      <h1 class="text-lg md:text-2xl font-bold text-gray-800">Мої проєкти</h1>
       <button
         v-if="authStore.isPartner"
         @click="showCreateModal = true"
-        class="w-full sm:w-auto px-4 md:px-6 py-2 md:py-3 bg-savoy text-white rounded-lg hover:bg-savoy/90 transition-colors text-sm md:text-base"
+        class="w-full sm:w-auto px-4 md:px-6 py-2 md:py-3 bg-savoy text-white rounded-lg hover:bg-savoy/90 transition-colors text-sm md:text-base font-semibold"
       >
         + Створити проєкт
       </button>
@@ -19,29 +19,31 @@
       <p v-if="authStore.isPartner" class="text-sm">Створіть свій перший проєкт</p>
     </div>
 
-    <div v-else class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+    <div v-else class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-6">
       <div
         v-for="project in projects"
         :key="project.id"
-        class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow cursor-pointer"
+        class="bg-white rounded-xl shadow-sm border border-gray-200 p-4 md:p-6 hover:shadow-md transition-shadow cursor-pointer"
         @click="navigateToProject(project.id)"
       >
-        <div class="flex items-start justify-between mb-4">
-          <h3 class="text-lg font-bold text-gray-800">{{ project.name }}</h3>
-          <span
-            :class="getStatusClass(project.status)"
-            class="px-2 py-1 rounded text-xs font-semibold"
-          >
-            {{ getStatusText(project.status) }}
-          </span>
+        <div class="mb-3">
+          <h3 class="text-base md:text-lg font-bold text-gray-800 mb-2 line-clamp-2">{{ project.name }}</h3>
+          <div class="flex items-center gap-2 mb-2">
+            <span
+              :class="getStatusClass(project.status)"
+              class="px-2 py-1 rounded text-xs font-semibold whitespace-nowrap"
+            >
+              {{ getStatusText(project.status) }}
+            </span>
+          </div>
         </div>
-        <p class="text-gray-600 text-sm mb-4 line-clamp-2">{{ project.description }}</p>
-        <div class="flex items-center gap-4 text-sm text-gray-500">
-          <span>{{ project.category }}</span>
+        <p class="text-gray-600 text-sm mb-3 line-clamp-2">{{ project.description }}</p>
+        <div class="flex flex-wrap items-center gap-2 md:gap-4 text-xs md:text-sm text-gray-500">
+          <span class="px-2 py-1 bg-gray-100 rounded">{{ project.category }}</span>
           <span>{{ getComplexityText(project.complexity) }}</span>
         </div>
-        <div v-if="project.team.length > 0" class="mt-4 pt-4 border-t border-gray-200">
-          <p class="text-sm text-gray-600">Команда: {{ project.team.length }} студентів</p>
+        <div v-if="project.team.length > 0" class="mt-3 pt-3 border-t border-gray-200">
+          <p class="text-xs md:text-sm text-gray-600">Команда: {{ project.team.length }} студентів</p>
         </div>
       </div>
     </div>

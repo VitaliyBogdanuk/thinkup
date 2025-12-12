@@ -1,31 +1,17 @@
 <template>
   <main class="flex h-screen w-screen overflow-hidden">
-    <aside
-      :class="[
-        'hidden md:block h-full bg-charcoal border-r border-gray-200 text-gray-300 overflow-y-auto flex-shrink-0 transition-all duration-300',
-        isSidebarCollapsed ? 'w-20' : 'w-96'
-      ]"
-    >
-      <div class="w-full p-5 relative">
-        <button
-          @click="toggleSidebar"
-          class="absolute -right-3 top-5 bg-charcoal border border-gray-200 rounded-full p-1.5 hover:bg-gray-700 transition-colors z-10 shadow-lg"
-          :title="isSidebarCollapsed ? 'Розгорнути меню' : 'Згорнути меню'"
-          aria-label="Toggle sidebar"
-        >
-          <ChevronLeftIcon
-            v-if="!isSidebarCollapsed"
-            class="w-4 h-4 text-gray-300"
-          />
-          <ChevronRightIcon
-            v-else
-            class="w-4 h-4 text-gray-300"
-          />
-        </button>
+    <div class="hidden md:block relative">
+      <aside
+        :class="[
+          'h-full bg-charcoal border-r border-gray-200 text-gray-300 overflow-y-auto flex-shrink-0 transition-all duration-300',
+          isSidebarCollapsed ? 'w-20' : 'w-72'
+        ]"
+      >
+        <div class="w-full p-5 relative">
         <NuxtLink to="/" exact-active-class="text-savoy" class="block">
           <div class="flex flex-row gap-2 items-center justify-center" :class="isSidebarCollapsed ? '' : 'justify-start'">
-            <ChartBarSquareIcon class="w-10 h-10 flex-shrink-0" />
-            <h1 v-if="!isSidebarCollapsed" class="whitespace-nowrap">ThinkUp</h1>
+            <ChartBarSquareIcon class="w-10 h-10 flex-shrink-0 text-savoy" />
+            <h1 v-if="!isSidebarCollapsed" class="whitespace-nowrap text-savoy">ThinkUp</h1>
           </div>
         </NuxtLink>
         <p v-if="!isSidebarCollapsed" class="mb-5 tracking-widest mt-5">НАВІГАЦІЯ</p>
@@ -118,10 +104,27 @@
         <ViewColumnsIcon class="w-5 h-5 flex-shrink-0" />
         <span v-if="!isSidebarCollapsed">+ Створити нову дошку</span>
       </div>
-    </aside>
-    <div class="flex-1 overflow-hidden flex flex-col min-w-0">
+      </aside>
+      <button
+        @click="toggleSidebar"
+        class="absolute top-6 bg-savoy hover:bg-savoy/90 text-white rounded-full w-6 h-6 flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-200 z-20 border-2 border-white/20 hover:scale-110 active:scale-95 ring-2 ring-white/10"
+        :title="isSidebarCollapsed ? 'Розгорнути меню' : 'Згорнути меню'"
+        aria-label="Toggle sidebar"
+        style="right: 0px; transform: translateX(12px);"
+      >
+        <ChevronLeftIcon
+          v-if="!isSidebarCollapsed"
+          class="w-3 h-3"
+        />
+        <ChevronRightIcon
+          v-else
+          class="w-3 h-3"
+        />
+      </button>
+    </div>
+      <div class="flex-1 overflow-hidden flex flex-col min-w-0">
       <MobileHeader />
-      <div class="flex-1 overflow-hidden mt-16 md:mt-0">
+      <div class="flex-1 overflow-hidden mt-14 md:mt-0">
         <slot></slot>
       </div>
     </div>

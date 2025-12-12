@@ -209,5 +209,14 @@ export const useKanbanStore = defineStore("kanban", {
         1
       );
     },
+    updateBoard(updatedBoard: Board) {
+      const index = this.boards!.findIndex((board) => board.id === updatedBoard.id);
+      if (index !== -1) {
+        this.boards![index] = updatedBoard;
+      }
+    },
+    getBoardById(boardId: string): Board | undefined {
+      return this.boards?.find((board) => board.id === boardId);
+    },
   },
 });

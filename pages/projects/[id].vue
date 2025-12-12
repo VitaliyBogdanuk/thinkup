@@ -6,40 +6,40 @@
       Проєкт не знайдено
     </div>
 
-    <div v-else class="p-4 md:p-5 bg-lightGray">
+    <div v-else class="p-3 md:p-5 bg-lightGray">
       <!-- Інформація про проєкт -->
-      <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
-        <div class="flex items-start justify-between mb-4">
-          <div>
-            <h1 class="text-2xl font-bold text-gray-800 mb-2">{{ project.name }}</h1>
-            <p class="text-gray-600">{{ project.description }}</p>
+      <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-4 md:p-6 mb-4 md:mb-6">
+        <div class="flex flex-col sm:flex-row items-start justify-between gap-3 mb-4">
+          <div class="flex-1 min-w-0">
+            <h1 class="text-lg md:text-2xl font-bold text-gray-800 mb-2 line-clamp-2">{{ project.name }}</h1>
+            <p class="text-sm md:text-base text-gray-600 line-clamp-3">{{ project.description }}</p>
           </div>
           <span
             :class="getStatusClass(project.status)"
-            class="px-3 py-1 rounded-lg text-sm font-semibold"
+            class="px-3 py-1 rounded-lg text-xs md:text-sm font-semibold whitespace-nowrap flex-shrink-0"
           >
             {{ getStatusText(project.status) }}
           </span>
         </div>
 
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-4 pt-4 border-t border-gray-200">
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 md:gap-4 mt-4 pt-4 border-t border-gray-200">
           <div>
-            <p class="text-sm text-gray-500">Категорія</p>
-            <p class="font-semibold text-gray-800">{{ project.category }}</p>
+            <p class="text-xs md:text-sm text-gray-500">Категорія</p>
+            <p class="font-semibold text-gray-800 text-sm md:text-base">{{ project.category }}</p>
           </div>
           <div>
-            <p class="text-sm text-gray-500">Складність</p>
-            <p class="font-semibold text-gray-800">{{ getComplexityText(project.complexity) }}</p>
+            <p class="text-xs md:text-sm text-gray-500">Складність</p>
+            <p class="font-semibold text-gray-800 text-sm md:text-base">{{ getComplexityText(project.complexity) }}</p>
           </div>
           <div>
-            <p class="text-sm text-gray-500">Команда</p>
-            <p class="font-semibold text-gray-800">{{ project.team.length }} студентів</p>
+            <p class="text-xs md:text-sm text-gray-500">Команда</p>
+            <p class="font-semibold text-gray-800 text-sm md:text-base">{{ project.team.length }} студентів</p>
           </div>
         </div>
       </div>
 
       <!-- AI Рекомендації (для викладачів) -->
-      <div v-if="authStore.isTeacher && project.status === 'pending_approval'" class="mb-6">
+      <div v-if="authStore.isTeacher && project.status === 'pending_approval'" class="mb-4 md:mb-6">
         <ApproveTeam
           :project-id="project.id"
           @approved="handleTeamApproved"
@@ -48,7 +48,7 @@
       </div>
 
       <!-- Рекомендації для партнерів -->
-      <div v-if="authStore.isPartner && project.recommendations" class="mb-6">
+      <div v-if="authStore.isPartner && project.recommendations" class="mb-4 md:mb-6">
         <StudentRecommendations
           :project-id="project.id"
           :recommendations="project.recommendations"
@@ -56,37 +56,37 @@
       </div>
 
       <!-- Канбан-дошка -->
-      <div v-if="project.boardId" class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-        <h2 class="text-xl font-bold text-gray-800 mb-4">Канбан-дошка проєкту</h2>
+      <div v-if="project.boardId" class="bg-white rounded-xl shadow-sm border border-gray-200 p-4 md:p-6 mb-4 md:mb-6">
+        <h2 class="text-lg md:text-xl font-bold text-gray-800 mb-4">Канбан-дошка проєкту</h2>
         <FormTasks :board-id="project.boardId" :is-project-board="true" :project-id="project.id" />
         <Columns :board-id="project.boardId" :is-project-board="true" />
       </div>
 
       <!-- AI Аналіз для партнерів -->
-      <div v-if="authStore.isPartner && project.aiAnalysis" class="mt-6 bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-        <h3 class="text-xl font-bold text-gray-800 mb-4">AI Аналіз проєкту</h3>
-        <div class="space-y-4">
+      <div v-if="authStore.isPartner && project.aiAnalysis" class="mt-4 md:mt-6 bg-white rounded-xl shadow-sm border border-gray-200 p-4 md:p-6">
+        <h3 class="text-lg md:text-xl font-bold text-gray-800 mb-4">AI Аналіз проєкту</h3>
+        <div class="space-y-3 md:space-y-4">
           <div>
-            <h4 class="font-semibold text-gray-800 mb-2">Основні цілі:</h4>
-            <ul class="list-disc list-inside space-y-1 text-gray-600">
+            <h4 class="font-semibold text-gray-800 mb-2 text-sm md:text-base">Основні цілі:</h4>
+            <ul class="list-disc list-inside space-y-1 text-sm md:text-base text-gray-600">
               <li v-for="goal in project.aiAnalysis.goals" :key="goal">{{ goal }}</li>
             </ul>
           </div>
           <div>
-            <h4 class="font-semibold text-gray-800 mb-2">Етапи реалізації:</h4>
-            <ul class="list-disc list-inside space-y-1 text-gray-600">
+            <h4 class="font-semibold text-gray-800 mb-2 text-sm md:text-base">Етапи реалізації:</h4>
+            <ul class="list-disc list-inside space-y-1 text-sm md:text-base text-gray-600">
               <li v-for="stage in project.aiAnalysis.stages" :key="stage">{{ stage }}</li>
             </ul>
           </div>
           <div>
-            <h4 class="font-semibold text-gray-800 mb-2">Технічні вимоги:</h4>
-            <ul class="list-disc list-inside space-y-1 text-gray-600">
+            <h4 class="font-semibold text-gray-800 mb-2 text-sm md:text-base">Технічні вимоги:</h4>
+            <ul class="list-disc list-inside space-y-1 text-sm md:text-base text-gray-600">
               <li v-for="req in project.aiAnalysis.technicalRequirements" :key="req">{{ req }}</li>
             </ul>
           </div>
           <div v-if="project.aiAnalysis.estimatedDuration">
-            <h4 class="font-semibold text-gray-800 mb-2">Оцінка тривалості:</h4>
-            <p class="text-gray-600">{{ project.aiAnalysis.estimatedDuration }} годин</p>
+            <h4 class="font-semibold text-gray-800 mb-2 text-sm md:text-base">Оцінка тривалості:</h4>
+            <p class="text-sm md:text-base text-gray-600">{{ project.aiAnalysis.estimatedDuration }} годин</p>
           </div>
         </div>
       </div>

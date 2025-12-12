@@ -1,6 +1,6 @@
 <template>
-  <section class="w-full h-full overflow-y-auto flex-1 p-4 md:p-10 bg-lightGray">
-    <h1 class="text-xl md:text-2xl font-bold text-gray-800 mb-4 md:mb-6">Мій профіль</h1>
+  <section class="w-full h-full overflow-y-auto flex-1 p-3 md:p-10 bg-lightGray">
+    <h1 class="text-lg md:text-2xl font-bold text-gray-800 mb-4 md:mb-6">Мій профіль</h1>
 
     <div v-if="!currentStudent" class="text-center py-16 text-gray-500">
       <p>Студент не знайдено</p>
@@ -8,7 +8,7 @@
 
     <div v-else class="space-y-6">
       <!-- Профіль студента -->
-      <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+      <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-4 md:p-6">
         <div class="flex flex-col sm:flex-row items-start gap-4 sm:gap-6">
           <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-savoy/20 flex items-center justify-center flex-shrink-0">
             <span class="text-savoy text-2xl sm:text-3xl font-bold">
@@ -34,8 +34,8 @@
       </div>
 
       <!-- Навички -->
-      <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-        <h3 class="text-xl font-bold text-gray-800 mb-4">Навички</h3>
+      <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-4 md:p-6">
+        <h3 class="text-lg md:text-xl font-bold text-gray-800 mb-4">Навички</h3>
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 md:gap-4">
           <div
             v-for="skill in currentStudent.skills"
@@ -61,33 +61,33 @@
       </div>
 
       <!-- Рекомендовані проєкти -->
-      <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-        <h3 class="text-xl font-bold text-gray-800 mb-4">Рекомендовані проєкти</h3>
+      <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-4 md:p-6">
+        <h3 class="text-lg md:text-xl font-bold text-gray-800 mb-4">Рекомендовані проєкти</h3>
         
         <div v-if="recommendedProjects.length === 0" class="text-center py-8 text-gray-500">
-          <p>Наразі немає рекомендованих проєктів</p>
+          <p class="text-sm md:text-base">Наразі немає рекомендованих проєктів</p>
         </div>
 
         <div v-else class="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
           <div
             v-for="project in recommendedProjects"
             :key="project.id"
-            class="p-4 border border-gray-200 rounded-lg hover:border-savoy transition-colors cursor-pointer"
+            class="p-3 md:p-4 border border-gray-200 rounded-lg hover:border-savoy transition-colors cursor-pointer"
             @click="navigateToProject(project.id)"
           >
-            <div class="flex items-start justify-between mb-2">
-              <h4 class="font-bold text-gray-800">{{ project.name }}</h4>
-              <span class="text-xs px-2 py-1 bg-blue-100 text-blue-700 rounded">
+            <div class="flex flex-col sm:flex-row items-start justify-between gap-2 mb-2">
+              <h4 class="font-bold text-gray-800 text-sm md:text-base flex-1 line-clamp-2">{{ project.name }}</h4>
+              <span class="text-xs px-2 py-1 bg-blue-100 text-blue-700 rounded whitespace-nowrap flex-shrink-0">
                 {{ getMatchPercentage(project) }}% відповідність
               </span>
             </div>
-            <p class="text-sm text-gray-600 mb-3 line-clamp-2">{{ project.description }}</p>
-            <div class="flex items-center gap-4 text-xs text-gray-500">
-              <span>{{ project.category }}</span>
+            <p class="text-xs md:text-sm text-gray-600 mb-3 line-clamp-2">{{ project.description }}</p>
+            <div class="flex flex-wrap items-center gap-2 text-xs text-gray-500 mb-3">
+              <span class="px-2 py-1 bg-gray-100 rounded">{{ project.category }}</span>
               <span>{{ getComplexityText(project.complexity) }}</span>
             </div>
             <button
-              class="mt-3 w-full px-4 py-2 bg-savoy text-white rounded-lg hover:bg-savoy/90 transition-colors"
+              class="w-full px-4 py-2 bg-savoy text-white rounded-lg hover:bg-savoy/90 transition-colors text-sm font-semibold"
               @click.stop="handleApply(project.id)"
             >
               Подати заявку
@@ -97,8 +97,8 @@
       </div>
 
       <!-- Мої проєкти -->
-      <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-        <h3 class="text-xl font-bold text-gray-800 mb-4">Мої проєкти</h3>
+      <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-4 md:p-6">
+        <h3 class="text-lg md:text-xl font-bold text-gray-800 mb-4">Мої проєкти</h3>
         
         <div v-if="myProjects.length === 0" class="text-center py-8 text-gray-500">
           <p>Ви ще не приймаєте участі в проєктах</p>

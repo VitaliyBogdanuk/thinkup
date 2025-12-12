@@ -1,9 +1,9 @@
 <template>
-  <header class="md:hidden fixed top-0 left-0 right-0 z-50 bg-white border-b border-gray-200 h-16 flex items-center justify-between px-4">
+  <header class="md:hidden fixed top-0 left-0 right-0 z-50 bg-white border-b border-gray-200 h-14 flex items-center justify-between px-4 shadow-sm">
     <!-- Логотип -->
     <NuxtLink to="/" class="flex items-center gap-2">
-      <ChartBarSquareIcon class="w-8 h-8 text-savoy" />
-      <h1 class="text-lg font-bold text-gray-800">ThinkUp</h1>
+      <ChartBarSquareIcon class="w-7 h-7 text-savoy" />
+      <h1 class="text-base font-bold text-savoy">ThinkUp</h1>
     </NuxtLink>
 
     <!-- Кнопки справа -->
@@ -11,7 +11,7 @@
       <!-- Перемикач ролей -->
       <button
         @click="isRoleMenuOpen = true"
-        class="bg-savoy text-white rounded-full p-2 shadow-md hover:bg-savoy/90 transition-colors"
+        class="bg-savoy text-white rounded-full p-2 shadow-md hover:bg-savoy/90 transition-colors active:scale-95"
         :title="`Поточна роль: ${getRoleLabel(currentRole)}`"
         aria-label="Перемикач ролей"
       >
@@ -21,10 +21,10 @@
       <!-- Бургер меню -->
       <button
         @click="isNavMenuOpen = true"
-        class="text-gray-700 hover:text-gray-900 transition-colors"
+        class="text-gray-700 hover:text-gray-900 transition-colors active:scale-95"
         aria-label="Відкрити меню"
       >
-        <Bars3Icon class="w-8 h-8" />
+        <Bars3Icon class="w-7 h-7" />
       </button>
     </div>
 
