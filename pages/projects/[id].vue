@@ -61,6 +61,9 @@
         <FormTasks :board-id="project.boardId" :is-project-board="true" :project-id="project.id" />
         <Columns :board-id="project.boardId" :is-project-board="true" />
       </div>
+      <div v-else class="bg-white rounded-xl shadow-sm border border-gray-200 p-4 md:p-6 mb-4 md:mb-6">
+        <p class="text-gray-500 text-center py-8">Канбан-дошка ще не створена. Будь ласка, зачекайте...</p>
+      </div>
 
       <!-- AI Аналіз для партнерів -->
       <div v-if="authStore.isPartner && project.aiAnalysis" class="mt-4 md:mt-6 bg-white rounded-xl shadow-sm border border-gray-200 p-4 md:p-6">

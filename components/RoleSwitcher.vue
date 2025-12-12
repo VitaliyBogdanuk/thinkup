@@ -49,7 +49,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref } from "vue";
+import { computed, ref } from "vue";
 import { useRouter } from "vue-router";
 import { UserIcon, ChevronDownIcon } from "@heroicons/vue/24/outline";
 import { useAuthStore } from "~~/stores/auth";
@@ -99,12 +99,7 @@ const switchRole = (role: UserRole) => {
   }
 };
 
-// Ініціалізуємо дефолтного користувача при завантаженні
-onMounted(() => {
-  if (!authStore.currentUser) {
-    authStore.login(mockPartners[0]);
-  }
-});
+// Ініціалізація користувача тепер відбувається в плагіні initializeAuth.client.ts
 
 const getUserDisplayName = (user: User | null): string => {
   if (!user) return "Не авторизовано";

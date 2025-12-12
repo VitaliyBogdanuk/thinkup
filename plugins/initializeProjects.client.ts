@@ -26,8 +26,7 @@ export default defineNuxtPlugin(async () => {
       
       if (board) {
         // Оновлюємо проєкт з boardId
-        projectsStore.updateProject({
-          ...project,
+        projectsStore.updateProject(project.id, {
           boardId: board.id,
         });
       }

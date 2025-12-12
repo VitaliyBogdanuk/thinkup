@@ -37,10 +37,23 @@ import { ViewColumnsIcon } from "@heroicons/vue/24/outline";
 import { storeToRefs } from "pinia";
 import { useKanbanStore } from "~~/stores";
 import { useAuthStore } from "~~/stores/auth";
+import { onMounted } from "vue";
+import { useRouter } from "vue-router";
 
 const store = useKanbanStore();
 const authStore = useAuthStore();
+const router = useRouter();
 const { boards } = storeToRefs(store);
 
 const addBoardState = isAddBoardFormOpen();
+
+// Перенаправляємо партнера на сторінку проєктів при першому відкритті
+onMounted(() => {
+  // Невелика затримка для забезпечення ініціалізації користувача
+  setTimeout(() => {
+    if (authStore.isPartner) {
+      router.push("/projects");
+    }
+  }, 50);
+});
 </script>

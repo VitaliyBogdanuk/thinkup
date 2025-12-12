@@ -145,11 +145,24 @@ export const useProjectsStore = defineStore("projects", {
 
         project.boardId = board.id;
         project.board = board;
+        
+        // Оновлюємо проєкт з boardId
+        this.updateProject(project.id, {
+          boardId: board.id,
+          board: board,
+        });
       }
 
       project.aiAnalysis = aiAnalysis;
       project.status = "pending_approval";
       project.updatedAt = new Date().toISOString();
+      
+      // Оновлюємо проєкт з AI аналізом та статусом
+      this.updateProject(project.id, {
+        aiAnalysis: aiAnalysis,
+        status: "pending_approval",
+        updatedAt: new Date().toISOString(),
+      });
     },
 
     // Генерація рекомендацій студентів (симуляція AI)
