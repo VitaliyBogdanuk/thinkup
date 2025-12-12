@@ -39,13 +39,48 @@
             <p class="text-gray-800">Поточний статус</p>
             <select name="status" v-model="taskColumnId">
               <option
-                v-for="column in getBoardColumns(boardId)"
+                v-for="column in boardColumns"
                 :key="column.id"
                 :value="column.id"
               >
                 {{ column.name }}
               </option>
             </select>
+          </div>
+
+          <div v-if="isProjectBoard" class="space-y-2">
+            <p class="text-gray-800">Призначити студента</p>
+            <select name="assigned_student" v-model="assignedStudentId">
+              <option value="">Не призначено</option>
+              <option
+                v-for="student in availableStudents"
+                :key="student.id"
+                :value="student.id"
+              >
+                {{ student.fullName }}
+              </option>
+            </select>
+          </div>
+
+          <div v-if="isProjectBoard" class="space-y-2">
+            <p class="text-gray-800">Пріоритет</p>
+            <select name="priority" v-model="taskPriority">
+              <option value="low">Низький</option>
+              <option value="medium">Середній</option>
+              <option value="high">Високий</option>
+            </select>
+          </div>
+
+          <div v-if="isProjectBoard" class="space-y-2">
+            <label for="estimated_hours" class="text-gray-800">Оцінка часу (години)</label>
+            <input
+              id="estimated_hours"
+              v-model.number="estimatedHours"
+              type="number"
+              min="0"
+              placeholder="напр. 8"
+              class="w-full"
+            />
           </div>
         </div>
         <BaseButton
@@ -58,8 +93,16 @@
   </transition>
 </template>
 <script setup lang="ts">
+import { computed } from "vue";
 import { useKanbanStore } from "~~/stores";
+import { useProjectsStore } from "~~/stores/projects";
 import { XMarkIcon } from "@heroicons/vue/24/outline";
+
+const props = defineProps<{
+  boardId?: string;
+  isProjectBoard?: boolean;
+  projectId?: string;
+}>();
 
 const isFormOpenState = isTaskFormOpen();
 const taskToEditState = taskToEdit();
@@ -71,39 +114,92 @@ const toggleFormModal = (isOpen: boolean): void => {
 
 //Route
 const route = useRoute();
-const boardId = route.params.board.toString();
+const boardId = computed(() => props.boardId || route.params.board?.toString() || "");
 
 //Store
 const store = useKanbanStore();
+const projectsStore = useProjectsStore();
 const { addTaskToColumn, getBoardColumns, editTask } = store;
 
 //Refs
 const taskColumnId = ref<string>("");
 const taskName = ref<string>("");
 const taskDescription = ref<string>("");
+const assignedStudentId = ref<string>("");
+const taskPriority = ref<"low" | "medium" | "high">("medium");
+const estimatedHours = ref<number | undefined>(undefined);
+
+const isProjectBoard = computed(() => props.isProjectBoard || false);
+
+// Колонки дошки
+const boardColumns = computed(() => {
+  const columns = getBoardColumns(boardId.value);
+  return columns || [];
+});
+
+// Доступні студенти для призначення (з команди проєкту)
+const availableStudents = computed(() => {
+  if (!props.projectId) return [];
+  const project = projectsStore.getProjectById(props.projectId);
+  if (!project) return [];
+  
+  return project.team
+    .map((studentId) => projectsStore.getStudentById(studentId))
+    .filter((s): s is Student => s !== undefined);
+});
 
 //Methods
 const createNewTask = (): void => {
-  const newTask = {
+  const newTask: Omit<Task, "id"> = {
     name: taskName.value,
     description: taskDescription.value,
   };
+
+  if (isProjectBoard.value) {
+    newTask.assignedTo = assignedStudentId.value || undefined;
+    newTask.priority = taskPriority.value;
+    newTask.estimatedHours = estimatedHours.value;
+  }
+
   if (useValidator(taskDescription.value, taskName.value)) {
-    addTaskToColumn(boardId, taskColumnId.value, newTask);
+    addTaskToColumn(boardId.value, taskColumnId.value, newTask);
+    
+    // Якщо це проєктна дошка, призначаємо задачу студенту
+    if (isProjectBoard.value && assignedStudentId.value && props.projectId) {
+      // Отримуємо ID щойно створеної задачі (остання в колонці)
+      const column = boardColumns.value.find((c) => c.id === taskColumnId.value);
+      if (column && column.tasks.length > 0) {
+        const lastTask = column.tasks[column.tasks.length - 1];
+        projectsStore.assignTaskToStudent(props.projectId, lastTask.id, assignedStudentId.value);
+      }
+    }
+    
     resetValues();
     toggleFormModal(false);
   }
 };
 
 const editTaskInfos = (): void => {
-  const editedTask = {
+  const editedTask: Task = {
     id: taskToEditState.value!.id,
     name: taskName.value,
     description: taskDescription.value,
   };
+
+  if (isProjectBoard.value) {
+    editedTask.assignedTo = assignedStudentId.value || undefined;
+    editedTask.priority = taskPriority.value;
+    editedTask.estimatedHours = estimatedHours.value;
+
+    // Оновлюємо призначення
+    if (assignedStudentId.value && props.projectId) {
+      projectsStore.assignTaskToStudent(props.projectId, editedTask.id, assignedStudentId.value);
+    }
+  }
+
   if (useValidator(taskDescription.value, taskName.value)) {
     editTask(
-      boardId,
+      boardId.value,
       taskToEditState.value!.columnParentId,
       taskColumnId.value,
       editedTask
@@ -114,9 +210,14 @@ const editTaskInfos = (): void => {
 };
 
 const resetValues = (): void => {
-  taskColumnId.value = getBoardColumns(boardId)![0].id;
+  if (boardColumns.value.length > 0) {
+    taskColumnId.value = boardColumns.value[0].id;
+  }
   taskName.value = "";
   taskDescription.value = "";
+  assignedStudentId.value = "";
+  taskPriority.value = "medium";
+  estimatedHours.value = undefined;
 };
 
 const buttonLabel = computed(() => {
@@ -128,6 +229,12 @@ watch(isFormOpenState, () => {
     taskName.value = taskToEditState.value.name;
     taskDescription.value = taskToEditState.value.description;
     taskColumnId.value = taskToEditState.value.columnParentId;
+    
+    if (isProjectBoard.value) {
+      assignedStudentId.value = taskToEditState.value.assignedTo || "";
+      taskPriority.value = taskToEditState.value.priority || "medium";
+      estimatedHours.value = taskToEditState.value.estimatedHours;
+    }
   } else {
     resetValues();
   }

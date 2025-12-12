@@ -1,5 +1,13 @@
 <template>
   <section class="w-full h-full p-10 overflow-y-auto bg-lightGray">
+    <div v-if="authStore.isAuthenticated" class="mb-8">
+      <NuxtLink
+        to="/projects"
+        class="inline-block px-6 py-3 bg-savoy text-white rounded-lg hover:bg-savoy/90 transition-colors"
+      >
+        Перейти до проєктів
+      </NuxtLink>
+    </div>
     <h1 class="mb-24 text-gray-800">Ваші дошки:</h1>
     <div
       class="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 auto-rows-auto gap-10"
@@ -28,8 +36,10 @@
 import { ViewColumnsIcon } from "@heroicons/vue/24/outline";
 import { storeToRefs } from "pinia";
 import { useKanbanStore } from "~~/stores";
+import { useAuthStore } from "~~/stores/auth";
 
 const store = useKanbanStore();
+const authStore = useAuthStore();
 const { boards } = storeToRefs(store);
 
 const addBoardState = isAddBoardFormOpen();
