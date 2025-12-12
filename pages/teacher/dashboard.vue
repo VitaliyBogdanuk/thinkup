@@ -1,5 +1,5 @@
 <template>
-  <section class="w-full h-full p-4 md:p-10 overflow-y-auto bg-lightGray">
+  <section class="w-full h-full overflow-y-auto flex-1 p-4 md:p-10 bg-lightGray">
     <h1 class="text-xl md:text-2xl font-bold text-gray-800 mb-4 md:mb-6">Панель викладача</h1>
 
     <div v-if="!currentTeacher" class="text-center py-16 text-gray-500">

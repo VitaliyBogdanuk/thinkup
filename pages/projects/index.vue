@@ -1,5 +1,5 @@
 <template>
-  <section class="w-full h-full p-4 md:p-10 overflow-y-auto bg-lightGray">
+  <section class="w-full h-full overflow-y-auto flex-1 p-4 md:p-10 bg-lightGray">
     <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 md:mb-8 gap-4">
       <h1 class="text-xl md:text-2xl font-bold text-gray-800">Мої проєкти</h1>
       <button

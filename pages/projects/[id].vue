@@ -1,12 +1,12 @@
 <template>
-  <section class="w-full overflow-hidden">
+  <section class="w-full h-full overflow-y-auto flex-1">
     <HeaderComponent />
     
     <div v-if="!project" class="p-10 text-center text-gray-500">
       Проєкт не знайдено
     </div>
 
-    <div v-else class="p-4 md:p-5 bg-lightGray min-h-screen">
+    <div v-else class="p-4 md:p-5 bg-lightGray">
       <!-- Інформація про проєкт -->
       <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
         <div class="flex items-start justify-between mb-4">

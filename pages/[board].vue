@@ -1,5 +1,5 @@
 <template>
-  <section class="w-full overflow-hidden">
+  <section class="w-full h-full overflow-hidden flex-1 flex flex-col">
     <FormTasks />
     <HeaderComponent />
     <FormEditBoard />

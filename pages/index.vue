@@ -1,5 +1,5 @@
 <template>
-  <section class="w-full h-full p-10 overflow-y-auto bg-lightGray">
+  <section class="w-full h-full overflow-y-auto flex-1 p-10 bg-lightGray">
     <div v-if="authStore.isAuthenticated" class="mb-8">
       <NuxtLink
         to="/projects"

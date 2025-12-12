@@ -1,7 +1,7 @@
 <template>
-  <main class="flex h-screen w-screen">
+  <main class="flex h-screen w-screen overflow-hidden">
     <aside
-      class="hidden md:block h-full w-96 bg-charcoal border-r border-gray-200 text-gray-300 overflow-y-auto"
+      class="hidden md:block h-full w-96 bg-charcoal border-r border-gray-200 text-gray-300 overflow-y-auto flex-shrink-0"
     >
       <div class="w-full p-5">
         <NuxtLink to="/" exact-active-class="text-savoy ">
@@ -86,7 +86,9 @@
         <ViewColumnsIcon class="w-5 h-5" />+ Створити нову дошку
       </div>
     </aside>
-    <slot></slot>
+    <div class="flex-1 overflow-hidden flex flex-col min-w-0">
+      <slot></slot>
+    </div>
     <FormAddBoard />
     <RoleSwitcher />
   </main>
