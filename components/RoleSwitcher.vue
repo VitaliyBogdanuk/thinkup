@@ -1,5 +1,5 @@
 <template>
-  <div class="fixed bottom-4 right-4 z-50 sm:bottom-6 sm:right-6">
+  <div class="hidden md:block fixed bottom-4 right-4 z-50 sm:bottom-6 sm:right-6">
     <!-- Згорнутий стан -->
     <button
       v-if="!isExpanded"

@@ -1,6 +1,6 @@
 <template>
   <section class="w-full h-full overflow-y-auto flex-1">
-    <HeaderComponent />
+    <HeaderComponent class="hidden md:block" />
     
     <div v-if="!project" class="p-10 text-center text-gray-500">
       Проєкт не знайдено

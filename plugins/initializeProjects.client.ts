@@ -9,15 +9,29 @@ export default defineNuxtPlugin(async () => {
 
   // Ініціалізуємо проєкти з канбан-дошками та рекомендаціями
   for (const project of projectsStore.projects) {
-    if (!project.boardId && project.status !== "draft") {
-      // Створюємо канбан-дошку
-      kanbanStore.createNewBoard(project.name);
-      const board = kanbanStore.boards?.[kanbanStore.boards.length - 1];
+    if (project.status === "draft") continue;
 
+    let board = project.boardId 
+      ? kanbanStore.boards?.find(b => b.id === project.boardId)
+      : null;
+
+    // Створюємо канбан-дошку, якщо її немає
+    if (!board) {
+      kanbanStore.createNewBoard(project.name);
+      board = kanbanStore.boards?.[kanbanStore.boards.length - 1];
+      
       if (board) {
-        // Генеруємо задачі на основі ТЗ
-        const tz = project.technicalSpecification.toLowerCase();
-        
+        project.boardId = board.id;
+        project.board = board;
+      }
+    }
+
+    if (board) {
+      // Перевіряємо, чи є задачі в дошці
+      const hasTasks = board.columns.some(col => col.tasks && col.tasks.length > 0);
+      
+      // Якщо задач немає, генеруємо їх
+      if (!hasTasks) {
         // Визначаємо етапи на основі складності
         let stages: string[] = [];
         if (project.complexity === "low") {
@@ -55,8 +69,8 @@ export default defineNuxtPlugin(async () => {
         stages.forEach((stage) => {
           const subtasks = getSubtasksForStage(stage, project.complexity);
           subtasks.forEach((subtask) => {
-            const columnId = board.columns[0].id; // To Do колонка
-            kanbanStore.addTaskToColumn(board.id, columnId, {
+            const columnId = board!.columns[0].id; // To Do колонка
+            kanbanStore.addTaskToColumn(board!.id, columnId, {
               name: subtask.name,
               description: subtask.description,
               priority: subtask.priority,
@@ -65,12 +79,10 @@ export default defineNuxtPlugin(async () => {
             });
           });
         });
+      }
 
-        // Оновлюємо проєкт
-        project.boardId = board.id;
-        project.board = board;
-
-        // Генеруємо рекомендації студентів
+      // Генеруємо рекомендації студентів, якщо їх немає
+      if (!project.recommendations || project.recommendations.length === 0) {
         await projectsStore.generateStudentRecommendations(project.id);
       }
     }

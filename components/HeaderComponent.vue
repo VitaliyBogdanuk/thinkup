@@ -20,29 +20,9 @@
         @click="() => (editBoardFormState = true)"
       />
     </div>
-    <Bars2Icon
-      class="md:hidden w-10 h-10"
-      @click="() => (isMobileMenuOpen = true)"
-    />
+    <!-- Мобільне меню приховано, використовується MobileHeader -->
 
-    <!-- Mobile menu -->
-    <transition name="fade">
-      <div
-        v-if="isMobileMenuOpen"
-        class="center-fixed w-full h-full bg-charcoal flex flex-col gap-10 items-center justify-center font-bold z-20"
-      >
-        <NuxtLink to="/" class="border-b border-gray-600 p-2 text-gray-300">ГОЛОВНА</NuxtLink>
-        <p class="border-b border-gray-600 p-2 text-gray-300" @click="openAddBoardModal">
-          + СТВОРИТИ НОВУ ДОШКУ
-        </p>
-        <p class="border-b border-gray-600 p-2 text-gray-300" @click="toggleFormModal(true)">+ ДОДАТИ ЗАВДАННЯ</p>
-        <p class="border-b border-gray-600 p-2 text-gray-300" @click="openEditBoardModal">РЕДАГУВАТИ ДОШКУ</p>
-        <XMarkIcon
-          class="w-10 h-10 absolute top-8 right-5 z-10"
-          @click="() => (isMobileMenuOpen = false)"
-        />
-      </div>
-    </transition>
+    <!-- Mobile menu приховано - використовується MobileHeader -->
   </header>
 </template>
 <script setup lang="ts">
