@@ -1,4 +1,4 @@
-# Kanban
+# ThinkUp
 
 ## Tags
 

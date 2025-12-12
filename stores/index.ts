@@ -7,27 +7,27 @@ export const useKanbanStore = defineStore("kanban", {
     boards: useStorage("board", [
       {
         id: "499ff073-7759-45c4-a62b-020860056830",
-        name: "Any Board",
+        name: "Будь-яка дошка",
         columns: [
           {
             id: "52a3c12c-a755-46e1-9a95-22ab10d61a1d",
-            name: "Todo",
+            name: "Зробити",
             tasks: [
               {
                 id: "52a96e6f-1213-46f6-8ae3-6a8fb00b126e",
-                name: "Title example",
-                description: "Description example",
+                name: "Приклад назви",
+                description: "Приклад опису",
               },
             ],
           },
           {
             id: "c46c6c66-9da0-42f2-97fd-1c212e4e8de2",
-            name: "In Progress",
+            name: "В процесі",
             tasks: [],
           },
           {
             id: "3e6f2fa2-1c93-4409-85b7-4660c36a1242",
-            name: "Done",
+            name: "Виконано",
             tasks: [],
           },
         ],
@@ -77,9 +77,9 @@ export const useKanbanStore = defineStore("kanban", {
         id: uuidv4(),
         name: boardName,
         columns: [
-          { id: uuidv4(), name: "Todo", tasks: [] },
-          { id: uuidv4(), name: "In Progress", tasks: [] },
-          { id: uuidv4(), name: "Done", tasks: [] },
+          { id: uuidv4(), name: "Зробити", tasks: [] },
+          { id: uuidv4(), name: "В процесі", tasks: [] },
+          { id: uuidv4(), name: "Виконано", tasks: [] },
         ],
       };
       //Modifing state

@@ -3,7 +3,7 @@ export default defineNuxtConfig({
   app: {
     pageTransition: { name: "fade", mode: "out-in" },
     head: {
-      titleTemplate: "Kanban",
+      titleTemplate: "ThinkUp",
       meta: [
         { charset: "utf-8" },
         { name: "viewport", content: "width=device-width, initial-scale=1.0" },
@@ -11,11 +11,11 @@ export default defineNuxtConfig({
           hid: "description",
           name: "description",
           content:
-            "Your new favorite task manager is right here! A intuitive, clean and modern Kanban like task manager.",
+            "Ваш новий улюблений менеджер завдань тут! Інтуїтивний, чистий та сучасний ThinkUp менеджер завдань.",
         },
         {
           name: "keywords",
-          content: "Kanban, task, manager",
+          content: "ThinkUp, завдання, менеджер",
         },
       ],
     },
