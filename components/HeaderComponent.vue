@@ -1,19 +1,19 @@
 <template>
   <header
-    class="flex items-center justify-between px-5 h-24 w-full bg-charcoal"
+    class="flex items-center justify-between px-5 h-24 w-full bg-white border-b border-gray-200"
   >
     <select class="block md:hidden" v-model="boardIdInView">
       <option v-for="board in boards" :value="board.id">
         {{ board.name }}
       </option>
     </select>
-    <h2 class="hidden md:block">{{ boardName }}</h2>
+    <h2 class="hidden md:block text-gray-800">{{ boardName }}</h2>
     <div class="hidden gap-2 items-center md:flex">
       <button
         @click="toggleFormModal(true)"
-        class="hidden md:flex gap-2 items-center bg-savoy rounded-3xl px-5 py-3 font-semibold hover:scale-105 transition"
+        class="hidden md:flex gap-2 items-center bg-savoy text-white rounded-3xl px-5 py-3 font-semibold hover:scale-105 transition"
       >
-        + ADD TASK
+        + ДОДАТИ ЗАВДАННЯ
       </button>
       <EllipsisVerticalIcon
         class="w-10 h-10 cursor-pointer"
@@ -29,14 +29,14 @@
     <transition name="fade">
       <div
         v-if="isMobileMenuOpen"
-        class="center-fixed w-full h-full bg-neutral-800 flex flex-col gap-10 items-center justify-center font-bold z-20"
+        class="center-fixed w-full h-full bg-charcoal flex flex-col gap-10 items-center justify-center font-bold z-20"
       >
-        <NuxtLink to="/" class="border-b p-2">HOME</NuxtLink>
-        <p class="border-b p-2" @click="openAddBoardModal">
-          + CREATE NEW BOARD
+        <NuxtLink to="/" class="border-b border-gray-600 p-2 text-gray-300">ГОЛОВНА</NuxtLink>
+        <p class="border-b border-gray-600 p-2 text-gray-300" @click="openAddBoardModal">
+          + СТВОРИТИ НОВУ ДОШКУ
         </p>
-        <p class="border-b p-2" @click="toggleFormModal(true)">+ ADD TASK</p>
-        <p class="border-b p-2" @click="openEditBoardModal">EDIT BOARD</p>
+        <p class="border-b border-gray-600 p-2 text-gray-300" @click="toggleFormModal(true)">+ ДОДАТИ ЗАВДАННЯ</p>
+        <p class="border-b border-gray-600 p-2 text-gray-300" @click="openEditBoardModal">РЕДАГУВАТИ ДОШКУ</p>
         <XMarkIcon
           class="w-10 h-10 absolute top-8 right-5 z-10"
           @click="() => (isMobileMenuOpen = false)"
