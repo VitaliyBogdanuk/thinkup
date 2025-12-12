@@ -35,11 +35,15 @@
 import { useKanbanStore } from "~~/stores";
 import { XMarkIcon } from "@heroicons/vue/24/outline";
 
+const props = defineProps<{
+  boardId?: string;
+}>();
+
 const { createNewColumn } = useKanbanStore();
 
 //Route
 const route = useRoute();
-const boardId = route.params.board.toString();
+const boardId = computed(() => props.boardId || route.params.board.toString());
 
 //Refs
 const isCreatingColumn = ref<boolean>(false);
@@ -48,7 +52,7 @@ const newColumnName = ref<string>("");
 //Methods
 const createColumn = (): void => {
   if (useValidator(newColumnName.value)) {
-    createNewColumn(boardId, newColumnName.value);
+    createNewColumn(boardId.value, newColumnName.value);
     newColumnName.value = "";
     isCreatingColumn.value = false;
   }

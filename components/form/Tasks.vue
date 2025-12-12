@@ -93,7 +93,7 @@
   </transition>
 </template>
 <script setup lang="ts">
-import { computed } from "vue";
+import { computed, watch } from "vue";
 import { useKanbanStore } from "~~/stores";
 import { useProjectsStore } from "~~/stores/projects";
 import { XMarkIcon } from "@heroicons/vue/24/outline";
@@ -137,15 +137,35 @@ const boardColumns = computed(() => {
   return columns || [];
 });
 
-// Доступні студенти для призначення (з команди проєкту)
+// Ініціалізуємо taskColumnId при зміні колонок
+watch(boardColumns, (columns) => {
+  if (columns.length > 0 && !taskColumnId.value) {
+    taskColumnId.value = columns[0].id;
+  }
+}, { immediate: true });
+
+// Доступні студенти для призначення (з команди проєкту або всі доступні)
 const availableStudents = computed(() => {
-  if (!props.projectId) return [];
-  const project = projectsStore.getProjectById(props.projectId);
-  if (!project) return [];
+  if (!props.projectId) {
+    // Якщо немає projectId, показуємо всіх доступних студентів
+    return projectsStore.getAvailableStudents;
+  }
   
-  return project.team
-    .map((studentId) => projectsStore.getStudentById(studentId))
-    .filter((s): s is Student => s !== undefined);
+  const project = projectsStore.getProjectById(props.projectId);
+  if (!project) {
+    // Якщо проєкт не знайдено, показуємо всіх доступних студентів
+    return projectsStore.getAvailableStudents;
+  }
+  
+  // Якщо команда проєкту не порожня, показуємо тільки студентів з команди
+  if (project.team && project.team.length > 0) {
+    return project.team
+      .map((studentId) => projectsStore.getStudentById(studentId))
+      .filter((s): s is Student => s !== undefined);
+  }
+  
+  // Якщо команда порожня, показуємо всіх доступних студентів
+  return projectsStore.getAvailableStudents;
 });
 
 //Methods
@@ -224,19 +244,39 @@ const buttonLabel = computed(() => {
   return taskToEditState.value ? "Зберегти зміни" : "Додати завдання";
 });
 
+// Watch для відкриття форми та заповнення полів при редагуванні
 watch(isFormOpenState, () => {
-  if (taskToEditState.value !== null) {
-    taskName.value = taskToEditState.value.name;
-    taskDescription.value = taskToEditState.value.description;
-    taskColumnId.value = taskToEditState.value.columnParentId;
+  if (isFormOpenState.value) {
+    if (taskToEditState.value !== null) {
+      // Редагування існуючої задачі
+      taskName.value = taskToEditState.value.name;
+      taskDescription.value = taskToEditState.value.description;
+      taskColumnId.value = taskToEditState.value.columnParentId;
+      
+      if (isProjectBoard.value) {
+        assignedStudentId.value = taskToEditState.value.assignedTo || "";
+        taskPriority.value = taskToEditState.value.priority || "medium";
+        estimatedHours.value = taskToEditState.value.estimatedHours;
+      }
+    } else {
+      // Створення нової задачі
+      resetValues();
+    }
+  }
+});
+
+// Додатковий watch для taskToEditState на випадок, якщо він змінюється після відкриття форми
+watch(taskToEditState, (newTask) => {
+  if (newTask && isFormOpenState.value) {
+    taskName.value = newTask.name;
+    taskDescription.value = newTask.description;
+    taskColumnId.value = newTask.columnParentId;
     
     if (isProjectBoard.value) {
-      assignedStudentId.value = taskToEditState.value.assignedTo || "";
-      taskPriority.value = taskToEditState.value.priority || "medium";
-      estimatedHours.value = taskToEditState.value.estimatedHours;
+      assignedStudentId.value = newTask.assignedTo || "";
+      taskPriority.value = newTask.priority || "medium";
+      estimatedHours.value = newTask.estimatedHours;
     }
-  } else {
-    resetValues();
   }
 });
 </script>

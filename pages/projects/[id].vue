@@ -56,12 +56,22 @@
       </div>
 
       <!-- Канбан-дошка -->
-      <div v-if="project.boardId" class="bg-white rounded-xl shadow-sm border border-gray-200 p-4 md:p-6 mb-4 md:mb-6">
-        <h2 class="text-lg md:text-xl font-bold text-gray-800 mb-4">Канбан-дошка проєкту</h2>
+      <div v-if="project && project.boardId" class="bg-white rounded-xl shadow-sm border border-gray-200 p-4 md:p-6 mb-4 md:mb-6">
+        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-4">
+          <h2 class="text-lg md:text-xl font-bold text-gray-800">Канбан-дошка проєкту</h2>
+          <button
+            @click="openTaskForm"
+            type="button"
+            class="w-full sm:w-auto px-4 md:px-6 py-2 md:py-3 bg-savoy text-white rounded-lg hover:bg-savoy/90 transition-colors text-sm md:text-base font-semibold flex items-center gap-2 justify-center"
+          >
+            <span>+</span>
+            <span>ДОДАТИ ЗАВДАННЯ</span>
+          </button>
+        </div>
         <FormTasks :board-id="project.boardId" :is-project-board="true" :project-id="project.id" />
         <Columns :board-id="project.boardId" :is-project-board="true" />
       </div>
-      <div v-else class="bg-white rounded-xl shadow-sm border border-gray-200 p-4 md:p-6 mb-4 md:mb-6">
+      <div v-else-if="project" class="bg-white rounded-xl shadow-sm border border-gray-200 p-4 md:p-6 mb-4 md:mb-6">
         <p class="text-gray-500 text-center py-8">Канбан-дошка ще не створена. Будь ласка, зачекайте...</p>
       </div>
 
@@ -115,6 +125,15 @@ const authStore = useAuthStore();
 
 const projectId = route.params.id as string;
 const project = computed(() => projectsStore.getProjectById(projectId));
+
+// Форма додавання завдання
+const isTaskFormOpenState = isTaskFormOpen();
+const taskToEditState = taskToEdit();
+
+const openTaskForm = () => {
+  taskToEditState.value = null;
+  isTaskFormOpenState.value = true;
+};
 
 const getStatusText = (status: Project["status"]): string => {
   const map = {
