@@ -2,41 +2,41 @@
   <transition name="fade">
     <div v-if="isFormOpenState" class="popup-modal">
       <div
-        class="w-96 lg:w-1/3 h-4/5 flex flex-col p-8 bg-charcoal rounded-xl gap-10 relative m-10"
+        class="w-96 lg:w-1/3 h-4/5 flex flex-col p-8 bg-white rounded-xl gap-10 relative m-10 shadow-lg border border-gray-200"
       >
         <button
-          class="absolute right-0 translate-x-4 -translate-y-5 top-0 rounded-full bg-mauve p-3"
+          class="absolute right-0 translate-x-4 -translate-y-5 top-0 rounded-full bg-gray-200 hover:bg-gray-300 p-3 transition-colors"
           @click="toggleFormModal(false)"
         >
-          <XMarkIcon class="w-5 h-5" />
+          <XMarkIcon class="w-5 h-5 text-gray-800" />
         </button>
 
-        <h2>{{ !!taskToEditState ? "Edit" : "Add" }} Task</h2>
+        <h2 class="text-gray-800">{{ !!taskToEditState ? "Редагувати" : "Додати" }} завдання</h2>
 
         <div class="w-full h-full space-y-10 pr-8 flex flex-col">
           <div class="flex flex-col space-y-2">
-            <label for="task_name">Заголовок</label>
+            <label for="task_name" class="text-gray-800">Назва</label>
             <input
               v-model.trim="taskName"
               type="text"
               name="task_name"
-              placeholder="e.g Learn Nuxt.js"
+              placeholder="напр. Вивчення Nuxt.js"
             />
           </div>
 
           <div class="flex flex-col space-y-2 h-full overflow-hidden">
-            <label for="task_description">Опис</label>
+            <label for="task_description" class="text-gray-800">Опис</label>
             <textarea
               v-model.trim="taskDescription"
               type="text"
               name="task_description"
-              placeholder="e.g Learn how to generate server side rendered pages"
+              placeholder="напр. Вивчити як генерувати серверно-рендерені сторінки"
               class="h-full"
             />
           </div>
 
           <div class="space-y-2">
-            <p>Current status</p>
+            <p class="text-gray-800">Поточний статус</p>
             <select name="status" v-model="taskColumnId">
               <option
                 v-for="column in getBoardColumns(boardId)"
@@ -51,7 +51,7 @@
         <BaseButton
           :label="buttonLabel"
           @action="taskToEditState ? editTaskInfos() : createNewTask()"
-          class="bg-savoy"
+          class="bg-savoy text-white"
         />
       </div>
     </div>
@@ -120,7 +120,7 @@ const resetValues = (): void => {
 };
 
 const buttonLabel = computed(() => {
-  return taskToEditState.value ? "Save Changes" : "Add Task";
+  return taskToEditState.value ? "Зберегти зміни" : "Додати завдання";
 });
 
 watch(isFormOpenState, () => {

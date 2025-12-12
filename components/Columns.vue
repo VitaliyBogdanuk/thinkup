@@ -1,6 +1,6 @@
 <template>
   <div
-    class="grid grid-flow-col gap-10 p-5 overflow-x-auto h-[calc(100vh-100px)]"
+    class="grid grid-flow-col gap-10 p-5 overflow-x-auto h-[calc(100vh-100px)] bg-lightGray"
   >
     <div
       v-for="column in getBoardColumns(boardId)"
@@ -10,8 +10,8 @@
       @dragenter.prevent
       @dragover.prevent
     >
-      <div class="w-full py-4 mb-5 pl-2 bg-mauve rounded-xl">
-        <p class="text-marengo">
+      <div class="w-full py-4 mb-5 pl-2 bg-white rounded-xl shadow-sm border border-gray-200">
+        <p class="text-gray-800 font-semibold">
           {{ column.name.toUpperCase() }} ({{ countTasks(column.id) }})
         </p>
       </div>
