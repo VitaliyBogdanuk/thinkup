@@ -15,7 +15,7 @@
 
         <div class="w-full h-full space-y-10 pr-8 flex flex-col">
           <div class="flex flex-col space-y-2">
-            <label for="task_name">Title</label>
+            <label for="task_name">Заголовок</label>
             <input
               v-model.trim="taskName"
               type="text"
@@ -25,7 +25,7 @@
           </div>
 
           <div class="flex flex-col space-y-2 h-full overflow-hidden">
-            <label for="task_description">Description</label>
+            <label for="task_description">Опис</label>
             <textarea
               v-model.trim="taskDescription"
               type="text"

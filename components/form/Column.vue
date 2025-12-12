@@ -4,7 +4,7 @@
     class="w-80 h-full flex flex-col items-center justify-center rounded-xl bg-gradient-to-b from-charcoal text-2xl font-bold text-marengo transition-colors"
     @click.self="() => (isCreatingColumn = true)"
   >
-    + New Column
+    + Нова колонка
 
     <transition name="fade">
       <div

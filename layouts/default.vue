@@ -10,7 +10,7 @@
             <h1 class="mb-20">Kanban</h1>
           </div>
         </NuxtLink>
-        <p class="mb-5 tracking-widest">ALL BOARDS ({{ boardsCount }})</p>
+        <p class="mb-5 tracking-widest">Усі проєкти({{ boardsCount }})</p>
       </div>
       <div v-if="boards!.length > 0">
         <NuxtLink
@@ -28,7 +28,7 @@
         class="px-5 py-3 mr-5 flex gap-2 items-center text-savoy cursor-pointer hover:bg-gray-500/20 transition-colors rounded-r-3xl"
         @click="boardFormState = true"
       >
-        <ViewColumnsIcon class="w-5 h-5" />+ Create New Board
+        <ViewColumnsIcon class="w-5 h-5" />+ Cтворити новий проєкт
       </div>
     </aside>
     <slot></slot>

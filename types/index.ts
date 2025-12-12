@@ -12,6 +12,9 @@ interface Column extends Base {
 }
 
 interface Board extends Base {
+  description: string;
+  status: string;
+  tz: File | null;
   columns: Column[];
 }
 

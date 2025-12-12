@@ -10,10 +10,10 @@
         >
           <XMarkIcon class="w-5 h-5" />
         </button>
-        <h2>Edit board</h2>
+        <h2>Редагувати проєкт</h2>
         <div class="flex flex-col space-y-2 justify-between h-f md:w-96">
           <div class="flex flex-col gap-5">
-            <label for="task_name">Board Name</label>
+            <label for="task_name">Назва проєкту</label>
             <input
               autofocus
               v-model.trim="boardName"
@@ -23,7 +23,7 @@
             />
           </div>
           <p class="pt-5" v-if="getBoardColumns(boardId)!.length > 0">
-            Board Columns
+            Колонки
           </p>
           <div class="flex flex-col gap-5 overflow-y-auto h-fit">
             <div
