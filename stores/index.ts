@@ -2,123 +2,247 @@ import { defineStore } from "pinia";
 import { v4 as uuidv4 } from "uuid";
 import { useStorage } from "@vueuse/core";
 
-const defaultBoards: Board[] = [
-  {
-    id: "499ff073-7759-45c4-a62b-020860056830",
-    name: "Будь-яка дошка",
-    columns: [
+export const useKanbanStore = defineStore("kanban", {
+  state: () => ({
+    boards: useStorage("board", [
       {
-        id: "52a3c12c-a755-46e1-9a95-22ab10d61a1d",
-        name: "Зробити",
-        tasks: [
+        id: "1",
+        name: "Веб-розробка",
+        description: "Проєкт розробки корпоративного сайту",
+        status: "active",
+        tz: createMockFile(
+          "ТЗ_корпоративний_сайт.pdf",
+          2450000,
+          "application/pdf"
+        ),
+        columns: [
           {
-            id: "52a96e6f-1213-46f6-8ae3-6a8fb00b126e",
-            name: "Приклад назви",
-            description: "Приклад опису",
+            id: "col1",
+            name: "Планування",
+            tasks: [
+              {
+                id: "task1",
+                name: "Аналіз вимог клієнта",
+                description: "Зібрати всі вимоги та скласти ТЗ",
+              },
+              {
+                id: "task2",
+                name: "Створити дизайн макет",
+                description: "Розробити UI/UX дизайн для головної сторінки",
+              },
+              {
+                id: "task3",
+                name: "Підготувати контент",
+                description: "Підготувати тексти та зображення для сайту",
+              },
+            ],
+          },
+          {
+            id: "col2",
+            name: "В роботі",
+            tasks: [
+              {
+                id: "task4",
+                name: "Розробити головну сторінку",
+                description: "Верстка та функціонал головної сторінки",
+              },
+              {
+                id: "task5",
+                name: "Інтегрувати API",
+                description: "Підключити бекенд API для форми зворотного зв'язку",
+              },
+            ],
+          },
+          {
+            id: "col3",
+            name: "Тестування",
+            tasks: [
+              {
+                id: "task6",
+                name: "Тестування адаптивності",
+                description: "Перевірити коректне відображення на мобільних пристроях",
+              },
+            ],
+          },
+          {
+            id: "col4",
+            name: "Завершено",
+            tasks: [
+              {
+                id: "task7",
+                name: "Налаштування сервера",
+                description: "Налаштування хостингу та домену",
+              },
+              {
+                id: "task8",
+                name: "Документація",
+                description: "Скласти технічну документацію по проєкту",
+              },
+            ],
           },
         ],
       },
       {
-        id: "c46c6c66-9da0-42f2-97fd-1c212e4e8de2",
-        name: "В процесі",
-        tasks: [],
+        id: "2",
+        name: "Маркетинг",
+        description: "Розробка маркетингової кампанії",
+        status: "active",
+        tz: createMockFile(
+          "Маркетингова_кампанія_ТЗ.docx",
+          1850000,
+          "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+        ),
+        columns: [
+          {
+            id: "col5",
+            name: "Ідеї",
+            tasks: [
+              {
+                id: "task9",
+                name: "Мозковий штурм",
+                description: "Згенерувати ідеї для кампанії",
+              },
+              {
+                id: "task10",
+                name: "Аналіз конкурентів",
+                description: "Дослідити дії конкурентів на ринку",
+              },
+            ],
+          },
+          {
+            id: "col6",
+            name: "В роботі",
+            tasks: [
+              {
+                id: "task11",
+                name: "Створення контенту",
+                description: "Підготувати пости для соціальних мереж",
+              },
+            ],
+          },
+          {
+            id: "col7",
+            name: "Завершено",
+            tasks: [
+              {
+                id: "task12",
+                name: "Налаштування реклами",
+                description: "Налаштування Google Ads кампанії",
+              },
+            ],
+          },
+        ],
       },
       {
-        id: "3e6f2fa2-1c93-4409-85b7-4660c36a1242",
-        name: "Виконано",
-        tasks: [],
+        id: "3",
+        name: "Мобільний додаток",
+        description: "Розробка iOS/Android додатку",
+        status: "draft",
+        tz: createMockFile(
+          "ТЗ_мобільний_додаток.pdf",
+          3120000,
+          "application/pdf"
+        ),
+        columns: [
+          {
+            id: "col8",
+            name: "Черга",
+            tasks: [
+              {
+                id: "task13",
+                name: "Дослідження ринку",
+                description: "Аналіз аналогічних додатків",
+              },
+              {
+                id: "task14",
+                name: "Вибір технологій",
+                description: "Визначити стек технологій для розробки",
+              },
+            ],
+          },
+          {
+            id: "col9",
+            name: "До виконання",
+            tasks: [
+              {
+                id: "task15",
+                name: "Дизайн інтерфейсу",
+                description: "Створити прототипи екранів",
+              },
+            ],
+          },
+          {
+            id: "col10",
+            name: "В процесі",
+            tasks: [],
+          },
+          {
+            id: "col11",
+            name: "Виконано",
+            tasks: [],
+          },
+        ],
       },
-    ],
-  },
-];
-
-// Міграція для оновлення старих англійських назв на українські
-const migrateData = (boards: Board[] | undefined): Board[] => {
-  if (!boards || boards.length === 0) {
-    return defaultBoards;
-  }
-
-  let needsMigration = false;
-
-  const migratedBoards = boards.map((board) => {
-    // Оновлюємо назву дошки
-    let boardName = board.name;
-    if (board.name === "Any Board") {
-      boardName = "Будь-яка дошка";
-      needsMigration = true;
-    }
-
-    // Оновлюємо назви колонок та завдань
-    const migratedColumns = board.columns.map((column) => {
-      let columnName = column.name;
-      if (column.name === "Todo") {
-        columnName = "Зробити";
-        needsMigration = true;
-      } else if (column.name === "In Progress") {
-        columnName = "В процесі";
-        needsMigration = true;
-      } else if (column.name === "Done") {
-        columnName = "Виконано";
-        needsMigration = true;
-      }
-
-      // Оновлюємо назви та описи завдань
-      const migratedTasks = column.tasks.map((task) => {
-        let taskName = task.name;
-        let taskDescription = task.description;
-        
-        if (task.name === "Title example") {
-          taskName = "Приклад назви";
-          needsMigration = true;
-        }
-        if (task.description === "Description example") {
-          taskDescription = "Приклад опису";
-          needsMigration = true;
-        }
-        
-        return {
-          ...task,
-          name: taskName,
-          description: taskDescription,
-        };
-      });
-
-      return {
-        ...column,
-        name: columnName,
-        tasks: migratedTasks,
-      };
-    });
-
-    return {
-      ...board,
-      name: boardName,
-      columns: migratedColumns,
-    };
-  });
-
-  // Повертаємо оновлені дані
-  return migratedBoards;
-};
-
-export const useKanbanStore = defineStore("kanban", {
-  state: () => {
-    const storedBoards = useStorage<Board[]>("board", defaultBoards);
-    // Застосовуємо міграцію при ініціалізації
-    const migratedBoards = migrateData(storedBoards.value);
-    storedBoards.value = migratedBoards;
-    
-    return {
-      boards: storedBoards,
-    };
-  },
+      {
+        id: "4",
+        name: "Дизайн бренду",
+        description: "Розробка фірмового стилю компанії",
+        status: "active",
+        tz: createMockFile(
+          "Брендбук_компанія_XYZ.zip",
+          5210000,
+          "application/zip"
+        ),
+        columns: [
+          {
+            id: "col12",
+            name: "Аналіз",
+            tasks: [
+              {
+                id: "task16",
+                name: "Аналіз цільової аудиторії",
+                description: "Дослідити потреби та вподобання цільової аудиторії",
+              },
+              {
+                id: "task17",
+                name: "Аналіз конкурентів",
+                description: "Вивчити брендинг конкурентів",
+              },
+            ],
+          },
+          {
+            id: "col13",
+            name: "Розробка",
+            tasks: [
+              {
+                id: "task18",
+                name: "Створити логотип",
+                description: "Розробити варіанти логотипу",
+              },
+            ],
+          },
+          {
+            id: "col14",
+            name: "Затвердження",
+            tasks: [
+              {
+                id: "task19",
+                name: "Затвердити кольорову палітру",
+                description: "Презентувати кольорову схему клієнту",
+              },
+            ],
+          },
+        ],
+      },
+    ] as Board[]),
+  }),
   getters: {
     getBoardColumns:
       (state) =>
-      (boardId: string): Column[] | undefined => {
-        const findBoard = state.boards?.find((board) => board.id === boardId);
-        return findBoard?.columns;
-      },
+        (boardId: string): Column[] | undefined => {
+          const findBoard = state.boards?.find((board) => board.id === boardId);
+          return findBoard?.columns;
+        },
     getColumnTasks() {
       return (boardId: string, columnId: string): Task[] | undefined => {
         const column = this.getBoardColumns(boardId)?.find(
@@ -145,22 +269,24 @@ export const useKanbanStore = defineStore("kanban", {
       const filteredTasks = boardTasks!.filter(
         (task) => task.id !== editedTask.id
       );
-      //Removing task from original column
       this.boards!.find((board) => board.id === boardId)!.columns.find(
         (column) => column.id === columnId
       )!.tasks = filteredTasks;
     },
-    createNewBoard(boardName: string) {
+    createNewBoard(newBoard: Omit<Board, "id" | "columns">) {
       const boardTemplate: Board = {
         id: uuidv4(),
-        name: boardName,
+        name: newBoard.name,
+        description: newBoard.description,
+        status: newBoard.status,
+        tz: newBoard.tz,
         columns: [
-          { id: uuidv4(), name: "Зробити", tasks: [] },
+          { id: uuidv4(), name: "До виконання", tasks: [] },
           { id: uuidv4(), name: "В процесі", tasks: [] },
-          { id: uuidv4(), name: "Виконано", tasks: [] },
+          { id: uuidv4(), name: "Завершено", tasks: [] },
         ],
       };
-      //Modifing state
+
       this.boards?.push(boardTemplate);
     },
     editTask(
@@ -171,7 +297,6 @@ export const useKanbanStore = defineStore("kanban", {
     ) {
       const boardTasks = this.getColumnTasks(boardId, columnId);
 
-      //If it has a new status, remove from original column and add to new column
       if (newColumnId !== columnId) {
         this.removeTaskFromColumn(boardId, columnId, editedTask);
         this.addTaskToColumn(boardId, newColumnId, editedTask);
@@ -180,7 +305,6 @@ export const useKanbanStore = defineStore("kanban", {
           task.id === editedTask.id ? editedTask : task
         );
 
-        //Modifing state
         this.boards!.find((board) => board.id === boardId)!.columns.find(
           (column) => column.id === columnId
         )!.tasks = modifiedTasks;
@@ -211,3 +335,20 @@ export const useKanbanStore = defineStore("kanban", {
     },
   },
 });
+
+
+function createMockFile(name: string, size: number, type: string): File {
+  const blob = new Blob([''], { type });
+  const file = new File([blob], name, { 
+    type,
+    lastModified: Date.now()
+  });
+  
+
+  Object.defineProperty(file, 'size', {
+    value: size,
+    writable: false
+  });
+  
+  return file;
+}
