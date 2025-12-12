@@ -2,7 +2,7 @@
   <transition name="fade">
     <div v-if="isFormOpenState" class="popup-modal">
       <div
-        class="w-96 lg:w-1/3 h-4/5 flex flex-col p-8 bg-white rounded-xl gap-10 relative m-10 shadow-lg border border-gray-200"
+        class="w-96 lg:w-1/3 h-4/5 flex flex-col p-8 bg-white rounded-xl gap-6 relative m-10 shadow-lg border border-gray-200"
       >
         <button
           class="absolute right-0 translate-x-4 -translate-y-5 top-0 rounded-full bg-gray-200 hover:bg-gray-300 p-3 transition-colors"
@@ -13,87 +13,96 @@
 
         <h2 class="text-gray-800">{{ !!taskToEditState ? "Редагувати" : "Додати" }} завдання</h2>
 
-        <div class="w-full h-full space-y-10 pr-8 flex flex-col">
-          <div class="flex flex-col space-y-2">
-            <label for="task_name" class="text-gray-800">Назва</label>
-            <input
-              v-model.trim="taskName"
-              type="text"
-              name="task_name"
-              placeholder="напр. Вивчення Nuxt.js"
-            />
-          </div>
+        <div class="flex-1 overflow-y-auto pr-2">
+          <div class="space-y-6">
+            <div class="flex flex-col space-y-2">
+              <label for="task_name" class="text-gray-800">Назва</label>
+              <input
+                v-model.trim="taskName"
+                type="text"
+                name="task_name"
+                placeholder="напр. Вивчення Nuxt.js"
+                class="w-full"
+              />
+            </div>
 
-          <div class="flex flex-col space-y-2 h-full overflow-hidden">
-            <label for="task_description" class="text-gray-800">Опис</label>
-            <textarea
-              v-model.trim="taskDescription"
-              type="text"
-              name="task_description"
-              placeholder="напр. Вивчити як генерувати серверно-рендерені сторінки"
-              class="h-full"
-            />
-          </div>
+            <div class="flex flex-col space-y-2">
+              <label for="task_description" class="text-gray-800">Опис</label>
+              <textarea
+                v-model.trim="taskDescription"
+                type="text"
+                name="task_description"
+                placeholder="напр. Вивчити як генерувати серверно-рендерені сторінки"
+                rows="4"
+                class="w-full resize-none"
+              />
+            </div>
 
-          <div class="space-y-2">
-            <p class="text-gray-800">Поточний статус</p>
-            <select name="status" v-model="taskColumnId">
-              <option
-                v-for="column in boardColumns"
-                :key="column.id"
-                :value="column.id"
-              >
-                {{ column.name }}
-              </option>
-            </select>
-          </div>
+            <div class="space-y-2">
+              <p class="text-gray-800">Поточний статус</p>
+              <select name="status" v-model="taskColumnId" class="w-full">
+                <option
+                  v-for="column in boardColumns"
+                  :key="column.id"
+                  :value="column.id"
+                >
+                  {{ column.name }}
+                </option>
+              </select>
+            </div>
 
-          <div v-if="isProjectBoard" class="space-y-2">
-            <p class="text-gray-800">Призначити студента</p>
-            <select name="assigned_student" v-model="assignedStudentId">
-              <option value="">Не призначено</option>
-              <option
-                v-for="student in availableStudents"
-                :key="student.id"
-                :value="student.id"
-              >
-                {{ student.fullName }}
-              </option>
-            </select>
-          </div>
+            <!-- Поля для проєктних дошок -->
+            <template v-if="isProjectBoard">
+              <div class="space-y-2">
+                <p class="text-gray-800">Призначити студента</p>
+                <select name="assigned_student" v-model="assignedStudentId" class="w-full">
+                  <option value="">Не призначено</option>
+                  <option
+                    v-for="student in availableStudents"
+                    :key="student.id"
+                    :value="student.id"
+                  >
+                    {{ student.fullName }}
+                  </option>
+                </select>
+              </div>
 
-          <div v-if="isProjectBoard" class="space-y-2">
-            <p class="text-gray-800">Пріоритет</p>
-            <select name="priority" v-model="taskPriority">
-              <option value="low">Низький</option>
-              <option value="medium">Середній</option>
-              <option value="high">Високий</option>
-            </select>
-          </div>
+              <div class="space-y-2">
+                <p class="text-gray-800">Пріоритет</p>
+                <select name="priority" v-model="taskPriority" class="w-full">
+                  <option value="low">Низький</option>
+                  <option value="medium">Середній</option>
+                  <option value="high">Високий</option>
+                </select>
+              </div>
 
-          <div v-if="isProjectBoard" class="space-y-2">
-            <label for="estimated_hours" class="text-gray-800">Оцінка часу (години)</label>
-            <input
-              id="estimated_hours"
-              v-model.number="estimatedHours"
-              type="number"
-              min="0"
-              placeholder="напр. 8"
-              class="w-full"
-            />
+              <div class="space-y-2">
+                <label for="estimated_hours" class="text-gray-800">Оцінка часу (години)</label>
+                <input
+                  id="estimated_hours"
+                  v-model.number="estimatedHours"
+                  type="number"
+                  min="0"
+                  placeholder="напр. 8"
+                  class="w-full"
+                />
+              </div>
+            </template>
           </div>
         </div>
-        <BaseButton
-          :label="buttonLabel"
-          @action="taskToEditState ? editTaskInfos() : createNewTask()"
-          class="bg-savoy text-white"
-        />
+        <div class="flex-shrink-0 pt-4 border-t border-gray-200">
+          <BaseButton
+            :label="buttonLabel"
+            @action="taskToEditState ? editTaskInfos() : createNewTask()"
+            class="bg-savoy text-white w-full"
+          />
+        </div>
       </div>
     </div>
   </transition>
 </template>
 <script setup lang="ts">
-import { computed, watch } from "vue";
+import { computed, watch, toRef } from "vue";
 import { useKanbanStore } from "~~/stores";
 import { useProjectsStore } from "~~/stores/projects";
 import { XMarkIcon } from "@heroicons/vue/24/outline";
@@ -129,7 +138,28 @@ const assignedStudentId = ref<string>("");
 const taskPriority = ref<"low" | "medium" | "high">("medium");
 const estimatedHours = ref<number | undefined>(undefined);
 
-const isProjectBoard = computed(() => props.isProjectBoard || false);
+// Визначаємо, чи це проєктна дошка
+const isProjectBoard = computed(() => {
+  // Перевіряємо, чи передано isProjectBoard або projectId
+  if (props.isProjectBoard === true || !!props.projectId) {
+    return true;
+  }
+  
+  // Додаткова перевірка через route, якщо ми на сторінці проєкту
+  if (route.path.includes('/projects/')) {
+    return true;
+  }
+  
+  // Перевіряємо, чи дошка належить проєкту через boardId
+  if (boardId.value) {
+    const project = projectsStore.projects.find(p => p.boardId === boardId.value);
+    if (project) {
+      return true;
+    }
+  }
+  
+  return false;
+});
 
 // Колонки дошки
 const boardColumns = computed(() => {
@@ -144,14 +174,24 @@ watch(boardColumns, (columns) => {
   }
 }, { immediate: true });
 
-// Доступні студенти для призначення (з команди проєкту або всі доступні)
-const availableStudents = computed(() => {
-  if (!props.projectId) {
-    // Якщо немає projectId, показуємо всіх доступних студентів
-    return projectsStore.getAvailableStudents;
+// Знаходимо проєкт за projectId або boardId
+const currentProject = computed(() => {
+  if (props.projectId) {
+    return projectsStore.getProjectById(props.projectId);
   }
   
-  const project = projectsStore.getProjectById(props.projectId);
+  // Якщо projectId не передано, шукаємо проєкт за boardId
+  if (boardId.value) {
+    return projectsStore.projects.find(p => p.boardId === boardId.value);
+  }
+  
+  return undefined;
+});
+
+// Доступні студенти для призначення (з команди проєкту або всі доступні)
+const availableStudents = computed(() => {
+  const project = currentProject.value;
+  
   if (!project) {
     // Якщо проєкт не знайдено, показуємо всіх доступних студентів
     return projectsStore.getAvailableStudents;
@@ -185,12 +225,12 @@ const createNewTask = (): void => {
     addTaskToColumn(boardId.value, taskColumnId.value, newTask);
     
     // Якщо це проєктна дошка, призначаємо задачу студенту
-    if (isProjectBoard.value && assignedStudentId.value && props.projectId) {
+    if (isProjectBoard.value && assignedStudentId.value && currentProject.value) {
       // Отримуємо ID щойно створеної задачі (остання в колонці)
       const column = boardColumns.value.find((c) => c.id === taskColumnId.value);
       if (column && column.tasks.length > 0) {
         const lastTask = column.tasks[column.tasks.length - 1];
-        projectsStore.assignTaskToStudent(props.projectId, lastTask.id, assignedStudentId.value);
+        projectsStore.assignTaskToStudent(currentProject.value.id, lastTask.id, assignedStudentId.value);
       }
     }
     
@@ -212,8 +252,8 @@ const editTaskInfos = (): void => {
     editedTask.estimatedHours = estimatedHours.value;
 
     // Оновлюємо призначення
-    if (assignedStudentId.value && props.projectId) {
-      projectsStore.assignTaskToStudent(props.projectId, editedTask.id, assignedStudentId.value);
+    if (assignedStudentId.value && currentProject.value) {
+      projectsStore.assignTaskToStudent(currentProject.value.id, editedTask.id, assignedStudentId.value);
     }
   }
 
