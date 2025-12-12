@@ -2,38 +2,116 @@ import { defineStore } from "pinia";
 import { v4 as uuidv4 } from "uuid";
 import { useStorage } from "@vueuse/core";
 
-export const useKanbanStore = defineStore("kanban", {
-  state: () => ({
-    boards: useStorage("board", [
+const defaultBoards: Board[] = [
+  {
+    id: "499ff073-7759-45c4-a62b-020860056830",
+    name: "Будь-яка дошка",
+    columns: [
       {
-        id: "499ff073-7759-45c4-a62b-020860056830",
-        name: "Будь-яка дошка",
-        columns: [
+        id: "52a3c12c-a755-46e1-9a95-22ab10d61a1d",
+        name: "Зробити",
+        tasks: [
           {
-            id: "52a3c12c-a755-46e1-9a95-22ab10d61a1d",
-            name: "Зробити",
-            tasks: [
-              {
-                id: "52a96e6f-1213-46f6-8ae3-6a8fb00b126e",
-                name: "Приклад назви",
-                description: "Приклад опису",
-              },
-            ],
-          },
-          {
-            id: "c46c6c66-9da0-42f2-97fd-1c212e4e8de2",
-            name: "В процесі",
-            tasks: [],
-          },
-          {
-            id: "3e6f2fa2-1c93-4409-85b7-4660c36a1242",
-            name: "Виконано",
-            tasks: [],
+            id: "52a96e6f-1213-46f6-8ae3-6a8fb00b126e",
+            name: "Приклад назви",
+            description: "Приклад опису",
           },
         ],
       },
-    ] as Board[] | undefined),
-  }),
+      {
+        id: "c46c6c66-9da0-42f2-97fd-1c212e4e8de2",
+        name: "В процесі",
+        tasks: [],
+      },
+      {
+        id: "3e6f2fa2-1c93-4409-85b7-4660c36a1242",
+        name: "Виконано",
+        tasks: [],
+      },
+    ],
+  },
+];
+
+// Міграція для оновлення старих англійських назв на українські
+const migrateData = (boards: Board[] | undefined): Board[] => {
+  if (!boards || boards.length === 0) {
+    return defaultBoards;
+  }
+
+  let needsMigration = false;
+
+  const migratedBoards = boards.map((board) => {
+    // Оновлюємо назву дошки
+    let boardName = board.name;
+    if (board.name === "Any Board") {
+      boardName = "Будь-яка дошка";
+      needsMigration = true;
+    }
+
+    // Оновлюємо назви колонок та завдань
+    const migratedColumns = board.columns.map((column) => {
+      let columnName = column.name;
+      if (column.name === "Todo") {
+        columnName = "Зробити";
+        needsMigration = true;
+      } else if (column.name === "In Progress") {
+        columnName = "В процесі";
+        needsMigration = true;
+      } else if (column.name === "Done") {
+        columnName = "Виконано";
+        needsMigration = true;
+      }
+
+      // Оновлюємо назви та описи завдань
+      const migratedTasks = column.tasks.map((task) => {
+        let taskName = task.name;
+        let taskDescription = task.description;
+        
+        if (task.name === "Title example") {
+          taskName = "Приклад назви";
+          needsMigration = true;
+        }
+        if (task.description === "Description example") {
+          taskDescription = "Приклад опису";
+          needsMigration = true;
+        }
+        
+        return {
+          ...task,
+          name: taskName,
+          description: taskDescription,
+        };
+      });
+
+      return {
+        ...column,
+        name: columnName,
+        tasks: migratedTasks,
+      };
+    });
+
+    return {
+      ...board,
+      name: boardName,
+      columns: migratedColumns,
+    };
+  });
+
+  // Повертаємо оновлені дані
+  return migratedBoards;
+};
+
+export const useKanbanStore = defineStore("kanban", {
+  state: () => {
+    const storedBoards = useStorage<Board[]>("board", defaultBoards);
+    // Застосовуємо міграцію при ініціалізації
+    const migratedBoards = migrateData(storedBoards.value);
+    storedBoards.value = migratedBoards;
+    
+    return {
+      boards: storedBoards,
+    };
+  },
   getters: {
     getBoardColumns:
       (state) =>
