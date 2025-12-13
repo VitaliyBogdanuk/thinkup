@@ -14,7 +14,6 @@
             <h1 v-if="!isSidebarCollapsed" class="whitespace-nowrap text-savoy">ThinkUp</h1>
           </div>
         </NuxtLink>
-        <p v-if="!isSidebarCollapsed" class="mb-5 tracking-widest mt-5">НАВІГАЦІЯ</p>
       </div>
       
       <!-- Відображення поточної ролі -->
@@ -125,6 +124,29 @@
         >
           <ViewColumnsIcon class="w-5 h-5 flex-shrink-0" />
           <span v-if="!isSidebarCollapsed">Мій профіль</span>
+        </NuxtLink>
+        <NuxtLink
+          to="/projects"
+          class="flex gap-2 px-3 py-3 items-center hover:bg-gray-700 transition-colors rounded-r-3xl font-bold text-gray-300 justify-center"
+          :class="isSidebarCollapsed ? 'mr-0' : 'mr-5'"
+          exact-active-class="bg-savoy text-white"
+          :title="isSidebarCollapsed ? 'Всі проєкти' : ''"
+        >
+          <ViewColumnsIcon class="w-5 h-5 flex-shrink-0" />
+          <span v-if="!isSidebarCollapsed">Всі проєкти</span>
+        </NuxtLink>
+      </div>
+      
+      <div v-if="authStore.isAdmin" class="px-2">
+        <NuxtLink
+          to="/"
+          class="flex gap-2 px-3 py-3 items-center hover:bg-gray-700 transition-colors rounded-r-3xl font-bold text-gray-300 justify-center"
+          :class="isSidebarCollapsed ? 'mr-0' : 'mr-5'"
+          exact-active-class="bg-savoy text-white"
+          :title="isSidebarCollapsed ? 'Головна' : ''"
+        >
+          <ViewColumnsIcon class="w-5 h-5 flex-shrink-0" />
+          <span v-if="!isSidebarCollapsed">Головна</span>
         </NuxtLink>
         <NuxtLink
           to="/projects"
