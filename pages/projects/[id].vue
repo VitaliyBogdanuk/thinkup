@@ -15,6 +15,15 @@
             <p class="text-sm md:text-base text-gray-600 line-clamp-3">{{ project.description }}</p>
           </div>
           <div class="flex flex-col sm:flex-row items-end sm:items-center gap-2 sm:gap-3">
+            <button
+              v-if="(authStore.isAdmin || authStore.isTeacher) && project"
+              @click="showEditModal = true"
+              class="px-3 py-1.5 md:px-4 md:py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors text-xs md:text-sm font-semibold whitespace-nowrap flex-shrink-0 flex items-center gap-1.5"
+              title="Редагувати проєкт"
+            >
+              <PencilIcon class="w-4 h-4" />
+              <span>Редагувати</span>
+            </button>
             <a
               v-if="project.technicalSpecification"
               href="#technical-spec"
@@ -166,12 +175,22 @@
         </div>
       </div>
     </div>
+
+    <!-- Модальне вікно редагування проєкту -->
+    <EditProject
+      v-if="project"
+      :is-open="showEditModal"
+      :project-id="project.id"
+      @close="showEditModal = false"
+      @updated="handleProjectUpdated"
+    />
   </section>
 </template>
 
 <script setup lang="ts">
 import { computed, ref, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
+import { PencilIcon } from "@heroicons/vue/24/outline";
 import { useProjectsStore } from "~~/stores/projects";
 import { useAuthStore } from "~~/stores/auth";
 import HeaderComponent from "~~/components/HeaderComponent.vue";
@@ -179,6 +198,7 @@ import Columns from "~~/components/Columns.vue";
 import FormTasks from "~~/components/form/Tasks.vue";
 import ApproveTeam from "~~/components/project/ApproveTeam.vue";
 import StudentRecommendations from "~~/components/project/StudentRecommendations.vue";
+import EditProject from "~~/components/project/EditProject.vue";
 
 const route = useRoute();
 const router = useRouter();
@@ -190,6 +210,9 @@ const project = computed(() => projectsStore.getProjectById(projectId));
 
 // Локальний стан для лічильника команди (для оновлення в реальному часі)
 const teamCount = ref(0);
+
+// Модальне вікно редагування проєкту
+const showEditModal = ref(false);
 
 // Ініціалізуємо teamCount при завантаженні проєкту
 watch(project, (newProject) => {
@@ -269,6 +292,11 @@ const getStudentRole = (studentId: string): string => {
   if (!project.value) return "";
   const role = project.value.roles.find(r => r.assigned.includes(studentId));
   return role ? role.name : "Учасник";
+};
+
+const handleProjectUpdated = (updatedProjectId: string) => {
+  showEditModal.value = false;
+  // Проєкт оновлюється автоматично через реактивність store
 };
 </script>
 
