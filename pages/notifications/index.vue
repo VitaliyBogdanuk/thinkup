@@ -71,7 +71,7 @@
             <!-- Додаткові дії для сповіщень -->
             <div v-if="!notification.read && notification.projectId" class="flex flex-wrap gap-2 mt-3">
               <button
-                @click.stop="navigateToProject(notification.projectId!)"
+                @click.stop="navigateToProject(notification.projectId!, notification.id)"
                 class="px-4 py-2 bg-savoy text-white rounded-lg hover:bg-savoy/90 transition-colors text-sm"
               >
                 Перейти до проєкту
@@ -80,7 +80,7 @@
               <!-- Для партнера: нові заявки студентів -->
               <button
                 v-if="authStore.isPartner && (notification as PartnerNotification).type === 'new_student_application'"
-                @click.stop="viewProjectApplications(notification.projectId!)"
+                @click.stop="viewProjectApplications(notification.projectId!, notification.id)"
                 class="px-4 py-2 bg-green-100 text-green-700 rounded-lg hover:bg-green-200 transition-colors text-sm"
               >
                 Переглянути заявки
@@ -89,7 +89,7 @@
               <!-- Для партнера: дедлайн -->
               <button
                 v-if="authStore.isPartner && (notification as PartnerNotification).type === 'project_deadline'"
-                @click.stop="extendDeadline(notification.projectId!)"
+                @click.stop="extendDeadline(notification.projectId!, notification.id)"
                 class="px-4 py-2 bg-yellow-100 text-yellow-700 rounded-lg hover:bg-yellow-200 transition-colors text-sm"
               >
                 Продовжити термін
@@ -114,13 +114,13 @@
               <!-- Для студента: новий проєкт -->
               <template v-if="authStore.isStudent && (notification as StudentNotification).type === 'new_project'">
                 <button
-                  @click.stop="navigateToProject(notification.projectId!)"
+                  @click.stop="navigateToProject(notification.projectId!, notification.id)"
                   class="px-4 py-2 bg-savoy text-white rounded-lg hover:bg-savoy/90 transition-colors text-sm"
                 >
                   Переглянути проєкт
                 </button>
                 <button
-                  @click.stop="handleApply(notification.projectId!)"
+                  @click.stop="handleApply(notification.projectId!, notification.id)"
                   class="px-4 py-2 bg-green-100 text-green-700 rounded-lg hover:bg-green-200 transition-colors text-sm"
                 >
                   Подати заявку
@@ -130,7 +130,7 @@
               <!-- Для викладача: затвердження проєкту -->
               <button
                 v-if="authStore.isTeacher && (notification as TeacherNotification).type === 'project_submission'"
-                @click.stop="reviewProjectSubmission(notification.projectId!)"
+                @click.stop="reviewProjectSubmission(notification.projectId!, notification.id)"
                 class="px-4 py-2 bg-savoy text-white rounded-lg hover:bg-savoy/90 transition-colors text-sm"
               >
                 Переглянути
@@ -169,7 +169,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, onMounted, onUnmounted } from "vue";
+import { computed, ref, onMounted, onUnmounted, nextTick } from "vue";
 import { useRouter } from "vue-router";
 import { useAuthStore } from "~~/stores/auth";
 import { useProjectsStore } from "~~/stores/projects";
@@ -192,77 +192,94 @@ const notifications = ref<Notification[]>([]);
 
 // Ініціалізація сповіщень залежно від ролі
 const initializeNotifications = () => {
+  // Отримуємо реальні проєкти зі store
+  const allProjects = projectsStore.projects;
+  const activeProjects = allProjects.filter(p => p.status === 'active');
+  const pendingProjects = allProjects.filter(p => p.status === 'pending_approval');
+  const completedProjects = allProjects.filter(p => p.status === 'completed');
+  const projectsWithDeadline = allProjects.filter(p => p.deadline && p.status === 'active');
+  
   if (authStore.isPartner) {
+    const partnerProjects = allProjects.filter(p => p.partnerId === authStore.currentUser?.id);
+    const activeProject = activeProjects.find(p => p.partnerId === authStore.currentUser?.id) || partnerProjects[0];
+    const pendingProject = pendingProjects.find(p => p.partnerId === authStore.currentUser?.id) || partnerProjects[0];
+    const completedProject = completedProjects.find(p => p.partnerId === authStore.currentUser?.id) || partnerProjects[0];
+    const deadlineProject = projectsWithDeadline.find(p => p.partnerId === authStore.currentUser?.id) || partnerProjects[0];
+    
     notifications.value = [
-      {
+      ...(activeProject ? [{
         id: '1',
-        type: 'project_status_update',
+        type: 'project_status_update' as const,
         title: 'Статус проєкту оновлено',
-        message: 'Ваш проєкт "Розробка AI-асистента" переведено у статус "Активний"',
-        projectId: 'project-789',
+        message: `Ваш проєкт "${activeProject.name}" переведено у статус "Активний"`,
+        projectId: activeProject.id,
         read: false,
         createdAt: new Date(Date.now() - 1000 * 60 * 15), // 15 хвилин тому
-      },
-      {
+      }] : []),
+      ...(pendingProject ? [{
         id: '2',
-        type: 'project_approval',
+        type: 'project_approval' as const,
         title: 'Проєкт затверджено',
-        message: 'Ваш проєкт "Мобільний додаток для освіти" затверджено викладачем',
-        projectId: 'project-456',
+        message: `Ваш проєкт "${pendingProject.name}" затверджено викладачем`,
+        projectId: pendingProject.id,
         read: false,
         createdAt: new Date(Date.now() - 1000 * 60 * 60 * 2), // 2 години тому
-      },
-      {
+      }] : []),
+      ...(deadlineProject ? [{
         id: '3',
-        type: 'project_deadline',
+        type: 'project_deadline' as const,
         title: 'Наближається дедлайн',
-        message: 'У проєкті "Веб-портал для університету" залишилось 5 днів до дедлайну',
-        projectId: 'project-789',
+        message: `У проєкті "${deadlineProject.name}" залишилось 5 днів до дедлайну`,
+        projectId: deadlineProject.id,
         read: true,
         createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24), // 1 день тому
-      },
-      {
+      }] : []),
+      ...(completedProject ? [{
         id: '4',
-        type: 'project_completed',
+        type: 'project_completed' as const,
         title: 'Проєкт завершено!',
-        message: 'Проєкт "Розробка веб-додатку" успішно завершено студентами',
-        projectId: 'project-123',
+        message: `Проєкт "${completedProject.name}" успішно завершено студентами`,
+        projectId: completedProject.id,
         read: false,
         createdAt: new Date(Date.now() - 1000 * 60 * 60 * 48), // 2 дні тому
-      },
+      }] : []),
     ] as PartnerNotification[];
   } else if (authStore.isStudent) {
+    const newProject = pendingProjects[0] || allProjects[0];
+    const activeProject = activeProjects[0] || allProjects[0];
+    const projectWithUpdate = activeProjects[0] || allProjects[0];
+    
     notifications.value = [
-      {
+      ...(newProject ? [{
         id: '1',
-        type: 'new_project',
+        type: 'new_project' as const,
         title: 'Новий проєкт доступний!',
-        message: 'З\'явився новий проєкт "Розробка AI-асистента для студентів", який відповідає вашим навичкам',
-        projectId: 'project-789',
+        message: `З'явився новий проєкт "${newProject.name}", який відповідає вашим навичкам`,
+        projectId: newProject.id,
         read: false,
         createdAt: new Date(Date.now() - 1000 * 60 * 5), // 5 хвилин тому
-      },
-      {
+      }] : []),
+      ...(activeProject ? [{
         id: '2',
-        type: 'project_invitation',
+        type: 'project_invitation' as const,
         title: 'Запрошення на проєкт',
-        message: 'Вас запрошено приєднатися до проєкту "Розробка мобільного додатку для освіти"',
-        projectId: 'project-123',
+        message: `Вас запрошено приєднатися до проєкту "${activeProject.name}"`,
+        projectId: activeProject.id,
         read: false,
         createdAt: new Date(Date.now() - 1000 * 60 * 30), // 30 хвилин тому
-      },
-      {
+      }] : []),
+      ...(projectWithUpdate ? [{
         id: '3',
-        type: 'project_update',
+        type: 'project_update' as const,
         title: 'Оновлення проєкту',
-        message: 'У проєкті "Веб-портал для університету" додано нове завдання',
-        projectId: 'project-456',
+        message: `У проєкті "${projectWithUpdate.name}" додано нове завдання`,
+        projectId: projectWithUpdate.id,
         read: false,
         createdAt: new Date(Date.now() - 1000 * 60 * 60 * 2), // 2 години тому
-      },
+      }] : []),
       {
         id: '4',
-        type: 'system',
+        type: 'system' as const,
         title: 'Новий рейтинг',
         message: 'Ваш рейтинг було оновлено: +0.3 балів за успішне завершення проєкту',
         read: true,
@@ -270,95 +287,107 @@ const initializeNotifications = () => {
       },
     ] as StudentNotification[];
   } else if (authStore.isTeacher) {
+    const submissionProject = pendingProjects[0] || allProjects[0];
+    const applicationProject = activeProjects[0] || allProjects[0];
+    const approvalProject = pendingProjects[0] || allProjects[0];
+    const updateProject = activeProjects[0] || allProjects[0];
+    const deadlineProject = projectsWithDeadline[0] || allProjects[0];
+    const student = projectsStore.students[0];
+    
     notifications.value = [
-      {
+      ...(submissionProject ? [{
         id: '1',
-        type: 'project_submission',
+        type: 'project_submission' as const,
         title: 'Новий проєкт подано на затвердження',
-        message: 'Партнер "TechCorp" подав новий проєкт "Розробка AI-асистента для студентів"',
-        projectId: 'project-789',
+        message: `Партнер подав новий проєкт "${submissionProject.name}"`,
+        projectId: submissionProject.id,
         read: false,
         createdAt: new Date(Date.now() - 1000 * 60 * 15), // 15 хвилин тому
-      },
-      {
+      }] : []),
+      ...(applicationProject && student ? [{
         id: '2',
-        type: 'student_application',
+        type: 'student_application' as const,
         title: 'Заявка від студента',
-        message: 'Іван Петренко подав заявку на проєкт "Розробка мобільного додатку для освіти"',
-        projectId: 'project-123',
-        studentId: 'student-456',
+        message: `${student.fullName} подав заявку на проєкт "${applicationProject.name}"`,
+        projectId: applicationProject.id,
+        studentId: student.id,
         read: false,
         createdAt: new Date(Date.now() - 1000 * 60 * 45), // 45 хвилин тому
-      },
-      {
+      }] : []),
+      ...(approvalProject ? [{
         id: '3',
-        type: 'project_approval',
+        type: 'project_approval' as const,
         title: 'Проєкт готовий до затвердження',
-        message: 'AI завершив аналіз проєкту "Мобільний додаток для освіти"',
-        projectId: 'project-456',
+        message: `AI завершив аналіз проєкту "${approvalProject.name}"`,
+        projectId: approvalProject.id,
         read: false,
         createdAt: new Date(Date.now() - 1000 * 60 * 60 * 2), // 2 години тому
-      },
-      {
+      }] : []),
+      ...(updateProject ? [{
         id: '4',
-        type: 'project_update',
+        type: 'project_update' as const,
         title: 'Оновлення проєкту',
-        message: 'У проєкті "Веб-портал для університету" додано нове завдання',
-        projectId: 'project-789',
+        message: `У проєкті "${updateProject.name}" додано нове завдання`,
+        projectId: updateProject.id,
         read: true,
         createdAt: new Date(Date.now() - 1000 * 60 * 60 * 5), // 5 годин тому
-      },
-      {
+      }] : []),
+      ...(deadlineProject ? [{
         id: '5',
-        type: 'deadline_approaching',
+        type: 'deadline_approaching' as const,
         title: 'Наближається дедлайн',
-        message: 'У проєкті "Розробка веб-додатку" залишилось 3 дні до дедлайну',
-        projectId: 'project-123',
+        message: `У проєкті "${deadlineProject.name}" залишилось 3 дні до дедлайну`,
+        projectId: deadlineProject.id,
         read: false,
         createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24), // 1 день тому
-      },
+      }] : []),
     ] as TeacherNotification[];
   } else if (authStore.isAdmin) {
+    const newProject = allProjects[0];
+    const reportProject = allProjects[0];
+    const partner = projectsStore.partners[0];
+    const student = projectsStore.students[0];
+    
     notifications.value = [
-      {
+      ...(partner ? [{
         id: '1',
-        type: 'new_user_registration',
+        type: 'new_user_registration' as const,
         title: 'Новий користувач зареєстровано',
-        message: 'Партнер "Tech Solutions" зареєструвався в системі',
-        userId: 'partner-3',
+        message: `Партнер "${partner.companyName}" зареєструвався в системі`,
+        userId: partner.id,
         read: false,
         createdAt: new Date(Date.now() - 1000 * 60 * 10),
-      },
-      {
+      }] : []),
+      ...(newProject ? [{
         id: '2',
-        type: 'project_created',
+        type: 'project_created' as const,
         title: 'Створено новий проєкт',
-        message: 'Партнер "Creative Design Studio" створив проєкт "Редизайн корпоративного сайту"',
-        projectId: 'project-999',
+        message: `Партнер створив проєкт "${newProject.name}"`,
+        projectId: newProject.id,
         read: false,
         createdAt: new Date(Date.now() - 1000 * 60 * 30),
-      },
+      }] : []),
       {
         id: '3',
-        type: 'system_alert',
+        type: 'system_alert' as const,
         title: 'Системне попередження',
         message: 'Виявлено високу активність користувачів. Рекомендується перевірити систему',
         read: false,
         createdAt: new Date(Date.now() - 1000 * 60 * 60),
       },
-      {
+      ...(reportProject && student ? [{
         id: '4',
-        type: 'user_report',
+        type: 'user_report' as const,
         title: 'Скарга від користувача',
-        message: 'Отримано скаргу від студента на проєкт "Мобільний додаток для освіти"',
-        projectId: 'project-123',
-        userId: 'student-1',
+        message: `Отримано скаргу від студента на проєкт "${reportProject.name}"`,
+        projectId: reportProject.id,
+        userId: student.id,
         read: true,
         createdAt: new Date(Date.now() - 1000 * 60 * 60 * 3),
-      },
+      }] : []),
       {
         id: '5',
-        type: 'system_update',
+        type: 'system_update' as const,
         title: 'Оновлення системи',
         message: 'Завершено оновлення системи до версії 2.1.0',
         read: false,
@@ -397,77 +426,179 @@ const markAllAsRead = () => {
 };
 
 const handleNotificationClick = (notification: Notification) => {
-  markAsRead(notification.id);
-  
   if (notification.projectId) {
-    navigateToProject(notification.projectId);
+    navigateToProject(notification.projectId, notification.id);
+  } else {
+    markAsRead(notification.id);
   }
 };
 
-const navigateToProject = (projectId: string) => {
-  router.push(`/projects/${projectId}`);
+const navigateToProject = (projectId: string, notificationId?: string) => {
+  if (!projectId) {
+    alert('ID проєкту не вказано');
+    return;
+  }
+  
+  // Перевіряємо, чи проєкт існує
+  const project = projectsStore.getProjectById(projectId);
+  if (!project) {
+    alert('Проєкт не знайдено');
+    return;
+  }
+  
+  // Виконуємо навігацію (не async, щоб не блокувати)
+  router.push(`/projects/${projectId}`).then(() => {
+    // Після успішної навігації позначаємо як прочитане
+    if (notificationId) {
+      // Використовуємо setTimeout для затримки, щоб навігація точно виконалася
+      setTimeout(() => {
+        markAsRead(notificationId);
+      }, 200);
+    }
+  }).catch((error) => {
+    console.error('Помилка навігації:', error);
+    alert(`Не вдалося перейти до проєкту`);
+  });
 };
 
-const viewProjectApplications = (projectId: string) => {
+const viewProjectApplications = (projectId: string, notificationId?: string) => {
   // Переходимо на сторінку проєкту, де можна переглянути заявки
+  if (notificationId) {
+    markAsRead(notificationId);
+  }
   navigateToProject(projectId);
 };
 
-const extendDeadline = (projectId: string) => {
+const extendDeadline = (projectId: string, notificationId?: string) => {
+  const project = projectsStore.getProjectById(projectId);
+  if (!project) {
+    alert('Проєкт не знайдено');
+    return;
+  }
+  
+  if (!project.deadline) {
+    alert('У проєкту немає встановленого дедлайну');
+    return;
+  }
+  
   projectsStore.extendProjectDeadline(projectId, 7);
-  alert('Термін проєкту продовжено на 7 днів');
+  if (notificationId) {
+    markAsRead(notificationId);
+  }
+  alert(`Термін проєкту "${project.name}" продовжено на 7 днів`);
 };
 
 const acceptProjectInvitation = async (projectId: string, notificationId: string) => {
-  if (authStore.currentUser && authStore.isStudent) {
-    projectsStore.acceptProjectInvitation(projectId, authStore.currentUser.id);
-    markAsRead(notificationId);
-    alert('Ви успішно приєдналися до проєкту!');
-    navigateToProject(projectId);
+  if (!authStore.currentUser || !authStore.isStudent) {
+    alert('Помилка: необхідна авторизація як студент');
+    return;
   }
+  
+  const project = projectsStore.getProjectById(projectId);
+  if (!project) {
+    alert('Проєкт не знайдено');
+    return;
+  }
+  
+  projectsStore.acceptProjectInvitation(projectId, authStore.currentUser.id);
+  markAsRead(notificationId);
+  alert(`Ви успішно приєдналися до проєкту "${project.name}"!`);
+  navigateToProject(projectId);
 };
 
 const declineProjectInvitation = (projectId: string, notificationId: string) => {
+  const project = projectsStore.getProjectById(projectId);
   markAsRead(notificationId);
   notifications.value = notifications.value.filter(n => n.id !== notificationId);
-};
-
-const handleApply = (projectId: string) => {
-  if (authStore.currentUser && authStore.isStudent) {
-    projectsStore.applyToProject(projectId, authStore.currentUser.id);
-    const project = projectsStore.getProjectById(projectId);
-    alert(`Заявку на проєкт "${project?.name || 'проєкт'}" подано! Викладач розгляне вашу кандидатуру.`);
-    navigateToProject(projectId);
+  if (project) {
+    alert(`Запрошення на проєкт "${project.name}" відхилено`);
   }
 };
 
-const reviewProjectSubmission = (projectId: string) => {
+const handleApply = (projectId: string, notificationId?: string) => {
+  if (!authStore.currentUser || !authStore.isStudent) {
+    alert('Помилка: необхідна авторизація як студент');
+    return;
+  }
+  
+  const project = projectsStore.getProjectById(projectId);
+  if (!project) {
+    alert('Проєкт не знайдено');
+    return;
+  }
+  
+  projectsStore.applyToProject(projectId, authStore.currentUser.id);
+  if (notificationId) {
+    markAsRead(notificationId);
+  }
+  alert(`Заявку на проєкт "${project.name}" подано! Викладач розгляне вашу кандидатуру.`);
+  navigateToProject(projectId);
+};
+
+const reviewProjectSubmission = (projectId: string, notificationId?: string) => {
+  const project = projectsStore.getProjectById(projectId);
+  if (!project) {
+    alert('Проєкт не знайдено');
+    return;
+  }
+  
+  if (notificationId) {
+    markAsRead(notificationId);
+  }
   navigateToProject(projectId);
 };
 
 const acceptStudentApplication = (projectId: string, studentId: string, notificationId: string) => {
-  if (authStore.currentUser && authStore.isTeacher) {
-    projectsStore.acceptStudentApplication(projectId, studentId, authStore.currentUser.id);
-    markAsRead(notificationId);
-    const student = projectsStore.getStudentById(studentId);
-    alert(`Заявку студента ${student?.fullName || studentId} прийнято!`);
-    navigateToProject(projectId);
+  if (!authStore.currentUser || !authStore.isTeacher) {
+    alert('Помилка: необхідна авторизація як викладач');
+    return;
   }
+  
+  const project = projectsStore.getProjectById(projectId);
+  if (!project) {
+    alert('Проєкт не знайдено');
+    return;
+  }
+  
+  const student = projectsStore.getStudentById(studentId);
+  if (!student) {
+    alert('Студент не знайдено');
+    return;
+  }
+  
+  projectsStore.acceptStudentApplication(projectId, studentId, authStore.currentUser.id);
+  markAsRead(notificationId);
+  alert(`Заявку студента ${student.fullName} на проєкт "${project.name}" прийнято!`);
+  navigateToProject(projectId);
 };
 
 const declineStudentApplication = (projectId: string, studentId: string, notificationId: string) => {
+  const project = projectsStore.getProjectById(projectId);
+  const student = projectsStore.getStudentById(studentId);
   markAsRead(notificationId);
   notifications.value = notifications.value.filter(n => n.id !== notificationId);
+  
+  if (project && student) {
+    alert(`Заявку студента ${student.fullName} на проєкт "${project.name}" відхилено`);
+  }
 };
 
 const approveProject = (projectId: string, notificationId: string) => {
-  if (authStore.currentUser && authStore.isTeacher) {
-    projectsStore.approveProjectByTeacher(projectId, authStore.currentUser.id);
-    markAsRead(notificationId);
-    const project = projectsStore.getProjectById(projectId);
-    alert(`Проєкт "${project?.name || 'проєкт'}" затверджено!`);
-    navigateToProject(projectId);
+  if (!authStore.currentUser || !authStore.isTeacher) {
+    alert('Помилка: необхідна авторизація як викладач');
+    return;
   }
+  
+  const project = projectsStore.getProjectById(projectId);
+  if (!project) {
+    alert('Проєкт не знайдено');
+    return;
+  }
+  
+  projectsStore.approveProjectByTeacher(projectId, authStore.currentUser.id);
+  markAsRead(notificationId);
+  alert(`Проєкт "${project.name}" затверджено!`);
+  navigateToProject(projectId);
 };
 
 // Функції для відображення іконок
