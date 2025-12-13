@@ -120,10 +120,18 @@
                   Переглянути проєкт
                 </button>
                 <button
+                  v-if="!hasAppliedToProject(notification.projectId!)"
                   @click.stop="handleApply(notification.projectId!, notification.id)"
                   class="px-4 py-2 bg-green-100 text-green-700 rounded-lg hover:bg-green-200 transition-colors text-sm"
                 >
                   Подати заявку
+                </button>
+                <button
+                  v-else
+                  class="px-4 py-2 bg-yellow-100 text-yellow-700 rounded-lg cursor-default text-sm"
+                  disabled
+                >
+                  Ваша заявка на розгляді
                 </button>
               </template>
               
@@ -165,6 +173,15 @@
         </div>
       </div>
     </div>
+
+    <!-- Попап для сповіщень -->
+    <NotificationPopup
+      :is-open="notificationPopup.isOpen"
+      :title="notificationPopup.title"
+      :message="notificationPopup.message"
+      :type="notificationPopup.type"
+      @close="closeNotification"
+    />
   </section>
 </template>
 
@@ -173,16 +190,39 @@ import { computed, ref, onMounted, onUnmounted, nextTick } from "vue";
 import { useRouter } from "vue-router";
 import { useAuthStore } from "~~/stores/auth";
 import { useProjectsStore } from "~~/stores/projects";
+import NotificationPopup from "~~/components/NotificationPopup.vue";
 import type { 
   PartnerNotification,
   StudentNotification,
   TeacherNotification,
-  AdminNotification
+  AdminNotification,
+  Project
 } from "~~/types";
 
 const router = useRouter();
 const authStore = useAuthStore();
 const projectsStore = useProjectsStore();
+
+// Попап для сповіщень
+const notificationPopup = ref({
+  isOpen: false,
+  title: "",
+  message: "",
+  type: "info" as "success" | "error" | "warning" | "info",
+});
+
+const showNotification = (title: string, message: string, type: "success" | "error" | "warning" | "info" = "info") => {
+  notificationPopup.value = {
+    isOpen: true,
+    title,
+    message,
+    type,
+  };
+};
+
+const closeNotification = () => {
+  notificationPopup.value.isOpen = false;
+};
 
 // Об'єднаний тип сповіщень
 type Notification = PartnerNotification | StudentNotification | TeacherNotification | AdminNotification;
@@ -433,16 +473,23 @@ const handleNotificationClick = (notification: Notification) => {
   }
 };
 
+const hasAppliedToProject = (projectId: string): boolean => {
+  if (!authStore.currentUser || !authStore.isStudent) return false;
+  const project = projectsStore.getProjectById(projectId);
+  if (!project || !project.applications) return false;
+  return project.applications.includes(authStore.currentUser.id);
+};
+
 const navigateToProject = (projectId: string, notificationId?: string) => {
   if (!projectId) {
-    alert('ID проєкту не вказано');
+    showNotification("Помилка", "ID проєкту не вказано", "error");
     return;
   }
   
   // Перевіряємо, чи проєкт існує
   const project = projectsStore.getProjectById(projectId);
   if (!project) {
-    alert('Проєкт не знайдено');
+    showNotification("Помилка", "Проєкт не знайдено", "error");
     return;
   }
   
@@ -457,7 +504,7 @@ const navigateToProject = (projectId: string, notificationId?: string) => {
     }
   }).catch((error) => {
     console.error('Помилка навігації:', error);
-    alert(`Не вдалося перейти до проєкту`);
+    showNotification("Помилка", "Не вдалося перейти до проєкту", "error");
   });
 };
 
@@ -472,12 +519,12 @@ const viewProjectApplications = (projectId: string, notificationId?: string) => 
 const extendDeadline = (projectId: string, notificationId?: string) => {
   const project = projectsStore.getProjectById(projectId);
   if (!project) {
-    alert('Проєкт не знайдено');
+    showNotification("Помилка", "Проєкт не знайдено", "error");
     return;
   }
   
   if (!project.deadline) {
-    alert('У проєкту немає встановленого дедлайну');
+    showNotification("Помилка", "У проєкту немає встановленого дедлайну", "error");
     return;
   }
   
@@ -485,24 +532,24 @@ const extendDeadline = (projectId: string, notificationId?: string) => {
   if (notificationId) {
     markAsRead(notificationId);
   }
-  alert(`Термін проєкту "${project.name}" продовжено на 7 днів`);
+  showNotification("Успіх", `Термін проєкту "${project.name}" продовжено на 7 днів`, "success");
 };
 
 const acceptProjectInvitation = async (projectId: string, notificationId: string) => {
   if (!authStore.currentUser || !authStore.isStudent) {
-    alert('Помилка: необхідна авторизація як студент');
+    showNotification("Помилка", "Необхідна авторизація як студент", "error");
     return;
   }
   
   const project = projectsStore.getProjectById(projectId);
   if (!project) {
-    alert('Проєкт не знайдено');
+    showNotification("Помилка", "Проєкт не знайдено", "error");
     return;
   }
   
   projectsStore.acceptProjectInvitation(projectId, authStore.currentUser.id);
   markAsRead(notificationId);
-  alert(`Ви успішно приєдналися до проєкту "${project.name}"!`);
+  showNotification("Успіх", `Ви успішно приєдналися до проєкту "${project.name}"!`, "success");
   navigateToProject(projectId);
 };
 
@@ -511,19 +558,31 @@ const declineProjectInvitation = (projectId: string, notificationId: string) => 
   markAsRead(notificationId);
   notifications.value = notifications.value.filter(n => n.id !== notificationId);
   if (project) {
-    alert(`Запрошення на проєкт "${project.name}" відхилено`);
+    showNotification("Інформація", `Запрошення на проєкт "${project.name}" відхилено`, "info");
   }
 };
 
 const handleApply = (projectId: string, notificationId?: string) => {
   if (!authStore.currentUser || !authStore.isStudent) {
-    alert('Помилка: необхідна авторизація як студент');
+    showNotification("Помилка", "Необхідна авторизація як студент", "error");
     return;
   }
   
   const project = projectsStore.getProjectById(projectId);
   if (!project) {
-    alert('Проєкт не знайдено');
+    showNotification("Помилка", "Проєкт не знайдено", "error");
+    return;
+  }
+
+  // Перевіряємо, чи студент вже подав заявку
+  if (hasAppliedToProject(projectId)) {
+    showNotification("Інформація", "Ви вже подали заявку на цей проєкт", "info");
+    return;
+  }
+
+  // Перевіряємо, чи студент вже в команді
+  if (project.team.includes(authStore.currentUser.id)) {
+    showNotification("Інформація", "Ви вже є учасником цього проєкту", "info");
     return;
   }
   
@@ -531,14 +590,14 @@ const handleApply = (projectId: string, notificationId?: string) => {
   if (notificationId) {
     markAsRead(notificationId);
   }
-  alert(`Заявку на проєкт "${project.name}" подано! Викладач розгляне вашу кандидатуру.`);
+  showNotification("Успіх", `Заявку на проєкт "${project.name}" подано! Викладач розгляне вашу кандидатуру.`, "success");
   navigateToProject(projectId);
 };
 
 const reviewProjectSubmission = (projectId: string, notificationId?: string) => {
   const project = projectsStore.getProjectById(projectId);
   if (!project) {
-    alert('Проєкт не знайдено');
+    showNotification("Помилка", "Проєкт не знайдено", "error");
     return;
   }
   
@@ -550,25 +609,25 @@ const reviewProjectSubmission = (projectId: string, notificationId?: string) => 
 
 const acceptStudentApplication = (projectId: string, studentId: string, notificationId: string) => {
   if (!authStore.currentUser || !authStore.isTeacher) {
-    alert('Помилка: необхідна авторизація як викладач');
+    showNotification("Помилка", "Необхідна авторизація як викладач", "error");
     return;
   }
   
   const project = projectsStore.getProjectById(projectId);
   if (!project) {
-    alert('Проєкт не знайдено');
+    showNotification("Помилка", "Проєкт не знайдено", "error");
     return;
   }
   
   const student = projectsStore.getStudentById(studentId);
   if (!student) {
-    alert('Студент не знайдено');
+    showNotification("Помилка", "Студент не знайдено", "error");
     return;
   }
   
   projectsStore.acceptStudentApplication(projectId, studentId, authStore.currentUser.id);
   markAsRead(notificationId);
-  alert(`Заявку студента ${student.fullName} на проєкт "${project.name}" прийнято!`);
+  showNotification("Успіх", `Заявку студента ${student.fullName} на проєкт "${project.name}" прийнято!`, "success");
   navigateToProject(projectId);
 };
 
@@ -579,25 +638,25 @@ const declineStudentApplication = (projectId: string, studentId: string, notific
   notifications.value = notifications.value.filter(n => n.id !== notificationId);
   
   if (project && student) {
-    alert(`Заявку студента ${student.fullName} на проєкт "${project.name}" відхилено`);
+    showNotification("Інформація", `Заявку студента ${student.fullName} на проєкт "${project.name}" відхилено`, "info");
   }
 };
 
 const approveProject = (projectId: string, notificationId: string) => {
   if (!authStore.currentUser || !authStore.isTeacher) {
-    alert('Помилка: необхідна авторизація як викладач');
+    showNotification("Помилка", "Необхідна авторизація як викладач", "error");
     return;
   }
   
   const project = projectsStore.getProjectById(projectId);
   if (!project) {
-    alert('Проєкт не знайдено');
+    showNotification("Помилка", "Проєкт не знайдено", "error");
     return;
   }
   
   projectsStore.approveProjectByTeacher(projectId, authStore.currentUser.id);
   markAsRead(notificationId);
-  alert(`Проєкт "${project.name}" затверджено!`);
+  showNotification("Успіх", `Проєкт "${project.name}" затверджено!`, "success");
   navigateToProject(projectId);
 };
 

@@ -233,10 +233,18 @@
               
               <div class="flex flex-col lg:flex-row gap-2">
                 <button
+                  v-if="!hasAppliedToProject(project)"
                   class="flex-1 lg:flex-none px-3 sm:px-4 py-2 sm:py-2.5 bg-savoy text-white rounded-lg hover:bg-savoy/90 transition-colors text-xs sm:text-sm font-medium"
                   @click.stop="handleApply(project.id)"
                 >
                   Подати заявку
+                </button>
+                <button
+                  v-else
+                  class="flex-1 lg:flex-none px-3 sm:px-4 py-2 sm:py-2.5 bg-yellow-100 text-yellow-700 rounded-lg cursor-default text-xs sm:text-sm font-medium"
+                  disabled
+                >
+                  Ваша заявка на розгляді
                 </button>
                 <button
                   class="flex-1 lg:flex-none px-3 sm:px-4 py-2 sm:py-2.5 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors text-xs sm:text-sm font-medium"
@@ -407,6 +415,15 @@
       </div>
     </div>
   </div>
+
+  <!-- Попап для сповіщень -->
+  <NotificationPopup
+    :is-open="notificationPopup.isOpen"
+    :title="notificationPopup.title"
+    :message="notificationPopup.message"
+    :type="notificationPopup.type"
+    @close="closeNotification"
+  />
 </template>
 
 <script setup lang="ts">
@@ -414,6 +431,7 @@ import { computed, ref } from "vue";
 import { useRouter } from "vue-router";
 import { useAuthStore } from "~~/stores/auth";
 import { useProjectsStore } from "~~/stores/projects";
+import NotificationPopup from "~~/components/NotificationPopup.vue";
 import type { 
   Student, 
   Project, 
@@ -427,6 +445,27 @@ import type {
 const router = useRouter();
 const authStore = useAuthStore();
 const projectsStore = useProjectsStore();
+
+// Попап для сповіщень
+const notificationPopup = ref({
+  isOpen: false,
+  title: "",
+  message: "",
+  type: "info" as "success" | "error" | "warning" | "info",
+});
+
+const showNotification = (title: string, message: string, type: "success" | "error" | "warning" | "info" = "info") => {
+  notificationPopup.value = {
+    isOpen: true,
+    title,
+    message,
+    type,
+  };
+};
+
+const closeNotification = () => {
+  notificationPopup.value.isOpen = false;
+};
 
 const showAllReviews = ref(false);
 const selectedPartnerReview = ref<any>(null);
@@ -847,12 +886,34 @@ const navigateToProjectDetails = (projectId?: string) => {
   router.push(`/projects/${projectId}`);
 };
 
+const hasAppliedToProject = (project: Project): boolean => {
+  if (!currentStudent.value || !project.applications) return false;
+  return project.applications.includes(currentStudent.value.id);
+};
+
 const handleApply = (projectId?: string) => {
-  if (!projectId) return;
+  if (!projectId || !currentStudent.value) return;
   
-  // Симуляція подачі заявки
   const project = projectsStore.getProjectById(projectId);
-  alert(`Заявку на проєкт "${project?.name || 'проєкт'}" подано! Викладач розгляне вашу кандидатуру.`);
+  if (!project) {
+    showNotification("Помилка", "Проєкт не знайдено", "error");
+    return;
+  }
+
+  // Перевіряємо, чи студент вже подав заявку
+  if (hasAppliedToProject(project)) {
+    showNotification("Інформація", "Ви вже подали заявку на цей проєкт", "info");
+    return;
+  }
+
+  // Перевіряємо, чи студент вже в команді
+  if (project.team.includes(currentStudent.value.id)) {
+    showNotification("Інформація", "Ви вже є учасником цього проєкту", "info");
+    return;
+  }
+
+  projectsStore.applyToProject(projectId, currentStudent.value.id);
+  showNotification("Успіх", `Заявку на проєкт "${project.name}" подано! Викладач розгляне вашу кандидатуру.`, "success");
 };
 
 const unreadCount = ref(0);

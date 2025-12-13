@@ -319,6 +319,14 @@ export const useProjectsStore = defineStore("projects", {
       if (!project.team.includes(studentId)) {
         project.team.push(studentId);
         
+        // Видаляємо заявку з масиву applications, якщо вона є
+        if (project.applications) {
+          const applicationIndex = project.applications.indexOf(studentId);
+          if (applicationIndex > -1) {
+            project.applications.splice(applicationIndex, 1);
+          }
+        }
+        
         // Знаходимо відповідну роль і додаємо студента
         const availableRole = project.roles.find(
           (role) => role.assigned.length < role.required
@@ -336,9 +344,16 @@ export const useProjectsStore = defineStore("projects", {
       const project = this.getProjectById(projectId);
       if (!project) return;
 
-      // Симуляція подачі заявки - можна додати логіку для зберігання заявок
-      // Поки що просто показуємо, що заявка подана
-      // В реальній системі тут була б таблиця заявок
+      // Ініціалізуємо масив заявок, якщо його немає
+      if (!project.applications) {
+        project.applications = [];
+      }
+
+      // Додаємо заявку, якщо студент ще не подав заявку і не в команді
+      if (!project.applications.includes(studentId) && !project.team.includes(studentId)) {
+        project.applications.push(studentId);
+        project.updatedAt = new Date().toISOString();
+      }
     },
 
     // Прийняття заявки студента викладачем
@@ -349,6 +364,14 @@ export const useProjectsStore = defineStore("projects", {
       // Додаємо студента до команди, якщо його там ще немає
       if (!project.team.includes(studentId)) {
         project.team.push(studentId);
+        
+        // Видаляємо заявку з масиву applications
+        if (project.applications) {
+          const applicationIndex = project.applications.indexOf(studentId);
+          if (applicationIndex > -1) {
+            project.applications.splice(applicationIndex, 1);
+          }
+        }
         
         // Знаходимо відповідну роль і додаємо студента
         const availableRole = project.roles.find(

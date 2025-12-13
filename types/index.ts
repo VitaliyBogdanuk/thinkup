@@ -124,6 +124,7 @@ interface Project extends Base {
   status: "draft" | "pending_ai" | "pending_approval" | "active" | "completed" | "cancelled";
   roles: ProjectRole[]; // Потрібні ролі
   team: string[]; // ID затверджених студентів
+  applications?: string[]; // ID студентів, які подали заявку
   boardId?: string; // ID канбан-дошки
   board?: Board;
   aiAnalysis?: {
