@@ -10,13 +10,6 @@
           Перейти до проєктів
         </NuxtLink>
         
-        <!-- Кнопка створення нової дошки -->
-        <button
-          @click="() => (addBoardState = true)"
-          class="inline-block px-6 py-3 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors font-medium shadow-sm"
-        >
-          + Створити дошку
-        </button>
       </div>
       
     </div>
@@ -84,20 +77,7 @@
       </div>
 
       <!-- Кнопка створення нової дошки -->
-      <div
-        @click="() => (addBoardState = true)"
-        class="rounded-xl bg-white p-5 cursor-pointer w-full h-52 border-2 border-dashed border-gray-300 hover:border-savoy hover:bg-savoy/5 transition-all duration-300 flex flex-col items-center justify-center group"
-      >
-        <div class="w-12 h-12 rounded-full bg-savoy/10 group-hover:bg-savoy/20 flex items-center justify-center mb-4 transition-colors">
-          <PlusIcon class="w-6 h-6 text-savoy" />
-        </div>
-        <h2 class="text-lg font-semibold text-gray-800 group-hover:text-savoy mb-2">
-          + Створити дошку
-        </h2>
-        <p class="text-sm text-gray-500 text-center group-hover:text-savoy/80">
-          Почніть новий проект з чистої дошки
-        </p>
-      </div>
+    
     </div>
 
     <!-- Повідомлення, якщо дошок немає -->
@@ -120,7 +100,7 @@
     </div>
 
     <!-- Модальне вікно створення проєкту -->
-    <AddProjectForm 
+    <CreateProject 
       v-if="addBoardState"
       :is-open="addBoardState"
       @close="addBoardState = false"
@@ -146,6 +126,7 @@ import { useProjectsStore } from "~~/stores/projects";
 import { computed, onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
 import type { Project } from "~~/types";
+import CreateProject from "~~/components/project/CreateProject.vue";
 
 const store = useKanbanStore();
 const authStore = useAuthStore();
