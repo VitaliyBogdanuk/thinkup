@@ -361,7 +361,7 @@
           
           <!-- Оцінка -->
           <div class="mb-4">
-            <div class="flex items-center gap-2 mb-2">
+            <div class="flex items-center  gap-2 mb-2">
               <span class="text-sm text-gray-600">Оцінка:</span>
               <div class="flex items-center gap-1">
                 <span v-for="n in 5" :key="n" class="text-lg">

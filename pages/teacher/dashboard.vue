@@ -31,7 +31,7 @@
               {{ currentTeacher.department }}
             </p>
             <p class="text-gray-500 text-xs sm:text-sm mb-3 sm:mb-4 break-all text-center sm:text-left">{{ currentTeacher.email }}</p>
-            <div class="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-3 md:gap-4 flex-wrap">
+            <div class="flex flex-col sm:flex-row items-center sm:items-start gap-2 sm:gap-3 md:gap-4 flex-wrap">
               <div class="flex items-center gap-1.5 sm:gap-2">
                 <span class="text-xs sm:text-sm text-gray-500">Статус:</span>
                 <span class="px-2 py-0.5 sm:py-1 bg-green-100 text-green-700 rounded-full text-xs font-semibold">
