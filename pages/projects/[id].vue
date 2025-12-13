@@ -58,8 +58,11 @@
           </div>
         </div>
 
-        <!-- Потрібні ролі на проєкті -->
-        <div v-if="project.roles && project.roles.length > 0" class="mt-4 pt-4 border-t border-gray-200">
+        <!-- Потрібні ролі на проєкті (тільки для проєктів, що не є активними або завершеними) -->
+        <div 
+          v-if="project.roles && project.roles.length > 0 && project.status !== 'active' && project.status !== 'completed'" 
+          class="mt-4 pt-4 border-t border-gray-200"
+        >
           <h3 class="text-sm md:text-base font-bold text-gray-800 mb-3">Потрібні ролі на проєкті:</h3>
           <div class="space-y-2">
             <div
