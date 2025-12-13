@@ -9,24 +9,24 @@
     <div v-else class="space-y-6">
       <!-- Профіль адміністратора -->
       <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-        <div class="flex flex-col sm:flex-row items-start gap-4 sm:gap-6">
+        <div class="flex flex-col sm:flex-row items-center sm:items-start gap-4 sm:gap-6">
           <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-red-500/20 flex items-center justify-center flex-shrink-0">
             <span class="text-red-600 text-2xl sm:text-3xl font-bold">
               {{ currentAdmin.email.charAt(0).toUpperCase() }}
             </span>
           </div>
           <div class="flex-1 min-w-0">
-            <div class="flex flex-col sm:flex-row sm:items-start justify-between gap-4 mb-4">
-              <div>
-                <h2 class="text-xl sm:text-2xl font-bold text-gray-800 mb-2">Адміністратор</h2>
-                <p class="text-gray-500 text-xs sm:text-sm mb-2 break-all">{{ currentAdmin.email }}</p>
-                <div class="flex items-center gap-2">
-                  <span class="px-2 py-1 bg-red-100 text-red-700 rounded-full text-xs font-semibold">
-                    Адміністратор системи
-                  </span>
-                </div>
+          <div class="flex flex-col sm:flex-row items-center sm:items-start justify-between gap-4 mb-4 text-center sm:text-left">
+            <div class="flex flex-col items-center sm:items-start">
+              <h2 class="text-xl sm:text-2xl font-bold text-gray-800 mb-2">Адміністратор</h2>
+              <p class="text-gray-500 text-xs sm:text-sm mb-2 break-all">{{ currentAdmin.email }}</p>
+              <div class="flex items-center justify-center sm:justify-start gap-2">
+                <span class="px-2 py-1 bg-red-100 text-red-700 rounded-full text-xs font-semibold">
+                  Адміністратор системи
+                </span>
               </div>
             </div>
+          </div>
 
             <!-- Статистика системи -->
             <div class="mt-6 pt-6 border-t border-gray-200">

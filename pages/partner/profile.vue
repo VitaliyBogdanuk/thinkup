@@ -23,7 +23,8 @@
                   {{ currentPartner.companyDescription }}
                 </p>
                 <p class="text-gray-500 text-xs sm:text-sm mb-2 break-all">{{ currentPartner.email }}</p>
-                <div v-if="currentPartner.contactPhone" class="flex items-center gap-2 mb-2">
+                <div v-if="currentPartner.contactPhone" 
+                    class="flex flex-col sm:flex-row items-center sm:items-start gap-1 sm:gap-2 mb-2 text-center sm:text-left">
                   <span class="text-xs sm:text-sm text-gray-500">Телефон:</span>
                   <span class="text-sm sm:text-base font-semibold text-gray-800">{{ currentPartner.contactPhone }}</span>
                 </div>
