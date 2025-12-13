@@ -47,7 +47,7 @@
                 type="file"
                 id="tz_file"
                 ref="fileInput"
-                accept=".txt,.pdf,.doc,.docx"
+                accept=".txt"
                 @change="handleFileUpload"
                 class="hidden"
               />
@@ -77,6 +77,11 @@
                 </button>
               </span>
             </div>
+            <!-- Помилка завантаження файлу -->
+            <div v-if="fileUploadError" class="mb-2 px-4 py-2 bg-red-100 text-red-700 rounded-lg text-sm flex items-center gap-2">
+              <span>⚠️</span>
+              <span>{{ fileUploadError }}</span>
+            </div>
             <textarea
               id="technical_spec"
               v-model.trim="formData.technicalSpecification"
@@ -86,6 +91,7 @@
               class="w-full"
             />
             <p class="text-sm text-gray-600">AI проаналізує ТЗ та автоматично створить структуру проєкту</p>
+            <p class="text-xs text-gray-500 mt-1">Підтримувані формати: .txt</p>
           </div>
 
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -220,6 +226,11 @@ const authStore = useAuthStore();
 
 const fileInput = ref<HTMLInputElement | null>(null);
 const uploadedFileName = ref<string>("");
+const fileUploadError = ref<string>("");
+
+// Дозволені формати файлів
+const allowedFileTypes = [".txt"];
+const allowedMimeTypes = ["text/plain"];
 
 const formData = ref<{
   name: string;
@@ -242,22 +253,50 @@ const handleFileUpload = async (event: Event) => {
   const target = event.target as HTMLInputElement;
   const file = target.files?.[0];
   
+  // Очищаємо попередні помилки
+  fileUploadError.value = "";
+  
   if (!file) return;
 
-  uploadedFileName.value = file.name;
+  // Перевіряємо розширення файлу
+  const fileExtension = file.name.substring(file.name.lastIndexOf(".")).toLowerCase();
+  const isValidExtension = allowedFileTypes.includes(fileExtension);
+  
+  // Перевіряємо MIME тип
+  const isValidMimeType = allowedMimeTypes.includes(file.type);
+  
+  // Якщо формат не підходить
+  if (!isValidExtension && !isValidMimeType) {
+    fileUploadError.value = `Формат файлу "${fileExtension}" не підтримується. Будь ласка, завантажте файл у форматі .txt або введіть текст вручну.`;
+    
+    // Очищаємо input
+    if (fileInput.value) {
+      fileInput.value.value = "";
+    }
+    
+    // Не встановлюємо uploadedFileName
+    uploadedFileName.value = "";
+    return;
+  }
 
-  // Читаємо файл як текст
-  if (file.type === "text/plain" || file.name.endsWith(".txt")) {
+  // Якщо формат підходить, обробляємо файл
+  try {
+    uploadedFileName.value = file.name;
     const text = await file.text();
     formData.value.technicalSpecification = text;
-  } else {
-    // Для PDF та інших форматів показуємо повідомлення
-    alert("Підтримуються тільки текстові файли (.txt). Будь ласка, скопіюйте вміст в поле ТЗ.");
+    fileUploadError.value = ""; // Очищаємо помилку, якщо все успішно
+  } catch (error) {
+    fileUploadError.value = "Помилка читання файлу. Будь ласка, перевірте файл або введіть текст вручну.";
+    uploadedFileName.value = "";
+    if (fileInput.value) {
+      fileInput.value.value = "";
+    }
   }
 };
 
 const removeUploadedFile = () => {
   uploadedFileName.value = "";
+  fileUploadError.value = "";
   formData.value.technicalSpecification = "";
   if (fileInput.value) {
     fileInput.value.value = "";
@@ -287,6 +326,7 @@ const resetForm = () => {
     roles: [{ name: "", required: 1 }],
   };
   uploadedFileName.value = "";
+  fileUploadError.value = "";
   if (fileInput.value) {
     fileInput.value.value = "";
   }
