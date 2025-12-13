@@ -46,21 +46,21 @@
       <div
         v-for="board in boards"
         :key="board.id"
-        class="board-card rounded-xl bg-white p-5 cursor-pointer w-full h-52 hover:shadow-lg transition-all duration-300 border border-gray-200 group relative overflow-hidden"
+        class="board-card rounded-xl bg-white p-5 cursor-pointer w-full h-56 hover:shadow-lg transition-all duration-300 border border-gray-200 group relative overflow-hidden"
         @click="() => navigateToBoard(board)"
       >
         <!-- Іконка та назва -->
-        <div class="flex flex-col h-full">
-          <div class="mb-4">
+        <div class="flex flex-col h-full relative z-10">
+          <div class="mb-3 flex-shrink-0">
             <ViewColumnsIcon class="board-card-icon w-8 h-8 text-savoy group-hover:text-white transition-colors" />
           </div>
           
-          <h2 class="text-lg font-semibold text-gray-800 group-hover:text-white mb-2 line-clamp-2">
-            {{ board.name }}
+          <h2 class="text-lg font-semibold text-gray-800 group-hover:text-white mb-3 line-clamp-2">
+            {{ getBoardDisplayName(board) }}
           </h2>
           
           <!-- Метадані дошки -->
-          <div class="mt-auto pt-3 border-t border-gray-100 group-hover:border-white/30 space-y-2">
+          <div class="mt-auto pt-3 border-t border-gray-100 group-hover:border-white/30 space-y-2 flex-shrink-0">
             <!-- Дедлайн -->
             <div class="flex items-center gap-1 text-sm text-gray-600 group-hover:text-white/80">
               <CalendarIcon class="w-4 h-4" />
@@ -72,7 +72,7 @@
               <span class="px-2 py-1 bg-gray-100 group-hover:bg-white/20 rounded text-xs text-gray-600 group-hover:text-white/80">
                 {{ getIncompleteTasksCount(board) }} не завершених
               </span>
-              <span v-if="getProjectStatus(board)" :class="getProjectStatusClass(getProjectStatus(board))" class="px-2 py-1 rounded text-xs font-semibold">
+              <span v-if="getProjectStatus(board)" :class="getProjectStatusClass(getProjectStatus(board))" class="px-2 py-1 rounded text-xs font-semibold group-hover:opacity-90">
                 {{ getProjectStatusText(getProjectStatus(board)) }}
               </span>
             </div>
@@ -80,7 +80,7 @@
         </div>
         
         <!-- Фон при наведенні -->
-        <div class="absolute inset-0 bg-gradient-to-br from-savoy to-savoy/80 opacity-0 group-hover:opacity-100 transition-opacity duration-300 -z-10"></div>
+        <div class="absolute inset-0 bg-[#14B8A6] opacity-0 group-hover:opacity-100 transition-opacity duration-300 -z-10 rounded-xl"></div>
       </div>
 
       <!-- Кнопка створення нової дошки -->
@@ -234,6 +234,22 @@ const getProjectForBoard = (board: any): Project | undefined => {
   return projectsStore.projects.find((p: Project) => p.boardId === board.id);
 };
 
+// Отримуємо назву для відображення на картці
+const getBoardDisplayName = (board: any): string => {
+  if (!board || !board.id) {
+    return "Дошка";
+  }
+  
+  // Спочатку перевіряємо, чи це проєктна дошка
+  const project = getProjectForBoard(board);
+  if (project && project.name) {
+    return project.name;
+  }
+  
+  // Якщо не проєкт, повертаємо назву дошки
+  return board.name || "Дошка";
+};
+
 // Отримуємо текст дедлайну
 const getDeadlineText = (board: any): string => {
   const project = getProjectForBoard(board);
@@ -381,6 +397,11 @@ onMounted(() => {
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
+  text-overflow: ellipsis;
+  word-break: break-word;
+  line-height: 1.5;
+  max-height: 3.6rem;
+  min-height: 3rem;
 }
 
 .fade-enter-active,
@@ -408,11 +429,29 @@ onMounted(() => {
 </style>
 
 <style scoped>
+.board-card {
+  position: relative;
+}
+
 .board-card:hover {
-  background-color: #14B8A6;
+  background-color: #14B8A6 !important;
+}
+
+.board-card:hover .board-card-icon,
+.board-card:hover h2,
+.board-card:hover .text-gray-600,
+.board-card:hover .text-gray-800,
+.board-card:hover span {
+  color: white !important;
 }
 
 .board-card-icon {
   color: #14B8A6;
+}
+
+/* Забезпечуємо, що контент завжди видимий */
+.board-card > div {
+  position: relative;
+  z-index: 10;
 }
 </style>
