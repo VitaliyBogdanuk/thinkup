@@ -1,7 +1,12 @@
 <template>
   <section class="w-full h-full overflow-y-auto flex-1 p-3 md:p-10 bg-lightGray">
     <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-4 md:mb-8 gap-3">
-      <h1 class="text-lg md:text-2xl font-bold text-gray-800">Мої проєкти</h1>
+      <div class="flex-1">
+        <h1 class="text-lg md:text-2xl font-bold text-gray-800 mb-2">Мої проєкти</h1>
+        <p v-if="searchQuery" class="text-sm text-gray-600">
+          Результати пошуку: "{{ searchQuery }}" ({{ projects.length }} проєктів)
+        </p>
+      </div>
       <button
         v-if="authStore.isPartner"
         @click="showCreateModal = true"
@@ -15,8 +20,10 @@
       v-if="projects.length === 0"
       class="text-center py-16 text-gray-500"
     >
-      <p class="text-lg mb-2">Немає проєктів</p>
-      <p v-if="authStore.isPartner" class="text-sm">Створіть свій перший проєкт</p>
+      <p v-if="searchQuery" class="text-lg mb-2">Проєкти не знайдено</p>
+      <p v-else class="text-lg mb-2">Немає проєктів</p>
+      <p v-if="authStore.isPartner && !searchQuery" class="text-sm">Створіть свій перший проєкт</p>
+      <p v-else-if="searchQuery" class="text-sm">Спробуйте змінити пошуковий запит</p>
     </div>
 
     <div v-else class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-6">
@@ -58,7 +65,7 @@
 
 <script setup lang="ts">
 import { computed, ref } from "vue";
-import { useRouter } from "vue-router";
+import { useRouter, useRoute } from "vue-router";
 import { useProjectsStore } from "~~/stores/projects";
 import { useAuthStore } from "~~/stores/auth";
 import CreateProject from "~~/components/project/CreateProject.vue";
@@ -68,15 +75,37 @@ const projectsStore = useProjectsStore();
 const authStore = useAuthStore();
 const showCreateModal = ref(false);
 
+const route = useRoute();
+const searchQuery = computed(() => {
+  return (route.query.search as string) || "";
+});
+
 const projects = computed(() => {
   if (!authStore.currentUser) return [];
   
+  let filteredProjects: Project[] = [];
+  
   if (authStore.isPartner) {
-    return projectsStore.getProjectsByPartner(authStore.currentUser.id);
+    filteredProjects = projectsStore.getProjectsByPartner(authStore.currentUser.id);
+  } else {
+    // Для студентів та викладачів показуємо всі проєкти
+    filteredProjects = projectsStore.projects;
   }
   
-  // Для студентів та викладачів показуємо всі проєкти
-  return projectsStore.projects;
+  // Фільтруємо за пошуковим запитом
+  if (searchQuery.value) {
+    const query = searchQuery.value.toLowerCase();
+    filteredProjects = filteredProjects.filter((project) => {
+      return (
+        project.name.toLowerCase().includes(query) ||
+        project.description.toLowerCase().includes(query) ||
+        project.category.toLowerCase().includes(query) ||
+        project.technicalSpecification.toLowerCase().includes(query)
+      );
+    });
+  }
+  
+  return filteredProjects;
 });
 
 const getStatusText = (status: Project["status"]): string => {

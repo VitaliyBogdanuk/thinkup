@@ -17,6 +17,37 @@
         <p v-if="!isSidebarCollapsed" class="mb-5 tracking-widest mt-5">НАВІГАЦІЯ</p>
       </div>
       
+      <!-- Пошук проєктів -->
+      <div v-if="authStore.isAuthenticated && !isSidebarCollapsed" class="px-2 mb-4">
+        <div class="relative">
+          <input
+            v-model="searchQuery"
+            type="text"
+            placeholder="Пошук проєктів..."
+            class="w-full px-3 py-2 pr-20 bg-gray-700 text-gray-200 rounded-lg border border-gray-600 focus:outline-none focus:ring-2 focus:ring-savoy focus:border-transparent text-sm placeholder-gray-400"
+            @keyup.enter="handleSearch"
+            @input="handleSearchInput"
+          />
+          <div class="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-1">
+            <button
+              v-if="searchQuery"
+              @click="clearSearch"
+              class="text-gray-400 hover:text-red-400 transition-colors"
+              title="Очистити"
+            >
+              <XMarkIcon class="w-4 h-4" />
+            </button>
+            <button
+              @click="handleSearch"
+              class="text-gray-400 hover:text-savoy transition-colors"
+              title="Пошук"
+            >
+              <MagnifyingGlassIcon class="w-5 h-5" />
+            </button>
+          </div>
+        </div>
+      </div>
+      
       <!-- Навігація залежно від ролі -->
       <div v-if="authStore.isPartner" class="px-2">
         <NuxtLink
@@ -143,11 +174,11 @@
   </main>
 </template>
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, watch } from "vue";
 import { useStorage } from "@vueuse/core";
 import { useKanbanStore } from "~~/stores";
 import { useAuthStore } from "~~/stores/auth";
-import { ChartBarSquareIcon, ViewColumnsIcon, ChevronLeftIcon, ChevronRightIcon } from "@heroicons/vue/24/outline";
+import { ChartBarSquareIcon, ViewColumnsIcon, ChevronLeftIcon, ChevronRightIcon, MagnifyingGlassIcon, XMarkIcon } from "@heroicons/vue/24/outline";
 import { storeToRefs } from "pinia";
 import RoleSwitcher from "~~/components/RoleSwitcher.vue";
 import MobileHeader from "~~/components/MobileHeader.vue";
@@ -166,7 +197,55 @@ const boardsCount = computed(() => {
 // Стан згортання сайдбару (зберігається в localStorage)
 const isSidebarCollapsed = useStorage("sidebar-collapsed", false);
 
+// Пошук проєктів
+const router = useRouter();
+const route = useRoute();
+const searchQuery = ref("");
+
+// Синхронізуємо поле пошуку з query параметром
+watch(() => route.query.search, (newSearch) => {
+  if (newSearch && typeof newSearch === "string") {
+    searchQuery.value = newSearch;
+  } else {
+    searchQuery.value = "";
+  }
+}, { immediate: true });
+
 const toggleSidebar = () => {
   isSidebarCollapsed.value = !isSidebarCollapsed.value;
+};
+
+const handleSearch = () => {
+  if (searchQuery.value.trim()) {
+    router.push({
+      path: "/projects",
+      query: { search: searchQuery.value.trim() }
+    });
+  } else {
+    router.push("/projects");
+  }
+};
+
+let searchTimeout: NodeJS.Timeout | null = null;
+
+const handleSearchInput = () => {
+  // Автоматичний пошук при введенні (з debounce)
+  if (searchTimeout) {
+    clearTimeout(searchTimeout);
+  }
+  
+  searchTimeout = setTimeout(() => {
+    if (searchQuery.value.trim()) {
+      handleSearch();
+    } else if (route.query.search) {
+      // Якщо поле порожнє, але є query параметр, очищаємо його
+      router.push("/projects");
+    }
+  }, 500);
+};
+
+const clearSearch = () => {
+  searchQuery.value = "";
+  router.push("/projects");
 };
 </script>
