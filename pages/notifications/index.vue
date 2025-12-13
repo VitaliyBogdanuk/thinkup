@@ -1,0 +1,533 @@
+<template>
+  <section class="w-full h-full overflow-y-auto flex-1 p-4 md:p-10 bg-lightGray">
+    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-4 md:mb-6 gap-3">
+      <h1 class="text-xl md:text-2xl font-bold text-gray-800">Сповіщення</h1>
+      <div class="flex items-center gap-3">
+        <span v-if="unreadCount > 0" class="px-3 py-1 bg-red-100 text-red-700 rounded-full text-sm font-semibold">
+          {{ unreadCount }} непрочитаних
+        </span>
+        <button 
+          v-if="unreadCount > 0"
+          @click="markAllAsRead"
+          class="px-4 py-2 bg-savoy text-white rounded-lg hover:bg-savoy/90 transition-colors text-sm font-medium"
+        >
+          Позначити все як прочитане
+        </button>
+      </div>
+    </div>
+
+    <div v-if="notifications.length === 0" class="bg-white rounded-xl shadow-sm border border-gray-200 p-12 text-center">
+      <div class="w-20 h-20 rounded-full bg-gray-100 flex items-center justify-center mx-auto mb-6">
+        <span class="text-4xl">🔔</span>
+      </div>
+      <h2 class="text-xl font-bold text-gray-800 mb-2">Немає сповіщень</h2>
+      <p class="text-gray-600">Ви будете отримувати сповіщення про важливі події</p>
+    </div>
+
+    <div v-else class="space-y-3 md:space-y-4">
+      <div 
+        v-for="notification in notifications"
+        :key="notification.id"
+        :class="[
+          'rounded-xl border p-4 md:p-6 transition-all cursor-pointer hover:shadow-md',
+          notification.read 
+            ? 'bg-white border-gray-200 shadow-sm' 
+            : 'bg-blue-50 border-blue-400 shadow-md ring-2 ring-blue-200/50'
+        ]"
+        @click="handleNotificationClick(notification)"
+      >
+        <div class="flex items-start gap-3 md:gap-4">
+          <!-- Іконка типу сповіщення -->
+          <div class="flex-shrink-0 mt-1">
+            <div :class="getNotificationIconClass(notification)">
+              <span class="text-lg md:text-xl">{{ getNotificationIconEmoji(notification) }}</span>
+            </div>
+          </div>
+          
+          <div class="flex-1 min-w-0">
+            <div class="flex items-start justify-between gap-2 mb-2">
+              <h4 :class="[
+                'font-semibold text-sm md:text-base',
+                notification.read ? 'text-gray-800' : 'text-blue-900 font-bold'
+              ]">{{ notification.title }}</h4>
+              <div class="flex items-center gap-2 flex-shrink-0">
+                <span :class="[
+                  'text-xs whitespace-nowrap',
+                  notification.read ? 'text-gray-500' : 'text-blue-700 font-medium'
+                ]">
+                  {{ formatTimeAgo(notification.createdAt) }}
+                </span>
+                <span 
+                  v-if="!notification.read"
+                  class="w-2.5 h-2.5 rounded-full bg-blue-500 flex-shrink-0 ring-2 ring-blue-300"
+                ></span>
+              </div>
+            </div>
+            <p :class="[
+              'text-sm mb-3',
+              notification.read ? 'text-gray-600' : 'text-gray-700 font-medium'
+            ]">{{ notification.message }}</p>
+            
+            <!-- Додаткові дії для сповіщень -->
+            <div v-if="!notification.read && notification.projectId" class="flex flex-wrap gap-2 mt-3">
+              <button
+                @click.stop="navigateToProject(notification.projectId!)"
+                class="px-4 py-2 bg-savoy text-white rounded-lg hover:bg-savoy/90 transition-colors text-sm"
+              >
+                Перейти до проєкту
+              </button>
+              
+              <!-- Для партнера: нові заявки студентів -->
+              <button
+                v-if="authStore.isPartner && (notification as PartnerNotification).type === 'new_student_application'"
+                @click.stop="viewProjectApplications(notification.projectId!)"
+                class="px-4 py-2 bg-green-100 text-green-700 rounded-lg hover:bg-green-200 transition-colors text-sm"
+              >
+                Переглянути заявки
+              </button>
+              
+              <!-- Для партнера: дедлайн -->
+              <button
+                v-if="authStore.isPartner && (notification as PartnerNotification).type === 'project_deadline'"
+                @click.stop="extendDeadline(notification.projectId!)"
+                class="px-4 py-2 bg-yellow-100 text-yellow-700 rounded-lg hover:bg-yellow-200 transition-colors text-sm"
+              >
+                Продовжити термін
+              </button>
+              
+              <!-- Для студента: запрошення на проєкт -->
+              <template v-if="authStore.isStudent && (notification as StudentNotification).type === 'project_invitation'">
+                <button
+                  @click.stop="acceptProjectInvitation(notification.projectId!, notification.id)"
+                  class="px-4 py-2 bg-savoy text-white rounded-lg hover:bg-savoy/90 transition-colors text-sm"
+                >
+                  Прийняти
+                </button>
+                <button
+                  @click.stop="declineProjectInvitation(notification.projectId!, notification.id)"
+                  class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors text-sm"
+                >
+                  Відхилити
+                </button>
+              </template>
+              
+              <!-- Для студента: новий проєкт -->
+              <template v-if="authStore.isStudent && (notification as StudentNotification).type === 'new_project'">
+                <button
+                  @click.stop="navigateToProject(notification.projectId!)"
+                  class="px-4 py-2 bg-savoy text-white rounded-lg hover:bg-savoy/90 transition-colors text-sm"
+                >
+                  Переглянути проєкт
+                </button>
+                <button
+                  @click.stop="handleApply(notification.projectId!)"
+                  class="px-4 py-2 bg-green-100 text-green-700 rounded-lg hover:bg-green-200 transition-colors text-sm"
+                >
+                  Подати заявку
+                </button>
+              </template>
+              
+              <!-- Для викладача: затвердження проєкту -->
+              <button
+                v-if="authStore.isTeacher && (notification as TeacherNotification).type === 'project_submission'"
+                @click.stop="reviewProjectSubmission(notification.projectId!)"
+                class="px-4 py-2 bg-savoy text-white rounded-lg hover:bg-savoy/90 transition-colors text-sm"
+              >
+                Переглянути
+              </button>
+              
+              <!-- Для викладача: заявка від студента -->
+              <template v-if="authStore.isTeacher && (notification as TeacherNotification).type === 'student_application'">
+                <button
+                  @click.stop="acceptStudentApplication(notification.projectId!, (notification as TeacherNotification).studentId!, notification.id)"
+                  class="px-4 py-2 bg-savoy text-white rounded-lg hover:bg-savoy/90 transition-colors text-sm"
+                >
+                  Прийняти
+                </button>
+                <button
+                  @click.stop="declineStudentApplication(notification.projectId!, (notification as TeacherNotification).studentId!, notification.id)"
+                  class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors text-sm"
+                >
+                  Відхилити
+                </button>
+              </template>
+              
+              <!-- Для викладача: проєкт готовий до затвердження -->
+              <button
+                v-if="authStore.isTeacher && (notification as TeacherNotification).type === 'project_approval'"
+                @click.stop="approveProject(notification.projectId!, notification.id)"
+                class="px-4 py-2 bg-savoy text-white rounded-lg hover:bg-savoy/90 transition-colors text-sm"
+              >
+                Затвердити проєкт
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</template>
+
+<script setup lang="ts">
+import { computed, ref, onMounted, onUnmounted } from "vue";
+import { useRouter } from "vue-router";
+import { useAuthStore } from "~~/stores/auth";
+import { useProjectsStore } from "~~/stores/projects";
+import type { 
+  PartnerNotification,
+  StudentNotification,
+  TeacherNotification,
+  AdminNotification
+} from "~~/types";
+
+const router = useRouter();
+const authStore = useAuthStore();
+const projectsStore = useProjectsStore();
+
+// Об'єднаний тип сповіщень
+type Notification = PartnerNotification | StudentNotification | TeacherNotification | AdminNotification;
+
+// Реф для сповіщень
+const notifications = ref<Notification[]>([]);
+
+// Ініціалізація сповіщень залежно від ролі
+const initializeNotifications = () => {
+  if (authStore.isPartner) {
+    notifications.value = [
+      {
+        id: '1',
+        type: 'project_status_update',
+        title: 'Статус проєкту оновлено',
+        message: 'Ваш проєкт "Розробка AI-асистента" переведено у статус "Активний"',
+        projectId: 'project-789',
+        read: false,
+        createdAt: new Date(Date.now() - 1000 * 60 * 15), // 15 хвилин тому
+      },
+      {
+        id: '2',
+        type: 'project_approval',
+        title: 'Проєкт затверджено',
+        message: 'Ваш проєкт "Мобільний додаток для освіти" затверджено викладачем',
+        projectId: 'project-456',
+        read: false,
+        createdAt: new Date(Date.now() - 1000 * 60 * 60 * 2), // 2 години тому
+      },
+      {
+        id: '3',
+        type: 'project_deadline',
+        title: 'Наближається дедлайн',
+        message: 'У проєкті "Веб-портал для університету" залишилось 5 днів до дедлайну',
+        projectId: 'project-789',
+        read: true,
+        createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24), // 1 день тому
+      },
+      {
+        id: '4',
+        type: 'project_completed',
+        title: 'Проєкт завершено!',
+        message: 'Проєкт "Розробка веб-додатку" успішно завершено студентами',
+        projectId: 'project-123',
+        read: false,
+        createdAt: new Date(Date.now() - 1000 * 60 * 60 * 48), // 2 дні тому
+      },
+    ] as PartnerNotification[];
+  } else if (authStore.isStudent) {
+    notifications.value = [
+      {
+        id: '1',
+        type: 'new_project',
+        title: 'Новий проєкт доступний!',
+        message: 'З\'явився новий проєкт "Розробка AI-асистента для студентів", який відповідає вашим навичкам',
+        projectId: 'project-789',
+        read: false,
+        createdAt: new Date(Date.now() - 1000 * 60 * 5), // 5 хвилин тому
+      },
+      {
+        id: '2',
+        type: 'project_invitation',
+        title: 'Запрошення на проєкт',
+        message: 'Вас запрошено приєднатися до проєкту "Розробка мобільного додатку для освіти"',
+        projectId: 'project-123',
+        read: false,
+        createdAt: new Date(Date.now() - 1000 * 60 * 30), // 30 хвилин тому
+      },
+      {
+        id: '3',
+        type: 'project_update',
+        title: 'Оновлення проєкту',
+        message: 'У проєкті "Веб-портал для університету" додано нове завдання',
+        projectId: 'project-456',
+        read: false,
+        createdAt: new Date(Date.now() - 1000 * 60 * 60 * 2), // 2 години тому
+      },
+      {
+        id: '4',
+        type: 'system',
+        title: 'Новий рейтинг',
+        message: 'Ваш рейтинг було оновлено: +0.3 балів за успішне завершення проєкту',
+        read: true,
+        createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24), // 1 день тому
+      },
+    ] as StudentNotification[];
+  } else if (authStore.isTeacher) {
+    notifications.value = [
+      {
+        id: '1',
+        type: 'project_submission',
+        title: 'Новий проєкт подано на затвердження',
+        message: 'Партнер "TechCorp" подав новий проєкт "Розробка AI-асистента для студентів"',
+        projectId: 'project-789',
+        read: false,
+        createdAt: new Date(Date.now() - 1000 * 60 * 15), // 15 хвилин тому
+      },
+      {
+        id: '2',
+        type: 'student_application',
+        title: 'Заявка від студента',
+        message: 'Іван Петренко подав заявку на проєкт "Розробка мобільного додатку для освіти"',
+        projectId: 'project-123',
+        studentId: 'student-456',
+        read: false,
+        createdAt: new Date(Date.now() - 1000 * 60 * 45), // 45 хвилин тому
+      },
+      {
+        id: '3',
+        type: 'project_approval',
+        title: 'Проєкт готовий до затвердження',
+        message: 'AI завершив аналіз проєкту "Мобільний додаток для освіти"',
+        projectId: 'project-456',
+        read: false,
+        createdAt: new Date(Date.now() - 1000 * 60 * 60 * 2), // 2 години тому
+      },
+      {
+        id: '4',
+        type: 'project_update',
+        title: 'Оновлення проєкту',
+        message: 'У проєкті "Веб-портал для університету" додано нове завдання',
+        projectId: 'project-789',
+        read: true,
+        createdAt: new Date(Date.now() - 1000 * 60 * 60 * 5), // 5 годин тому
+      },
+      {
+        id: '5',
+        type: 'deadline_approaching',
+        title: 'Наближається дедлайн',
+        message: 'У проєкті "Розробка веб-додатку" залишилось 3 дні до дедлайну',
+        projectId: 'project-123',
+        read: false,
+        createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24), // 1 день тому
+      },
+    ] as TeacherNotification[];
+  } else if (authStore.isAdmin) {
+    notifications.value = [
+      {
+        id: '1',
+        type: 'new_user_registration',
+        title: 'Новий користувач зареєстровано',
+        message: 'Партнер "Tech Solutions" зареєструвався в системі',
+        userId: 'partner-3',
+        read: false,
+        createdAt: new Date(Date.now() - 1000 * 60 * 10),
+      },
+      {
+        id: '2',
+        type: 'project_created',
+        title: 'Створено новий проєкт',
+        message: 'Партнер "Creative Design Studio" створив проєкт "Редизайн корпоративного сайту"',
+        projectId: 'project-999',
+        read: false,
+        createdAt: new Date(Date.now() - 1000 * 60 * 30),
+      },
+      {
+        id: '3',
+        type: 'system_alert',
+        title: 'Системне попередження',
+        message: 'Виявлено високу активність користувачів. Рекомендується перевірити систему',
+        read: false,
+        createdAt: new Date(Date.now() - 1000 * 60 * 60),
+      },
+      {
+        id: '4',
+        type: 'user_report',
+        title: 'Скарга від користувача',
+        message: 'Отримано скаргу від студента на проєкт "Мобільний додаток для освіти"',
+        projectId: 'project-123',
+        userId: 'student-1',
+        read: true,
+        createdAt: new Date(Date.now() - 1000 * 60 * 60 * 3),
+      },
+      {
+        id: '5',
+        type: 'system_update',
+        title: 'Оновлення системи',
+        message: 'Завершено оновлення системи до версії 2.1.0',
+        read: false,
+        createdAt: new Date(Date.now() - 1000 * 60 * 60 * 6),
+      },
+    ] as AdminNotification[];
+  }
+};
+
+// Комп'ютед властивості
+const unreadCount = computed(() => {
+  return notifications.value.filter(n => !n.read).length;
+});
+
+// Функції для роботи зі сповіщеннями
+const formatTimeAgo = (date: Date): string => {
+  const now = new Date();
+  const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000);
+  
+  if (diffInSeconds < 60) return 'щойно';
+  if (diffInSeconds < 3600) return `${Math.floor(diffInSeconds / 60)} хв тому`;
+  if (diffInSeconds < 86400) return `${Math.floor(diffInSeconds / 3600)} год тому`;
+  if (diffInSeconds < 604800) return `${Math.floor(diffInSeconds / 86400)} дн тому`;
+  return `${Math.floor(diffInSeconds / 604800)} тиж тому`;
+};
+
+const markAsRead = (notificationId: string) => {
+  const notification = notifications.value.find(n => n.id === notificationId);
+  if (notification) {
+    notification.read = true;
+  }
+};
+
+const markAllAsRead = () => {
+  notifications.value.forEach(n => n.read = true);
+};
+
+const handleNotificationClick = (notification: Notification) => {
+  markAsRead(notification.id);
+  
+  if (notification.projectId) {
+    navigateToProject(notification.projectId);
+  }
+};
+
+const navigateToProject = (projectId: string) => {
+  router.push(`/projects/${projectId}`);
+};
+
+const viewProjectApplications = (projectId: string) => {
+  router.push(`/projects/${projectId}/applications`);
+};
+
+const extendDeadline = (projectId: string) => {
+  console.log('Продовжено термін для проєкту:', projectId);
+  alert('Запит на продовження терміну відправлено викладачу');
+};
+
+const acceptProjectInvitation = async (projectId: string, notificationId: string) => {
+  console.log('Прийнято запрошення на проєкт:', projectId);
+  markAsRead(notificationId);
+  navigateToProject(projectId);
+};
+
+const declineProjectInvitation = (projectId: string, notificationId: string) => {
+  console.log('Відхилено запрошення на проєкт:', projectId);
+  markAsRead(notificationId);
+  notifications.value = notifications.value.filter(n => n.id !== notificationId);
+};
+
+const handleApply = (projectId: string) => {
+  console.log('Подано заявку на проєкт:', projectId);
+  navigateToProject(projectId);
+};
+
+const reviewProjectSubmission = (projectId: string) => {
+  navigateToProject(projectId);
+};
+
+const acceptStudentApplication = (projectId: string, studentId: string, notificationId: string) => {
+  console.log('Прийнято заявку студента:', studentId, 'на проєкт:', projectId);
+  markAsRead(notificationId);
+  navigateToProject(projectId);
+};
+
+const declineStudentApplication = (projectId: string, studentId: string, notificationId: string) => {
+  console.log('Відхилено заявку студента:', studentId, 'на проєкт:', projectId);
+  markAsRead(notificationId);
+  notifications.value = notifications.value.filter(n => n.id !== notificationId);
+};
+
+const approveProject = (projectId: string, notificationId: string) => {
+  console.log('Затверджено проєкт:', projectId);
+  markAsRead(notificationId);
+  navigateToProject(projectId);
+};
+
+// Функції для відображення іконок
+const getNotificationIconClass = (notification: Notification): string => {
+  const baseClass = "w-10 h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center";
+  
+  if ('type' in notification) {
+    if (authStore.isPartner) {
+      const notif = notification as PartnerNotification;
+      if (notif.type === 'project_status_update') return `${baseClass} bg-green-100`;
+      if (notif.type === 'project_approval') return `${baseClass} bg-blue-100`;
+      if (notif.type === 'new_student_application') return `${baseClass} bg-purple-100`;
+      if (notif.type === 'project_deadline') return `${baseClass} bg-orange-100`;
+      if (notif.type === 'project_completed') return `${baseClass} bg-yellow-100`;
+    } else if (authStore.isStudent) {
+      const notif = notification as StudentNotification;
+      if (notif.type === 'project_invitation') return `${baseClass} bg-green-100`;
+      if (notif.type === 'project_update') return `${baseClass} bg-blue-100`;
+      if (notif.type === 'new_project') return `${baseClass} bg-purple-100`;
+    } else if (authStore.isTeacher) {
+      const notif = notification as TeacherNotification;
+      if (notif.type === 'project_submission') return `${baseClass} bg-blue-100`;
+      if (notif.type === 'student_application') return `${baseClass} bg-purple-100`;
+      if (notif.type === 'project_approval') return `${baseClass} bg-green-100`;
+      if (notif.type === 'deadline_approaching') return `${baseClass} bg-orange-100`;
+    } else if (authStore.isAdmin) {
+      const notif = notification as AdminNotification;
+      if (notif.type === 'new_user_registration') return `${baseClass} bg-green-100`;
+      if (notif.type === 'project_created') return `${baseClass} bg-blue-100`;
+      if (notif.type === 'system_alert') return `${baseClass} bg-red-100`;
+      if (notif.type === 'user_report') return `${baseClass} bg-yellow-100`;
+      if (notif.type === 'system_update') return `${baseClass} bg-purple-100`;
+    }
+  }
+  
+  return `${baseClass} bg-gray-100`;
+};
+
+const getNotificationIconEmoji = (notification: Notification): string => {
+  if ('type' in notification) {
+    if (authStore.isPartner) {
+      const notif = notification as PartnerNotification;
+      if (notif.type === 'project_status_update') return '🔄';
+      if (notif.type === 'project_approval') return '✅';
+      if (notif.type === 'new_student_application') return '👤';
+      if (notif.type === 'project_deadline') return '⏰';
+      if (notif.type === 'project_completed') return '🏆';
+    } else if (authStore.isStudent) {
+      const notif = notification as StudentNotification;
+      if (notif.type === 'project_invitation') return '🎯';
+      if (notif.type === 'project_update') return '🔄';
+      if (notif.type === 'new_project') return '🚀';
+    } else if (authStore.isTeacher) {
+      const notif = notification as TeacherNotification;
+      if (notif.type === 'project_submission') return '📝';
+      if (notif.type === 'student_application') return '👤';
+      if (notif.type === 'project_approval') return '✅';
+      if (notif.type === 'deadline_approaching') return '⏰';
+    } else if (authStore.isAdmin) {
+      const notif = notification as AdminNotification;
+      if (notif.type === 'new_user_registration') return '👤';
+      if (notif.type === 'project_created') return '📁';
+      if (notif.type === 'system_alert') return '⚠️';
+      if (notif.type === 'user_report') return '🚨';
+      if (notif.type === 'system_update') return '🔧';
+    }
+  }
+  
+  return '📢';
+};
+
+// Ініціалізація при монтажі
+onMounted(() => {
+  initializeNotifications();
+});
+</script>
+

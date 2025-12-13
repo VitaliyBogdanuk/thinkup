@@ -89,6 +89,16 @@
           <ViewColumnsIcon class="w-5 h-5 flex-shrink-0" />
           <span v-if="!isSidebarCollapsed">Мої проєкти</span>
         </NuxtLink>
+        <NuxtLink
+          to="/notifications"
+          class="flex gap-2 px-3 py-3 items-center hover:bg-gray-700 transition-colors rounded-r-3xl font-bold text-gray-300 justify-start"
+          :class="isSidebarCollapsed ? 'mr-0' : 'mr-5'"
+          exact-active-class="bg-savoy text-white"
+          :title="isSidebarCollapsed ? 'Сповіщення' : ''"
+        >
+          <ViewColumnsIcon class="w-5 h-5 flex-shrink-0" />
+          <span v-if="!isSidebarCollapsed">Сповіщення</span>
+        </NuxtLink>
       </div>
       
       <div v-if="authStore.isTeacher" class="px-2">
@@ -111,6 +121,16 @@
         >
           <ViewColumnsIcon class="w-5 h-5 flex-shrink-0" />
           <span v-if="!isSidebarCollapsed">Всі проєкти</span>
+        </NuxtLink>
+        <NuxtLink
+          to="/notifications"
+          class="flex gap-2 px-3 py-3 items-center hover:bg-gray-700 transition-colors rounded-r-3xl font-bold text-gray-300 justify-start"
+          :class="isSidebarCollapsed ? 'mr-0' : 'mr-5'"
+          exact-active-class="bg-savoy text-white"
+          :title="isSidebarCollapsed ? 'Сповіщення' : ''"
+        >
+          <ViewColumnsIcon class="w-5 h-5 flex-shrink-0" />
+          <span v-if="!isSidebarCollapsed">Сповіщення</span>
         </NuxtLink>
       </div>
       
@@ -135,6 +155,16 @@
           <ViewColumnsIcon class="w-5 h-5 flex-shrink-0" />
           <span v-if="!isSidebarCollapsed">Всі проєкти</span>
         </NuxtLink>
+        <NuxtLink
+          to="/notifications"
+          class="flex gap-2 px-3 py-3 items-center hover:bg-gray-700 transition-colors rounded-r-3xl font-bold text-gray-300 justify-start"
+          :class="isSidebarCollapsed ? 'mr-0' : 'mr-5'"
+          exact-active-class="bg-savoy text-white"
+          :title="isSidebarCollapsed ? 'Сповіщення' : ''"
+        >
+          <ViewColumnsIcon class="w-5 h-5 flex-shrink-0" />
+          <span v-if="!isSidebarCollapsed">Сповіщення</span>
+        </NuxtLink>
       </div>
       
       <div v-if="authStore.isAdmin" class="px-2">
@@ -157,6 +187,16 @@
         >
           <ViewColumnsIcon class="w-5 h-5 flex-shrink-0" />
           <span v-if="!isSidebarCollapsed">Всі проєкти</span>
+        </NuxtLink>
+        <NuxtLink
+          to="/notifications"
+          class="flex gap-2 px-3 py-3 items-center hover:bg-gray-700 transition-colors rounded-r-3xl font-bold text-gray-300 justify-start"
+          :class="isSidebarCollapsed ? 'mr-0' : 'mr-5'"
+          exact-active-class="bg-savoy text-white"
+          :title="isSidebarCollapsed ? 'Сповіщення' : ''"
+        >
+          <ViewColumnsIcon class="w-5 h-5 flex-shrink-0" />
+          <span v-if="!isSidebarCollapsed">Сповіщення</span>
         </NuxtLink>
       </div>
 

@@ -47,7 +47,15 @@
 
         <nav class="flex-1 overflow-y-auto p-6 space-y-4">
           <!-- Навігація залежно від ролі -->
-          <div v-if="authStore.isPartner">
+          <div v-if="authStore.isPartner" class="space-y-4">
+            <NuxtLink
+              to="/partner/profile"
+              @click="isNavMenuOpen = false"
+              class="block px-4 py-4 bg-gray-700 hover:bg-gray-600 rounded-lg text-gray-300 font-semibold transition-colors"
+              active-class="bg-savoy text-white"
+            >
+              Мій профіль
+            </NuxtLink>
             <NuxtLink
               to="/projects"
               @click="isNavMenuOpen = false"
@@ -55,6 +63,14 @@
               active-class="bg-savoy text-white"
             >
               Мої проєкти
+            </NuxtLink>
+            <NuxtLink
+              to="/notifications"
+              @click="isNavMenuOpen = false"
+              class="block px-4 py-4 bg-gray-700 hover:bg-gray-600 rounded-lg text-gray-300 font-semibold transition-colors"
+              active-class="bg-savoy text-white"
+            >
+              Сповіщення
             </NuxtLink>
           </div>
 
@@ -75,6 +91,14 @@
             >
               Всі проєкти
             </NuxtLink>
+            <NuxtLink
+              to="/notifications"
+              @click="isNavMenuOpen = false"
+              class="block px-4 py-4 bg-gray-700 hover:bg-gray-600 rounded-lg text-gray-300 font-semibold transition-colors"
+              active-class="bg-savoy text-white"
+            >
+              Сповіщення
+            </NuxtLink>
           </div>
 
           <div v-if="authStore.isStudent" class="space-y-4">
@@ -94,6 +118,14 @@
             >
               Всі проєкти
             </NuxtLink>
+            <NuxtLink
+              to="/notifications"
+              @click="isNavMenuOpen = false"
+              class="block px-4 py-4 bg-gray-700 hover:bg-gray-600 rounded-lg text-gray-300 font-semibold transition-colors"
+              active-class="bg-savoy text-white"
+            >
+              Сповіщення
+            </NuxtLink>
           </div>
 
           <!-- Старі дошки (для зворотної сумісності) -->
@@ -108,6 +140,33 @@
               active-class="bg-savoy text-white"
             >
               {{ board.name }}
+            </NuxtLink>
+          </div>
+
+          <div v-if="authStore.isAdmin" class="space-y-4">
+            <NuxtLink
+              to="/"
+              @click="isNavMenuOpen = false"
+              class="block px-4 py-4 bg-gray-700 hover:bg-gray-600 rounded-lg text-gray-300 font-semibold transition-colors"
+              active-class="bg-savoy text-white"
+            >
+              Головна
+            </NuxtLink>
+            <NuxtLink
+              to="/projects"
+              @click="isNavMenuOpen = false"
+              class="block px-4 py-4 bg-gray-700 hover:bg-gray-600 rounded-lg text-gray-300 font-semibold transition-colors"
+              active-class="bg-savoy text-white"
+            >
+              Всі проєкти
+            </NuxtLink>
+            <NuxtLink
+              to="/notifications"
+              @click="isNavMenuOpen = false"
+              class="block px-4 py-4 bg-gray-700 hover:bg-gray-600 rounded-lg text-gray-300 font-semibold transition-colors"
+              active-class="bg-savoy text-white"
+            >
+              Сповіщення
             </NuxtLink>
           </div>
 

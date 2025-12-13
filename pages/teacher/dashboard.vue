@@ -17,139 +17,6 @@
     </div>
 
     <div v-else class="space-y-4 sm:space-y-5 md:space-y-6">
-      <!-- Сповіщення -->
-      <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-3 sm:p-4 md:p-6">
-        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 sm:gap-3 md:gap-4 mb-3 sm:mb-4">
-          <div class="flex items-center gap-2 flex-wrap">
-            <h3 class="text-base sm:text-lg md:text-xl font-bold text-gray-800">Сповіщення</h3>
-            <span v-if="teacherUnreadCount > 0" class="px-2 py-1 bg-red-100 text-red-700 rounded-full text-xs font-semibold whitespace-nowrap">
-              {{ teacherUnreadCount }} нових
-            </span>
-          </div>
-          <div class="flex items-center gap-2 sm:gap-3 md:gap-4 w-full sm:w-auto flex-wrap">
-            <button 
-              v-if="teacherUnreadCount > 0"
-              @click="markAllAsRead"
-              class="text-xs sm:text-sm text-savoy hover:text-savoy/80 transition-colors px-2 py-1.5 rounded-md hover:bg-savoy/5 whitespace-nowrap"
-            >
-              Позначити все як прочитане
-            </button>
-            <button
-              @click="toggleNotifications"
-              class="text-xs sm:text-sm text-gray-500 hover:text-gray-700 transition-colors px-2 py-1.5 rounded-md hover:bg-gray-100 whitespace-nowrap"
-            >
-              {{ showNotifications ? 'Сховати' : 'Показати' }}
-            </button>
-          </div>
-        </div>
-        
-        <div v-if="teacherNotifications.length === 0" class="text-center py-8 text-gray-500">
-          <p>Немає нових сповіщень</p>
-        </div>
-
-        <div v-else-if="showNotifications" class="space-y-2 sm:space-y-3">
-          <div 
-            v-for="notification in teacherNotifications"
-            :key="notification.id"
-            :class="[
-              'p-3 sm:p-4 rounded-lg border transition-all cursor-pointer hover:shadow-sm',
-              notification.read ? 'bg-gray-50 border-gray-200' : 'bg-blue-50 border-blue-200'
-            ]"
-            @click="handleNotificationClick(notification)"
-          >
-            <div class="flex items-start gap-2 sm:gap-3">
-              <!-- Іконка типу сповіщення -->
-              <div class="flex-shrink-0 mt-0.5 sm:mt-1">
-                <div v-if="notification.type === 'project_submission'" class="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-purple-100 flex items-center justify-center">
-                  <span class="text-purple-600 text-base sm:text-lg">📝</span>
-                </div>
-                <div v-else-if="notification.type === 'project_approval'" class="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-green-100 flex items-center justify-center">
-                  <span class="text-green-600 text-base sm:text-lg">✅</span>
-                </div>
-                <div v-else-if="notification.type === 'student_application'" class="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-blue-100 flex items-center justify-center">
-                  <span class="text-blue-600 text-base sm:text-lg">👤</span>
-                </div>
-                <div v-else-if="notification.type === 'project_update'" class="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-yellow-100 flex items-center justify-center">
-                  <span class="text-yellow-600 text-base sm:text-lg">🔄</span>
-                </div>
-                <div v-else-if="notification.type === 'deadline_approaching'" class="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-orange-100 flex items-center justify-center">
-                  <span class="text-orange-600 text-base sm:text-lg">⏰</span>
-                </div>
-                <div v-else class="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-gray-100 flex items-center justify-center">
-                  <span class="text-gray-600 text-base sm:text-lg">📢</span>
-                </div>
-              </div>
-              
-              <div class="flex-1 min-w-0">
-                <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-1 sm:gap-2 mb-1.5 sm:mb-2">
-                  <h4 class="font-semibold text-sm sm:text-base text-gray-800 break-words pr-2">{{ notification.title }}</h4>
-                  <div class="flex items-center gap-2 flex-shrink-0">
-                    <span class="text-xs text-gray-500 whitespace-nowrap">
-                      {{ formatTimeAgo(notification.createdAt) }}
-                    </span>
-                    <span 
-                      v-if="!notification.read"
-                      class="w-2 h-2 rounded-full bg-savoy flex-shrink-0"
-                    ></span>
-                  </div>
-                </div>
-                <p class="text-xs sm:text-sm text-gray-600 mb-2 sm:mb-3 break-words leading-relaxed">{{ notification.message }}</p>
-                
-                <!-- Додаткові дії для запрошень від студентів -->
-                <div v-if="notification.type === 'student_application' && !notification.read" class="flex flex-col sm:flex-row gap-2 mt-3">
-                  <button
-                    @click.stop="acceptStudentApplication(notification.projectId, notification.studentId, notification.id)"
-                    class="flex-1 sm:flex-none px-3 sm:px-4 py-2 sm:py-2.5 bg-savoy text-white rounded-lg hover:bg-savoy/90 transition-colors text-xs sm:text-sm font-medium"
-                  >
-                    Прийняти
-                  </button>
-                  <button
-                    @click.stop="declineStudentApplication(notification.projectId, notification.studentId, notification.id)"
-                    class="flex-1 sm:flex-none px-3 sm:px-4 py-2 sm:py-2.5 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors text-xs sm:text-sm font-medium"
-                  >
-                    Відхилити
-                  </button>
-                </div>
-
-                <!-- Додаткові дії для подачі проєкту -->
-                <div v-if="notification.type === 'project_submission' && !notification.read" class="flex gap-2 mt-3">
-                  <button
-                    @click.stop="reviewProjectSubmission(notification.projectId)"
-                    class="flex-1 sm:flex-none px-3 sm:px-4 py-2 sm:py-2.5 bg-savoy text-white rounded-lg hover:bg-savoy/90 transition-colors text-xs sm:text-sm font-medium"
-                  >
-                    Переглянути
-                  </button>
-                </div>
-
-                <!-- Додаткові дії для апруву проєкту -->
-                <div v-if="notification.type === 'project_approval' && !notification.read" class="flex gap-2 mt-3">
-                  <button
-                    @click.stop="approveProject(notification.projectId, notification.id)"
-                    class="flex-1 sm:flex-none px-3 sm:px-4 py-2 sm:py-2.5 bg-savoy text-white rounded-lg hover:bg-savoy/90 transition-colors text-xs sm:text-sm font-medium"
-                  >
-                    Затвердити
-                  </button>
-                </div>
-
-                <!-- Додаткові дії для наближення дедлайну -->
-                <div v-if="notification.type === 'deadline_approaching' && !notification.read" class="flex gap-2 mt-3">
-                  <button
-                    @click.stop="navigateToProject(notification.projectId)"
-                    class="flex-1 sm:flex-none px-3 sm:px-4 py-2 sm:py-2.5 bg-savoy text-white rounded-lg hover:bg-savoy/90 transition-colors text-xs sm:text-sm font-medium whitespace-nowrap"
-                  >
-                    Перейти до проєкту
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div v-else class="text-center py-4 text-gray-500">
-          <p>Сповіщень: {{ teacherUnreadCount }} непрочитаних з {{ teacherNotifications.length }}</p>
-        </div>
-      </div>
-
       <!-- Профіль викладача -->
       <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-3 sm:p-4 md:p-6">
         <div class="flex flex-col sm:flex-row items-start gap-3 sm:gap-4 md:gap-6">
@@ -174,13 +41,6 @@
               <div class="flex items-center gap-1.5 sm:gap-2">
                 <span class="text-xs sm:text-sm text-gray-500">Проєктів під керівництвом:</span>
                 <span class="text-sm sm:text-base md:text-lg font-bold text-savoy">{{ totalProjectsCount }}</span>
-              </div>
-              <!-- Лічильник непрочитаних сповіщень -->
-              <div v-if="teacherUnreadCount > 0" class="flex items-center gap-1.5 sm:gap-2">
-                <span class="text-xs sm:text-sm text-gray-500">Нові сповіщення:</span>
-                <span class="px-2 py-0.5 sm:py-1 bg-red-100 text-red-700 rounded-full text-xs font-semibold">
-                  {{ teacherUnreadCount }}
-                </span>
               </div>
             </div>
             
@@ -380,7 +240,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, onMounted, onUnmounted } from "vue";
+import { computed, ref } from "vue";
 import { useRouter } from "vue-router";
 import { useAuthStore } from "~~/stores/auth";
 import { useProjectsStore } from "~~/stores/projects";
@@ -388,7 +248,6 @@ import CreateProject from "~~/components/project/CreateProject.vue";
 import type { 
   Teacher, 
   Project, 
-  TeacherNotification,
   ComplexityLevel 
 } from "~~/types";
 
@@ -397,57 +256,6 @@ const authStore = useAuthStore();
 const projectsStore = useProjectsStore();
 const showCreateModal = ref(false);
 
-// Реф для сповіщень
-const teacherNotifications = ref<TeacherNotification[]>([
-  {
-    id: '1',
-    type: 'project_submission',
-    title: 'Новий проєкт подано на затвердження',
-    message: 'Партнер "TechCorp" подав новий проєкт "Розробка AI-асистента для студентів"',
-    projectId: 'project-789',
-    read: false,
-    createdAt: new Date(Date.now() - 1000 * 60 * 15), // 15 хвилин тому
-  },
-  {
-    id: '2',
-    type: 'student_application',
-    title: 'Заявка від студента',
-    message: 'Іван Петренко подав заявку на проєкт "Розробка мобільного додатку для освіти"',
-    projectId: 'project-123',
-    studentId: 'student-456',
-    read: false,
-    createdAt: new Date(Date.now() - 1000 * 60 * 45), // 45 хвилин тому
-  },
-  {
-    id: '3',
-    type: 'project_approval',
-    title: 'Проєкт готовий до затвердження',
-    message: 'AI завершив аналіз проєкту "Мобільний додаток для освіти"',
-    projectId: 'project-456',
-    read: false,
-    createdAt: new Date(Date.now() - 1000 * 60 * 60 * 2), // 2 години тому
-  },
-  {
-    id: '4',
-    type: 'project_update',
-    title: 'Оновлення проєкту',
-    message: 'У проєкті "Веб-портал для університету" додано нове завдання',
-    projectId: 'project-789',
-    read: true,
-    createdAt: new Date(Date.now() - 1000 * 60 * 60 * 5), // 5 годин тому
-  },
-  {
-    id: '5',
-    type: 'deadline_approaching',
-    title: 'Наближається дедлайн',
-    message: 'У проєкті "Розробка веб-додатку" залишилось 3 дні до дедлайну',
-    projectId: 'project-123',
-    read: false,
-    createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24), // 1 день тому
-  },
-]);
-
-const showNotifications = ref(true);
 
 // Комп'ютед властивості
 const currentTeacher = computed(() => {
@@ -473,23 +281,6 @@ const totalProjectsCount = computed(() => {
   return pendingProjects.value.length + activeProjects.value.length + completedProjects.value.length;
 });
 
-const teacherUnreadCount = computed(() => {
-  return teacherNotifications.value.filter(n => !n.read).length;
-});
-
-// Функції для роботи зі сповіщеннями
-const formatTimeAgo = (date: Date): string => {
-  const now = new Date();
-  const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000);
-  
-  if (diffInSeconds < 60) return 'щойно';
-  if (diffInSeconds < 3600) return `${Math.floor(diffInSeconds / 60)} хв тому`;
-  if (diffInSeconds < 86400) return `${Math.floor(diffInSeconds / 3600)} год тому`;
-  if (diffInSeconds < 604800) return `${Math.floor(diffInSeconds / 86400)} дн тому`;
-  if (diffInSeconds < 2592000) return `${Math.floor(diffInSeconds / 604800)} тиж тому`;
-  return `${Math.floor(diffInSeconds / 2592000)} міс тому`;
-};
-
 const formatDate = (dateString: string): string => {
   const date = new Date(dateString);
   return date.toLocaleDateString('uk-UA', {
@@ -497,59 +288,6 @@ const formatDate = (dateString: string): string => {
     month: '2-digit',
     year: 'numeric'
   });
-};
-
-const toggleNotifications = () => {
-  showNotifications.value = !showNotifications.value;
-};
-
-const markAsRead = (notificationId: string) => {
-  const notification = teacherNotifications.value.find(n => n.id === notificationId);
-  if (notification) {
-    notification.read = true;
-  }
-};
-
-const markAllAsRead = () => {
-  teacherNotifications.value.forEach(n => n.read = true);
-};
-
-const handleNotificationClick = (notification: TeacherNotification) => {
-  markAsRead(notification.id);
-  
-  if (notification.projectId) {
-    navigateToProject(notification.projectId);
-  }
-};
-
-// Функції для сповіщень
-const acceptStudentApplication = async (projectId?: string, studentId?: string, notificationId?: string) => {
-  if (!projectId || !studentId || !notificationId) return;
-  
-  console.log('Прийнято заявку студента:', studentId, 'на проєкт:', projectId);
-  markAsRead(notificationId);
-  alert('Заявку студента прийнято!');
-};
-
-const declineStudentApplication = (projectId?: string, studentId?: string, notificationId?: string) => {
-  if (!projectId || !studentId || !notificationId) return;
-  
-  console.log('Відхилено заявку студента:', studentId, 'на проєкт:', projectId);
-  markAsRead(notificationId);
-  alert('Заявку студента відхилено!');
-};
-
-const reviewProjectSubmission = (projectId?: string) => {
-  if (!projectId) return;
-  navigateToProject(projectId);
-};
-
-const approveProject = (projectId?: string, notificationId?: string) => {
-  if (!projectId || !notificationId) return;
-  
-  console.log('Затверджено проєкт:', projectId);
-  markAsRead(notificationId);
-  alert('Проєкт затверджено!');
 };
 
 // Функції для проєктів
@@ -580,97 +318,6 @@ const handleProjectCreated = (projectId: string) => {
   router.push(`/projects/${projectId}`);
 };
 
-// Сімуляція отримання нових сповіщень
-let notificationInterval: NodeJS.Timeout;
-
-const simulateNewTeacherNotification = () => {
-  if (Math.random() > 0.7 && teacherNotifications.value.length < 10) {
-    const types = ['project_submission', 'student_application', 'project_approval', 'project_update', 'deadline_approaching'] as const;
-    const randomType = types[Math.floor(Math.random() * types.length)];
-    
-    const messages = {
-      project_submission: [
-        'Партнер подав новий проєкт на затвердження',
-        'Отримано новий проєкт від партнера',
-        'Партнер запропонував новий проєкт для реалізації'
-      ],
-      student_application: [
-        'Студент подав заявку на участь у проєкті',
-        'Нова заявка від студента на проєкт',
-        'Студент хоче приєднатися до команди проєкту'
-      ],
-      project_approval: [
-        'AI завершив аналіз проєкту, готовий до затвердження',
-        'Проєкт проаналізовано AI, чекає на ваше затвердження',
-        'Готові рекомендації для нового проєкту'
-      ],
-      project_update: [
-        'У проєкті з\'явилися нові завдання',
-        'Команда проєкту оновила статус виконання',
-        'Проєкт потребує вашого перегляду'
-      ],
-      deadline_approaching: [
-        'У проєкті наближається дедлайн',
-        'Залишилось мало часу до завершення проєкту',
-        'Проєкт потребує термінового перегляду перед дедлайном'
-      ]
-    };
-
-    const titles = {
-      project_submission: 'Новий проєкт',
-      student_application: 'Заявка студента',
-      project_approval: 'Проєкт готовий',
-      project_update: 'Оновлення проєкту',
-      deadline_approaching: 'Наближається дедлайн'
-    };
-
-    const project = projectsStore.projects[Math.floor(Math.random() * projectsStore.projects.length)];
-    const studentId = 'student-' + Math.floor(Math.random() * 100);
-    
-    const newNotification: TeacherNotification = {
-      id: `teacher-notif-${Date.now()}`,
-      type: randomType,
-      title: titles[randomType],
-      message: messages[randomType][Math.floor(Math.random() * messages[randomType].length)],
-      projectId: project?.id,
-      studentId: randomType === 'student_application' ? studentId : undefined,
-      read: false,
-      createdAt: new Date(),
-    };
-    
-    teacherNotifications.value.unshift(newNotification);
-    
-    // Браузерні сповіщення
-    if ('Notification' in window && Notification.permission === 'granted') {
-      new Notification(newNotification.title, {
-        body: newNotification.message,
-        icon: '/favicon.ico',
-        tag: 'teacher-notification'
-      });
-    }
-  }
-};
-
-// Запитуємо дозвіл на сповіщення при монтажі
-onMounted(() => {
-  if ('Notification' in window && Notification.permission === 'default') {
-    Notification.requestPermission().then(permission => {
-      if (permission === 'granted') {
-        console.log('Дозвіл на сповіщення отримано');
-      }
-    });
-  }
-  
-  // Сімулюємо нові сповіщення кожні 2-5 хвилин
-  notificationInterval = setInterval(simulateNewTeacherNotification, Math.random() * 180000 + 120000);
-});
-
-// Очищуємо інтервал при демонтажі
-onUnmounted(() => {
-  if (notificationInterval) {
-    clearInterval(notificationInterval);
-  }
-});
 </script>
 
 <style scoped>

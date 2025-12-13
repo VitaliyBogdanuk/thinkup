@@ -154,3 +154,36 @@ interface ProjectTeam {
   teacher?: Teacher;
   approvedAt?: string;
 }
+
+// Базовий інтерфейс сповіщення
+interface BaseNotification {
+  id: string;
+  title: string;
+  message: string;
+  read: boolean;
+  createdAt: Date;
+  projectId?: string;
+}
+
+// Сповіщення для партнера
+interface PartnerNotification extends BaseNotification {
+  type: "project_status_update" | "new_student_application" | "project_approval" | "project_deadline" | "project_completed";
+  studentId?: string;
+}
+
+// Сповіщення для студента
+interface StudentNotification extends BaseNotification {
+  type: "project_invitation" | "project_update" | "new_project" | "system";
+}
+
+// Сповіщення для викладача
+interface TeacherNotification extends BaseNotification {
+  type: "project_submission" | "student_application" | "project_approval" | "project_update" | "deadline_approaching";
+  studentId?: string;
+}
+
+// Сповіщення для адміна
+interface AdminNotification extends BaseNotification {
+  type: "new_user_registration" | "project_created" | "system_alert" | "user_report" | "system_update";
+  userId?: string;
+}
