@@ -19,16 +19,6 @@
         </button>
       </div>
       
-      <!-- Інформація про користувача -->
-      <div class="bg-white rounded-lg p-3 shadow-sm border border-gray-200">
-        <div class="flex items-center gap-2 text-sm text-gray-700">
-          <div class="w-2 h-2 rounded-full bg-green-500"></div>
-          <span>{{ authStore.currentUser?.email }}</span>
-          <span class="px-2 py-1 bg-gray-100 rounded text-xs">
-            {{ authStore.currentUser?.role === 'partner' ? 'Партнер' : 'Студент' }}
-          </span>
-        </div>
-      </div>
     </div>
 
     <!-- Заголовок та статистика -->

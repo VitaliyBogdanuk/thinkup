@@ -20,18 +20,18 @@
       <div v-if="authStore.isAuthenticated" class="px-2 mb-4">
         <div v-if="!isSidebarCollapsed" class="bg-gray-700 rounded-lg p-3 border border-gray-600">
           <div class="flex items-center gap-2">
-            <div :class="getRoleIconClass(authStore.userRole)" class="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0">
-              <UserIcon class="w-5 h-5" :class="getRoleIconColor(authStore.userRole)" />
+            <div :class="getRoleIconClass(authStore.userRole || authStore.currentUser?.role || null)" class="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0">
+              <UserIcon class="w-5 h-5" :class="getRoleIconColor(authStore.userRole || authStore.currentUser?.role || null)" />
             </div>
             <div class="flex-1 min-w-0">
               <p class="text-xs text-gray-400 mb-1">Поточна роль</p>
-              <p class="text-sm font-semibold text-gray-200 truncate">{{ getRoleLabel(authStore.userRole) }}</p>
+              <p class="text-sm font-semibold text-gray-200 truncate">{{ getRoleLabel(authStore.userRole || authStore.currentUser?.role || null) }}</p>
             </div>
           </div>
         </div>
         <div v-else class="flex justify-center">
-          <div :class="getRoleIconClass(authStore.userRole)" class="w-10 h-10 rounded-full flex items-center justify-center" :title="getRoleLabel(authStore.userRole)">
-            <UserIcon class="w-5 h-5" :class="getRoleIconColor(authStore.userRole)" />
+          <div :class="getRoleIconClass(authStore.userRole || authStore.currentUser?.role || null)" class="w-10 h-10 rounded-full flex items-center justify-center" :title="getRoleLabel(authStore.userRole || authStore.currentUser?.role || null)">
+            <UserIcon class="w-5 h-5" :class="getRoleIconColor(authStore.userRole || authStore.currentUser?.role || null)" />
           </div>
         </div>
       </div>
