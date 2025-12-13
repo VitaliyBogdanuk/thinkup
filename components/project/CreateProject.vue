@@ -2,7 +2,7 @@
   <transition name="fade">
     <div v-if="isOpen" class="popup-modal">
       <div
-        class="w-full sm:w-fit h-fit max-w-2xl max-h-[90vh] flex flex-col p-4 sm:p-6 md:p-8 bg-white rounded-xl gap-6 md:gap-10 relative m-4 sm:m-10 shadow-lg border border-gray-200 overflow-y-auto"
+        class="w-full sm:w-fit h-fit max-w-2xl max-h-[90vh] flex flex-col p-4 sm:p-6 md:p-8 bg-white rounded-xl gap-6 md:gap-10 relative m-4 sm:m-10 shadow-lg border border-gray-200 overflow-y-auto scrollbar-hide"
       >
         <button
           class="absolute top-4 right-4 rounded-full bg-white hover:bg-gray-100 text-gray-800 p-2 flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-200 z-30 border-2 border-gray-200 hover:scale-110 active:scale-95"
@@ -290,4 +290,21 @@ const handleSubmit = async () => {
   closeModal();
 };
 </script>
+
+<style scoped>
+/* Приховуємо скролбар для всіх браузерів */
+.scrollbar-hide {
+  /* Для Firefox */
+  scrollbar-width: none;
+  /* Для IE та Edge */
+  -ms-overflow-style: none;
+}
+
+/* Для WebKit браузерів (Chrome, Safari, Opera) */
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
+}
+</style>
 
