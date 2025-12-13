@@ -182,6 +182,47 @@
                 <span>Website</span>
               </a>
             </div>
+            
+            <!-- Статистика проєктів -->
+            <div class="mt-6 pt-6 border-t border-gray-200">
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div class="bg-gray-50 rounded-lg p-4">
+                  <div class="flex items-center gap-2 mb-2">
+                    <span class="text-2xl">✅</span>
+                    <div>
+                      <p class="text-xs text-gray-500">Завершених проєктів</p>
+                      <p class="text-2xl font-bold text-gray-800">{{ completedProjects.length }}</p>
+                    </div>
+                  </div>
+                  <p class="text-xs text-gray-600 mt-2">З {{ myProjects.length }} загальних проєктів</p>
+                </div>
+                
+                <div class="bg-gray-50 rounded-lg p-4">
+                  <div class="flex items-center gap-2 mb-2">
+                    <span class="text-2xl">🤝</span>
+                    <div>
+                      <p class="text-xs text-gray-500">Партнерів</p>
+                      <p class="text-2xl font-bold text-gray-800">{{ partnersWorkedWith.length }}</p>
+                    </div>
+                  </div>
+                  <p class="text-xs text-gray-600 mt-2">З якими працював</p>
+                </div>
+              </div>
+              
+              <!-- Список партнерів -->
+              <div v-if="partnersWorkedWith.length > 0" class="mt-4">
+                <p class="text-sm font-semibold text-gray-700 mb-2">Партнери:</p>
+                <div class="flex flex-wrap gap-2">
+                  <div
+                    v-for="partner in partnersWorkedWith"
+                    :key="partner.id"
+                    class="px-3 py-1.5 bg-savoy/10 text-savoy rounded-lg text-sm font-medium border border-savoy/20"
+                  >
+                    {{ partner.companyName }}
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -373,6 +414,7 @@ import type {
   Student, 
   Project, 
   Skill, 
+  Partner,
   Notification as NotificationType,
   ProjectCategory,
   ComplexityLevel,
@@ -436,6 +478,31 @@ const currentStudent = computed(() => {
 const myProjects = computed(() => {
   if (!currentStudent.value) return [];
   return projectsStore.projects.filter((p: Project) => p.team.includes(currentStudent.value!.id));
+});
+
+// Завершені проєкти
+const completedProjects = computed(() => {
+  if (!currentStudent.value) return [];
+  return myProjects.value.filter((p: Project) => p.status === 'completed');
+});
+
+// Партнери, проєкти яких виконував студент (тільки з завершених проєктів)
+const partnersWorkedWith = computed(() => {
+  if (!currentStudent.value) return [];
+  
+  const partnerIds = new Set<string>();
+  
+  // Збираємо унікальні ID партнерів тільки з завершених проєктів, де студент брав участь
+  completedProjects.value.forEach((project: Project) => {
+    if (project.partnerId) {
+      partnerIds.add(project.partnerId);
+    }
+  });
+  
+  // Отримуємо об'єкти партнерів
+  return Array.from(partnerIds)
+    .map(partnerId => projectsStore.partners.find(p => p.id === partnerId))
+    .filter((p): p is Partner => p !== undefined);
 });
 
 // Рекомендовані проєкти на основі навичок

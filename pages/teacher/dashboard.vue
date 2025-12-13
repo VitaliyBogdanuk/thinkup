@@ -17,9 +17,11 @@
           </div>
           <div class="flex-1 min-w-0">
             <h2 class="text-xl sm:text-2xl font-bold text-gray-800 mb-2">{{ currentTeacher.fullName }}</h2>
-            <p class="text-gray-600 mb-1 text-sm sm:text-base">{{ currentTeacher.department }}</p>
+            <p v-if="currentTeacher.department" class="text-gray-600 mb-1 text-sm sm:text-base">
+              {{ currentTeacher.department }}
+            </p>
             <p class="text-gray-500 text-xs sm:text-sm mb-4 break-all">{{ currentTeacher.email }}</p>
-            <div v-if="currentTeacher.specialization" class="flex flex-wrap gap-2">
+            <div v-if="currentTeacher.specialization && currentTeacher.specialization.length > 0" class="flex flex-wrap gap-2 mb-4">
               <span
                 v-for="spec in currentTeacher.specialization"
                 :key="spec"
@@ -27,6 +29,41 @@
               >
                 {{ spec }}
               </span>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Статистика проєктів -->
+        <div class="mt-6 pt-6 border-t border-gray-200">
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div class="bg-gray-50 rounded-lg p-4">
+              <div class="flex items-center gap-2 mb-2">
+                <span class="text-2xl">⏳</span>
+                <div>
+                  <p class="text-xs text-gray-500">Очікують затвердження</p>
+                  <p class="text-2xl font-bold text-gray-800">{{ pendingProjects.length }}</p>
+                </div>
+              </div>
+            </div>
+            
+            <div class="bg-gray-50 rounded-lg p-4">
+              <div class="flex items-center gap-2 mb-2">
+                <span class="text-2xl">🚀</span>
+                <div>
+                  <p class="text-xs text-gray-500">Активних проєктів</p>
+                  <p class="text-2xl font-bold text-gray-800">{{ activeProjects.length }}</p>
+                </div>
+              </div>
+            </div>
+            
+            <div class="bg-gray-50 rounded-lg p-4">
+              <div class="flex items-center gap-2 mb-2">
+                <span class="text-2xl">✅</span>
+                <div>
+                  <p class="text-xs text-gray-500">Завершених</p>
+                  <p class="text-2xl font-bold text-gray-800">{{ completedProjects.length }}</p>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -110,6 +147,7 @@ import { computed } from "vue";
 import { useRouter } from "vue-router";
 import { useAuthStore } from "~~/stores/auth";
 import { useProjectsStore } from "~~/stores/projects";
+import type { ComplexityLevel } from "~~/types";
 
 const router = useRouter();
 const authStore = useAuthStore();
@@ -128,6 +166,10 @@ const pendingProjects = computed(() => {
 
 const activeProjects = computed(() => {
   return projectsStore.projects.filter((p) => p.status === "active");
+});
+
+const completedProjects = computed(() => {
+  return projectsStore.projects.filter((p) => p.status === "completed");
 });
 
 const getComplexityText = (complexity: ComplexityLevel): string => {

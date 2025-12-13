@@ -347,6 +347,78 @@ API: REST або GraphQL
     ],
     team: [],
   },
+  {
+    name: "E-commerce платформа для продажу одягу",
+    description: "Розробка повнофункціонального інтернет-магазину з системою управління товарами, кошиком та оплатою",
+    technicalSpecification: `ТЕХНІЧНЕ ЗАВДАННЯ
+E-commerce платформа для продажу одягу
+
+1. ОПИС
+Розробка сучасного інтернет-магазину для продажу одягу з повним функціоналом e-commerce.
+
+2. ФУНКЦІОНАЛЬНІСТЬ
+- Каталог товарів з фільтрами та пошуком
+- Кошик та оформлення замовлення
+- Система оплати та доставки
+- Особистий кабінет користувача
+- Адмін-панель для управління товарами
+
+3. ТЕХНОЛОГІЇ
+- Frontend: Vue.js 3, Nuxt.js
+- Backend: Node.js, Express
+- База даних: PostgreSQL
+- Платіжна система: Stripe
+
+4. ДЕДЛАЙН
+Завершено.`,
+    category: "IT",
+    complexity: "high",
+    deadline: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString().split("T")[0],
+    partnerId: "partner-1",
+    status: "completed",
+    roles: [
+      { id: uuidv4(), name: "Frontend Developer", required: 2, assigned: ["student-1", "student-4"] },
+      { id: uuidv4(), name: "Backend Developer", required: 1, assigned: ["student-2"] },
+      { id: uuidv4(), name: "UI/UX Designer", required: 1, assigned: ["student-3"] },
+    ],
+    team: ["student-1", "student-2", "student-3", "student-4"],
+    approvedBy: "teacher-1",
+    approvedAt: new Date(Date.now() - 120 * 24 * 60 * 60 * 1000).toISOString(),
+  },
+  {
+    name: "Лендінг-сторінка для стартапу",
+    description: "Створення сучасної лендінг-сторінки з анімаціями та формою зворотного зв'язку",
+    technicalSpecification: `ТЕХНІЧНЕ ЗАВДАННЯ
+Лендінг-сторінка для стартапу
+
+1. ОПИС
+Розробка односторінкового сайту для презентації стартапу з формою зворотного зв'язку.
+
+2. ВИМОГИ
+- Сучасний дизайн
+- Адаптивність
+- Швидке завантаження
+- SEO оптимізація
+
+3. ТЕХНОЛОГІЇ
+- HTML5, CSS3, JavaScript
+- Анімації на CSS/JS
+
+4. ДЕДЛАЙН
+Завершено.`,
+    category: "Дизайн",
+    complexity: "low",
+    deadline: new Date(Date.now() - 60 * 24 * 60 * 60 * 1000).toISOString().split("T")[0],
+    partnerId: "partner-2",
+    status: "completed",
+    roles: [
+      { id: uuidv4(), name: "UI/UX Designer", required: 1, assigned: ["student-3"] },
+      { id: uuidv4(), name: "Frontend Developer", required: 1, assigned: ["student-1"] },
+    ],
+    team: ["student-1", "student-3"],
+    approvedBy: "teacher-2",
+    approvedAt: new Date(Date.now() - 90 * 24 * 60 * 60 * 1000).toISOString(),
+  },
 ];
 
 // Функція для ініціалізації мокованих даних
