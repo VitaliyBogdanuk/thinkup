@@ -189,6 +189,21 @@ interface AdminNotification extends BaseNotification {
   userId?: string;
 }
 
+// Відгук партнера про студента
+interface PartnerReview {
+  id: string;
+  partnerId: string;
+  partnerName: string;
+  studentId: string;
+  projectId: string;
+  projectName: string;
+  rating: number; // Оцінка від 1 до 5
+  comment: string; // Текст відгуку
+  skills?: string[]; // Відзначені навички
+  date: string; // Дата відгуку
+  createdAt: string;
+}
+
 // Експорт типів
 export type {
   UserRole,
@@ -209,4 +224,5 @@ export type {
   StudentNotification,
   TeacherNotification,
   AdminNotification,
+  PartnerReview,
 };

@@ -95,18 +95,35 @@
             <div
               v-for="studentId in project.team"
               :key="studentId"
-              class="flex items-center gap-3 md:gap-4 p-3 md:p-4 border border-gray-200 rounded-lg"
+              class="flex flex-col sm:flex-row items-start sm:items-center gap-3 md:gap-4 p-3 md:p-4 border border-gray-200 rounded-lg"
             >
-              <div class="w-10 h-10 md:w-12 md:h-12 rounded-full bg-savoy/20 flex items-center justify-center flex-shrink-0">
-                <span class="text-savoy font-bold text-sm md:text-base">
-                  {{ getStudentInitial(studentId) }}
-                </span>
+              <div class="flex items-center gap-3 md:gap-4 flex-1 min-w-0">
+                <div class="w-10 h-10 md:w-12 md:h-12 rounded-full bg-savoy/20 flex items-center justify-center flex-shrink-0">
+                  <span class="text-savoy font-bold text-sm md:text-base">
+                    {{ getStudentInitial(studentId) }}
+                  </span>
+                </div>
+                <div class="flex-1 min-w-0">
+                  <p class="font-semibold text-gray-800">{{ getStudentName(studentId) }}</p>
+                  <p class="text-xs md:text-sm text-gray-600">{{ getStudentInfo(studentId) }}</p>
+                  <p class="text-xs md:text-sm text-gray-500 mt-1">{{ getStudentRole(studentId) }}</p>
+                  <!-- Показуємо відгук, якщо він є -->
+                  <div v-if="getStudentReview(studentId)" class="mt-2 flex items-center gap-2">
+                    <div class="flex items-center gap-1">
+                      <span class="text-amber-500 text-sm">★</span>
+                      <span class="text-sm font-semibold text-gray-700">{{ getStudentReview(studentId)?.rating.toFixed(1) }}</span>
+                    </div>
+                    <span class="text-xs text-gray-500">Відгук залишено</span>
+                  </div>
+                </div>
               </div>
-              <div class="flex-1 min-w-0">
-                <p class="font-semibold text-gray-800">{{ getStudentName(studentId) }}</p>
-                <p class="text-xs md:text-sm text-gray-600">{{ getStudentInfo(studentId) }}</p>
-                <p class="text-xs md:text-sm text-gray-500 mt-1">{{ getStudentRole(studentId) }}</p>
-              </div>
+              <button
+                @click="openReviewForm(studentId)"
+                class="w-full sm:w-auto px-4 py-2 bg-savoy text-white rounded-lg hover:bg-savoy/90 transition-colors text-sm font-semibold whitespace-nowrap flex-shrink-0 flex items-center justify-center gap-2"
+              >
+                <span v-if="getStudentReview(studentId)">Редагувати відгук</span>
+                <span v-else>Залишити відгук</span>
+              </button>
             </div>
           </div>
           <div v-else class="text-gray-500 text-center py-8">
@@ -187,6 +204,16 @@
       @close="showEditModal = false"
       @updated="handleProjectUpdated"
     />
+
+    <!-- Модальне вікно відгуку про студента -->
+    <StudentReviewForm
+      v-if="project && selectedStudentId"
+      :is-open="showReviewModal"
+      :student-id="selectedStudentId"
+      :project-id="project.id"
+      @close="closeReviewForm"
+      @saved="handleReviewSaved"
+    />
   </section>
 </template>
 
@@ -202,6 +229,7 @@ import FormTasks from "~~/components/form/Tasks.vue";
 import ApproveTeam from "~~/components/project/ApproveTeam.vue";
 import StudentRecommendations from "~~/components/project/StudentRecommendations.vue";
 import EditProject from "~~/components/project/EditProject.vue";
+import StudentReviewForm from "~~/components/project/StudentReviewForm.vue";
 
 const route = useRoute();
 const router = useRouter();
@@ -216,6 +244,10 @@ const teamCount = ref(0);
 
 // Модальне вікно редагування проєкту
 const showEditModal = ref(false);
+
+// Модальне вікно відгуку про студента
+const showReviewModal = ref(false);
+const selectedStudentId = ref<string | null>(null);
 
 // Ініціалізуємо teamCount при завантаженні проєкту
 watch(project, (newProject) => {
@@ -295,6 +327,32 @@ const getStudentRole = (studentId: string): string => {
   if (!project.value) return "";
   const role = project.value.roles.find(r => r.assigned.includes(studentId));
   return role ? role.name : "Учасник";
+};
+
+const getStudentReview = (studentId: string) => {
+  if (!authStore.currentUser || authStore.currentUser.role !== "partner" || !project.value) {
+    return null;
+  }
+  return projectsStore.getReviewByPartnerAndStudent(
+    authStore.currentUser.id,
+    studentId,
+    project.value.id
+  );
+};
+
+const openReviewForm = (studentId: string) => {
+  selectedStudentId.value = studentId;
+  showReviewModal.value = true;
+};
+
+const closeReviewForm = () => {
+  showReviewModal.value = false;
+  selectedStudentId.value = null;
+};
+
+const handleReviewSaved = () => {
+  // Відгук збережено, можна показати повідомлення або оновити інтерфейс
+  closeReviewForm();
 };
 
 const handleProjectUpdated = (updatedProjectId: string) => {

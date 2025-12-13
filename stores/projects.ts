@@ -11,6 +11,7 @@ export const useProjectsStore = defineStore("projects", {
     const partners = useStorage<Partner[]>("partners", []);
     const teachers = useStorage<Teacher[]>("teachers", []);
     const projects = useStorage<Project[]>("projects", []);
+    const partnerReviews = useStorage<PartnerReview[]>("partnerReviews", []);
     
     // Ініціалізуємо моковані дані при першому завантаженні
     if (typeof window !== "undefined") {
@@ -22,6 +23,7 @@ export const useProjectsStore = defineStore("projects", {
       students,
       teachers,
       partners,
+      partnerReviews,
     };
   },
   getters: {
@@ -39,6 +41,14 @@ export const useProjectsStore = defineStore("projects", {
     },
     getProjectsPendingApproval: (state): Project[] => {
       return state.projects.filter((p) => p.status === "pending_approval");
+    },
+    getReviewsByStudent: (state) => (studentId: string): PartnerReview[] => {
+      return state.partnerReviews.filter((r) => r.studentId === studentId);
+    },
+    getReviewByPartnerAndStudent: (state) => (partnerId: string, studentId: string, projectId: string): PartnerReview | undefined => {
+      return state.partnerReviews.find(
+        (r) => r.partnerId === partnerId && r.studentId === studentId && r.projectId === projectId
+      );
     },
   },
   actions: {
@@ -407,6 +417,50 @@ export const useProjectsStore = defineStore("projects", {
       
       project.deadline = newDeadline.toISOString().split("T")[0];
       project.updatedAt = new Date().toISOString();
+    },
+
+    // Додавання відгуку партнера про студента
+    addPartnerReview(reviewData: Omit<PartnerReview, "id" | "date" | "createdAt">): PartnerReview {
+      // Перевіряємо, чи вже є відгук від цього партнера про цього студента в цьому проєкті
+      const existingReview = this.partnerReviews.find(
+        (r) => r.partnerId === reviewData.partnerId && 
+               r.studentId === reviewData.studentId && 
+               r.projectId === reviewData.projectId
+      );
+
+      const now = new Date();
+      const review: PartnerReview = {
+        ...reviewData,
+        id: existingReview?.id || uuidv4(),
+        date: now.toISOString().split("T")[0],
+        createdAt: now.toISOString(),
+      };
+
+      if (existingReview) {
+        // Оновлюємо існуючий відгук
+        const index = this.partnerReviews.indexOf(existingReview);
+        this.partnerReviews[index] = review;
+      } else {
+        // Додаємо новий відгук
+        this.partnerReviews.push(review);
+      }
+
+      // Оновлюємо рейтинг студента на основі всіх відгуків
+      this.updateStudentRating(reviewData.studentId);
+
+      return review;
+    },
+
+    // Оновлення рейтингу студента на основі відгуків
+    updateStudentRating(studentId: string): void {
+      const student = this.getStudentById(studentId);
+      if (!student) return;
+
+      const reviews = this.getReviewsByStudent(studentId);
+      if (reviews.length === 0) return;
+
+      const averageRating = reviews.reduce((sum, review) => sum + review.rating, 0) / reviews.length;
+      student.rating = parseFloat(averageRating.toFixed(1));
     },
   },
 });

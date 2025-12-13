@@ -101,8 +101,8 @@
                   </div>
                 </div>
                 
-                <!-- Список партнерів -->
-                <div v-if="partnersWorkedWith.length > 0" class="mt-3 sm:mt-4">
+                <!-- Список відгуків -->
+                <div v-if="partnerReviews.length > 0" class="mt-3 sm:mt-4">
                   <div class="flex items-center justify-between mb-2">
                     <p class="text-xs sm:text-sm font-semibold text-gray-700">Відгуки партнерів:</p>
                     <div class="flex items-center gap-1">
@@ -116,24 +116,24 @@
                   
                   <div class="flex flex-wrap gap-2">
                     <div
-                      v-for="partner in partnersWorkedWith"
-                      :key="partner.id"
+                      v-for="review in partnerReviews"
+                      :key="review.id"
                       class="px-2 sm:px-3 py-1.5 sm:py-2 bg-savoy/10 text-gray-800 rounded-lg text-xs sm:text-sm font-medium border border-savoy/20 hover:bg-savoy/20 transition-all cursor-pointer break-words group relative"
-                      @click="openPartnerReview(partner)"
+                      @click="selectedPartnerReview = review"
                     >
                       <div class="flex items-center gap-1.5">
                         <!-- Аватар партнера -->
                         <div class="w-5 h-5 rounded-full bg-savoy/30 flex items-center justify-center flex-shrink-0">
-                          <span class="text-xs font-bold text-savoy">{{ partner.companyName.charAt(0).toUpperCase() }}</span>
+                          <span class="text-xs font-bold text-savoy">{{ review.partnerName.charAt(0).toUpperCase() }}</span>
                         </div>
                         
                         <!-- Назва компанії -->
-                        <span class="font-medium truncate max-w-[100px] sm:max-w-[120px]">{{ partner.companyName }}</span>
+                        <span class="font-medium truncate max-w-[100px] sm:max-w-[120px]">{{ review.partnerName }}</span>
                         
                         <!-- Оцінка партнера -->
                         <div class="flex items-center gap-0.5 flex-shrink-0">
                           <span class="text-amber-500 text-xs">★</span>
-                          <span class="text-xs font-bold">{{ getPartnerReview(partner.id)?.rating.toFixed(1) || '4.5' }}</span>
+                          <span class="text-xs font-bold">{{ review.rating.toFixed(1) }}</span>
                         </div>
                         
                         <!-- Іконка відгуку -->
@@ -437,6 +437,7 @@ import type {
   Project, 
   Skill, 
   Partner,
+  PartnerReview,
   ProjectCategory,
   ComplexityLevel,
   StudentRecommendation
@@ -468,127 +469,21 @@ const closeNotification = () => {
 };
 
 const showAllReviews = ref(false);
-const selectedPartnerReview = ref<any>(null);
+const selectedPartnerReview = ref<PartnerReview | null>(null);
 
 // Функція для отримання відгуку для існуючого партнера
 const getPartnerReview = (partnerId: string) => {
-  // Знаходимо партнера в store
-  const partner = projectsStore.partners.find(p => p.id === partnerId);
-  if (!partner) return null;
+  if (!currentStudent.value) return null;
   
-  const companyName = partner.companyName;
+  // Шукаємо реальний відгук від цього партнера про поточного студента
+  const review = studentReviews.value.find(r => r.partnerId === partnerId);
   
-  // Визначаємо тип компанії для більш реалістичного відгуку
-  const getCompanyType = () => {
-    const name = companyName.toLowerCase();
-    if (name.includes('tech') || name.includes('it') || name.includes('software')) return 'tech';
-    if (name.includes('design') || name.includes('creative') || name.includes('studio')) return 'design';
-    if (name.includes('data') || name.includes('analytics') || name.includes('research')) return 'data';
-    if (name.includes('startup') || name.includes('lab') || name.includes('innov')) return 'startup';
-    if (name.includes('eco') || name.includes('green') || name.includes('sustain')) return 'eco';
-    if (name.includes('fin') || name.includes('bank') || name.includes('money')) return 'finance';
-    if (name.includes('health') || name.includes('med') || name.includes('care')) return 'health';
-    return 'general';
-  };
+  if (review) {
+    return review;
+  }
   
-  const companyType = getCompanyType();
-  
-  // Генеруємо відгук відповідно до типу компанії
-  const reviewTemplates: Record<string, any> = {
-    tech: {
-      projectName: "Розробка програмного забезпечення",
-      comments: [
-        "Відмінна робота з технічними завданнями. Швидко освоїв наш стек технологій та якісно виконував поставлені задачі.",
-        "Проявив себе як вдумливий розробник. Особливо вразила робота з архітектурою додатків та оптимізацією продуктивності.",
-        "Технічні навички на високому рівні. Швидко знаходив оптимальні рішення складних проблем та ефективно використовував сучасні технології."
-      ],
-      skills: ["JavaScript", "TypeScript", "React", "Node.js", "Git", "API Development"]
-    },
-    design: {
-      projectName: "Дизайн користувацького інтерфейсу",
-      comments: [
-        "Креативний підхід до дизайну та чудове відчуття естетики. Робота з Figma на професійному рівні.",
-        "Вражаюча увага до деталей та здатність створювати інтуїтивно зрозумілі інтерфейси. Чудовий UX дизайн.",
-        "Проявив себе як талановитий дизайнер з гарним розумінням принципів користувацького досвіду."
-      ],
-      skills: ["UI/UX Design", "Figma", "Prototyping", "User Research", "Adobe Creative Suite"]
-    },
-    data: {
-      projectName: "Аналіз та обробка даних",
-      comments: [
-        "Відмінні аналітичні здібності. Якісно структурував дані та робив корисні висновки для бізнесу.",
-        "Професійна робота з великими наборами даних. Чіткі аналітичні звіти та релевантні рекомендації.",
-        "Вражаюча здатність виявляти закономірності в даних та будувати прогнозні моделі."
-      ],
-      skills: ["Python", "SQL", "Data Analysis", "Statistics", "Machine Learning", "Excel"]
-    },
-    startup: {
-      projectName: "Розробка MVP стартапу",
-      comments: [
-        "Відмінно адаптувався до динамічного середовища стартапу. Швидко вчився та ефективно працював в умовах невизначеності.",
-        "Ключовий учасник команди. Не тільки технічні навички, але й здатність бачити картину в цілому та пропонувати бізнес-рішення.",
-        "Гнучкість та адаптивність - ключові якості для роботи в стартапі. Завжди готовий взяти на себе нові виклики."
-      ],
-      skills: ["Full-stack Development", "Agile", "Product Management", "Problem Solving", "Adaptability"]
-    },
-    eco: {
-      projectName: "Розробка екологічних рішень",
-      comments: [
-        "Вражаюча мотивація до створення сталого майбутнього. Технічні навички поєднувалися з глибоким розумінням екологічних проблем.",
-        "Якісна робота над проєктом, що має соціальну значущість. Демонстрував відповідальність та прискіпливість до деталей.",
-        "Проявив себе як відповідальний фахівець з гарним розумінням екологічних технологій та принципів сталого розвитку."
-      ],
-      skills: ["Sustainable Tech", "IoT", "Data Monitoring", "Environmental Science", "Project Management"]
-    },
-    finance: {
-      projectName: "Розробка фінансового рішення",
-      comments: [
-        "Відмінна робота з фінансовими даними та алгоритмами. Дотримувався високих стандартів безпеки та точності.",
-        "Проявив себе як уважний та відповідальний фахівець. Важливі якості для роботи з фінансовими системами.",
-        "Якісна реалізація складних фінансових алгоритмів. Чудове розуміння бізнес-логіки та технічних вимог."
-      ],
-      skills: ["Security", "Encryption", "Financial Algorithms", "Compliance", "API Integration"]
-    },
-    health: {
-      projectName: "Розробка медичного рішення",
-      comments: [
-        "Вражаюча відповідальність та увага до деталей - критично важливо для медичних проєктів. Дотримувався всіх стандартів безпеки.",
-        "Якісна робота з чутливими даними. Проявив розуміння медичних процесів та технічних вимог охорони здоров'я.",
-        "Професійний підхід до розробки медичних рішень. Важливі якості - точність, надійність та дотримання протоколів."
-      ],
-      skills: ["Healthcare APIs", "Data Privacy", "Security", "Medical Standards", "Quality Assurance"]
-    },
-    general: {
-      projectName: "Корпоративний проєкт співпраці",
-      comments: [
-        "Відмінна професійна робота. Демонстрував високий рівень відповідальності та якості виконання завдань.",
-        "Проявив себе як цінний член команди. Хороші комунікаційні навички та здатність ефективно співпрацювати.",
-        "Стабільна та якісна робота протягом усього проєкту. Заслуговує на високу оцінку за професіоналізм."
-      ],
-      skills: ["Communication", "Teamwork", "Problem Solving", "Project Management", "Professionalism"]
-    }
-  };
-  
-  const template = reviewTemplates[companyType] || reviewTemplates.general;
-  const randomComment = template.comments[Math.floor(Math.random() * template.comments.length)];
-  
-  // Генеруємо випадкову оцінку (4.0-5.0)
-  const rating = 4.0 + Math.random() * 1.0;
-  
-  // Генеруємо випадкову дату за останній рік
-  const randomDate = new Date();
-  randomDate.setMonth(randomDate.getMonth() - Math.floor(Math.random() * 12));
-  
-  return {
-    id: `review_${partnerId}`,
-    partnerId: partnerId,
-    partnerName: companyName,
-    projectName: template.projectName,
-    rating: parseFloat(rating.toFixed(1)),
-    comment: randomComment,
-    skills: [...template.skills].sort(() => 0.5 - Math.random()).slice(0, 4),
-    date: randomDate.toISOString().split('T')[0]
-  };
+  // Якщо відгуку немає, повертаємо null (не показуємо моковані дані)
+  return null;
 };
 
 // Функція для опису рейтингу
@@ -600,23 +495,24 @@ const getRatingDescription = (rating: number): string => {
   return "Можна краще";
 };
 
-// Обчислювані властивості
+// Обчислювані властивості - реальні відгуки
 const partnerReviews = computed(() => {
+  const reviews = studentReviews.value;
   if (showAllReviews.value) {
-    return partnersWorkedWith.value.map(partner => getPartnerReview(partner.id)).filter(Boolean);
+    return reviews;
   }
-  return partnersWorkedWith.value.map(partner => getPartnerReview(partner.id)).filter(Boolean).slice(0, 4);
+  return reviews.slice(0, 4);
 });
 
-// Статистика для всіх партнерів
+// Статистика для всіх відгуків
 const partnersReviewStats = computed(() => {
-  const reviews = partnersWorkedWith.value.map(partner => getPartnerReview(partner.id)).filter(Boolean);
+  const reviews = studentReviews.value;
   
   if (reviews.length === 0) {
     return { averageRating: 0, totalReviews: 0 };
   }
   
-  const totalRating = reviews.reduce((sum, review) => sum + review!.rating, 0);
+  const totalRating = reviews.reduce((sum, review) => sum + review.rating, 0);
   const averageRating = totalRating / reviews.length;
   
   return {
@@ -690,6 +586,12 @@ const partnersWorkedWith = computed(() => {
     .filter((p): p is Partner => p !== undefined);
 });
 
+// Реальні відгуки про студента
+const studentReviews = computed(() => {
+  if (!currentStudent.value) return [];
+  return projectsStore.getReviewsByStudent(currentStudent.value.id);
+});
+
 // Рекомендовані проєкти на основі навичок
 const recommendedProjects = computed(() => {
   if (!currentStudent.value) return [];
@@ -717,16 +619,9 @@ const recommendedProjects = computed(() => {
     .slice(0, 6);
 });
 
-// Відкрити відгук партнера
-const openPartnerReview = (partner: Partner) => {
-  // Завжди створюємо фейковий відгук для цього партнера
-  const review = getPartnerReview(partner.id);
-  
-  if (review) {
-    selectedPartnerReview.value = review;
-  } else {
-    // Якщо щось пішло не так, створюємо простий відгук
-    selectedPartnerReview.value = {
+// Відкрити відгук партнера (тепер використовуємо реальні відгуки)
+const openPartnerReview = (review: PartnerReview) => {
+  selectedPartnerReview.value = review;
       id: `review_${partner.id}`,
       partnerId: partner.id,
       partnerName: partner.companyName,
