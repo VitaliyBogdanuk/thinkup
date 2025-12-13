@@ -3,15 +3,15 @@
     <div class="hidden md:block relative">
       <aside
         :class="[
-          'h-full bg-charcoal border-r border-gray-200 text-gray-300 overflow-y-auto flex-shrink-0 transition-all duration-300',
+          'sidebar h-full bg-charcoal border-r border-gray-200 text-gray-300 overflow-y-auto flex-shrink-0 transition-all duration-300',
           isSidebarCollapsed ? 'w-20' : 'w-72'
         ]"
       >
         <div class="w-full p-5 relative">
         <NuxtLink to="/" exact-active-class="text-savoy" class="block">
           <div class="flex flex-row gap-2 items-center justify-center" :class="isSidebarCollapsed ? '' : 'justify-start'">
-            <ChartBarSquareIcon class="w-10 h-10 flex-shrink-0 text-savoy" />
-            <h1 v-if="!isSidebarCollapsed" class="whitespace-nowrap text-savoy">ThinkUp</h1>
+            <ChartBarSquareIcon class="w-10 h-10 flex-shrink-0 text-white" />
+            <h1 v-if="!isSidebarCollapsed" class="whitespace-nowrap text-white">ThinkUp</h1>
           </div>
         </NuxtLink>
       </div>
@@ -328,3 +328,9 @@ const getRoleIconColor = (role: UserRole | null): string => {
   return roleColors[role] || "text-savoy";
 };
 </script>
+
+<style scoped>
+  .sidebar {
+    background: #333333;
+  }
+</style>
