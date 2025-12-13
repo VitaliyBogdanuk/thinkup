@@ -67,6 +67,14 @@
               <span v-if="uploadedFileName" class="px-4 py-2 bg-green-100 text-green-700 rounded-lg text-sm flex items-center gap-2 justify-center sm:justify-start">
                 <span>✓</span>
                 <span class="truncate">{{ uploadedFileName }}</span>
+                <button
+                  type="button"
+                  @click="removeUploadedFile"
+                  class="ml-2 text-red-500 hover:text-red-700 focus:outline-none"
+                  title="Видалити файл"
+                >
+                  <TrashIcon class="w-4 h-4" />
+                </button>
               </span>
             </div>
             <textarea
@@ -177,6 +185,7 @@ import { v4 as uuidv4 } from "uuid";
 import { XMarkIcon, TrashIcon } from "@heroicons/vue/24/outline";
 import { useProjectsStore } from "~~/stores/projects";
 import { useAuthStore } from "~~/stores/auth";
+import type { ProjectCategory, ComplexityLevel, ProjectRole } from "~~/types";
 
 const props = defineProps<{
   isOpen: boolean;
@@ -225,6 +234,14 @@ const handleFileUpload = async (event: Event) => {
   } else {
     // Для PDF та інших форматів показуємо повідомлення
     alert("Підтримуються тільки текстові файли (.txt). Будь ласка, скопіюйте вміст в поле ТЗ.");
+  }
+};
+
+const removeUploadedFile = () => {
+  uploadedFileName.value = "";
+  formData.value.technicalSpecification = "";
+  if (fileInput.value) {
+    fileInput.value.value = "";
   }
 };
 
