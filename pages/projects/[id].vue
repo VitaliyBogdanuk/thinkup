@@ -98,8 +98,16 @@
         <p class="text-gray-500 text-center py-8">Канбан-дошка ще не створена. Будь ласка, зачекайте...</p>
       </div>
 
-      <!-- AI Аналіз для партнерів -->
-      <div v-if="authStore.isPartner && project.aiAnalysis" class="mt-4 md:mt-6 bg-white rounded-xl shadow-sm border border-gray-200 p-4 md:p-6">
+      <!-- Технічне завдання -->
+      <div v-if="project.technicalSpecification" class="mb-4 md:mb-6 bg-white rounded-xl shadow-sm border border-gray-200 p-4 md:p-6">
+        <h3 class="text-lg md:text-xl font-bold text-gray-800 mb-4">Технічне завдання (ТЗ)</h3>
+        <div class="bg-gray-50 rounded-lg p-4 md:p-6 border border-gray-200">
+          <pre class="whitespace-pre-wrap text-sm md:text-base text-gray-700 font-sans overflow-x-auto">{{ project.technicalSpecification }}</pre>
+        </div>
+      </div>
+
+      <!-- AI Аналіз проєкту -->
+      <div v-if="project.aiAnalysis" class="mb-4 md:mb-6 bg-white rounded-xl shadow-sm border border-gray-200 p-4 md:p-6">
         <h3 class="text-lg md:text-xl font-bold text-gray-800 mb-4">AI Аналіз проєкту</h3>
         <div class="space-y-3 md:space-y-4">
           <div>
@@ -123,6 +131,12 @@
           <div v-if="project.aiAnalysis.estimatedDuration">
             <h4 class="font-semibold text-gray-800 mb-2 text-sm md:text-base">Оцінка тривалості:</h4>
             <p class="text-sm md:text-base text-gray-600">{{ project.aiAnalysis.estimatedDuration }} годин</p>
+          </div>
+          <div v-if="project.aiAnalysis.riskFactors && project.aiAnalysis.riskFactors.length > 0">
+            <h4 class="font-semibold text-gray-800 mb-2 text-sm md:text-base">Фактори ризику:</h4>
+            <ul class="list-disc list-inside space-y-1 text-sm md:text-base text-gray-600">
+              <li v-for="risk in project.aiAnalysis.riskFactors" :key="risk">{{ risk }}</li>
+            </ul>
           </div>
         </div>
       </div>
