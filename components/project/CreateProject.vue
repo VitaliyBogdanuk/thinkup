@@ -123,40 +123,58 @@
 
           <div class="flex flex-col gap-4">
             <label class="text-gray-800 font-semibold">Потрібні ролі *</label>
-            <div
-              v-for="(role, index) in formData.roles"
-              :key="index"
-              class="flex gap-2 items-center"
-            >
-              <input
-                v-model="role.name"
-                type="text"
-                placeholder="напр. Frontend Developer"
-                required
-                class="flex-1"
-              />
-              <input
-                v-model.number="role.required"
-                type="number"
-                min="1"
-                placeholder="Кількість"
-                required
-                class="w-24"
-              />
-              <button
-                type="button"
-                @click="removeRole(index)"
-                class="p-2 text-red-500 hover:bg-red-50 rounded"
+            
+            <div class="space-y-3">
+              <div
+                v-for="(role, index) in formData.roles"
+                :key="index"
+                class="flex flex-col sm:flex-row gap-3 items-start sm:items-center"
               >
-                <TrashIcon class="w-5 h-5" />
-              </button>
+                <!-- Назва ролі -->
+                <div class="w-full sm:flex-1">
+                  <input
+                    v-model="role.name"
+                    type="text"
+                    placeholder="напр. Frontend Developer"
+                    required
+                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-savoy/50"
+                  />
+                </div>
+                
+                <!-- Кількість -->
+                <div class="flex items-center gap-2 w-full sm:w-auto">
+                  <input
+                    v-model.number="role.required"
+                    type="number"
+                    min="1"
+                    placeholder="Кількість"
+                    required
+                    class="w-full sm:w-24 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-savoy/50"
+                  />
+                  
+                  <!-- Кнопка видалення -->
+                  <button
+                    type="button"
+                    @click="removeRole(index)"
+                    class="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors flex-shrink-0"
+                    title="Видалити роль"
+                  >
+                    <TrashIcon class="w-5 h-5" />
+                  </button>
+                </div>
+              </div>
             </div>
+            
+            <!-- Кнопка додавання ролі -->
             <button
               type="button"
               @click="addRole"
-              class="text-savoy hover:text-savoy/80 font-semibold text-left"
+              class="inline-flex items-center gap-2 text-savoy hover:text-savoy/80 font-semibold text-left mt-2 self-start"
             >
-              + Додати роль
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+              </svg>
+              Додати роль
             </button>
           </div>
 
