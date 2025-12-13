@@ -20,7 +20,7 @@
               <h2 class="text-base sm:text-lg md:text-xl lg:text-2xl font-bold text-gray-800 mb-1.5 sm:mb-2 text-center sm:text-left break-words">{{ currentStudent.fullName }}</h2>
               <p class="text-gray-600 mb-1 text-xs sm:text-sm md:text-base text-center sm:text-left">{{ currentStudent.course }} курс, {{ currentStudent.specialty }}</p>
               <p class="text-gray-500 text-xs sm:text-sm mb-3 sm:mb-4 break-all text-center sm:text-left">{{ currentStudent.email }}</p>
-              <div class="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-3 md:gap-4 flex-wrap">
+              <div class="flex flex-col sm:flex-row items-center sm:items-start gap-2 sm:gap-3 md:gap-4 flex-wrap">
                 <div class="flex items-center gap-1.5 sm:gap-2">
                   <span class="text-xs sm:text-sm text-gray-500">Рейтинг:</span>
                   <span class="text-sm sm:text-base md:text-lg font-bold text-savoy">{{ currentStudent.rating.toFixed(1) }}/5.0</span>

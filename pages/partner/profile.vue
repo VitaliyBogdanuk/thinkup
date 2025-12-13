@@ -9,7 +9,7 @@
     <div v-else class="space-y-6">
       <!-- Профіль партнера -->
       <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-        <div class="flex flex-col sm:flex-row items-start gap-4 sm:gap-6">
+        <div class="flex flex-col sm:flex-row items-center sm:items-start gap-4 sm:gap-6 text-center sm:text-left">
           <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-savoy/20 flex items-center justify-center flex-shrink-0">
             <span class="text-savoy text-2xl sm:text-3xl font-bold">
               {{ currentPartner.companyName.charAt(0).toUpperCase() }}
