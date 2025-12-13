@@ -180,35 +180,53 @@
           <div
             v-for="project in pendingProjects.slice(0, 3)"
             :key="project.id"
-            class="p-4 border border-yellow-200 bg-yellow-50 rounded-lg hover:border-yellow-300 hover:shadow-sm transition-all cursor-pointer"
-            @click="navigateToProject(project.id)"
+            class="p-4 md:p-6 border border-yellow-200 bg-yellow-50 rounded-lg hover:border-yellow-300 hover:shadow-sm transition-all"
           >
-            <div class="flex items-start justify-between mb-3">
-              <div class="flex-1">
-                <div class="flex items-center gap-2 mb-1">
-                  <h4 class="font-bold text-gray-800">{{ project.name }}</h4>
-                  <span class="px-2 py-1 bg-yellow-100 text-yellow-700 rounded text-xs font-semibold">
-                    Очікує затвердження
-                  </span>
-                </div>
-                <p class="text-sm text-gray-600 mb-2">{{ project.description }}</p>
-                
-                <div class="flex items-center gap-3 text-xs text-gray-500">
-                  <div class="flex items-center gap-1">
-                    <span>🏷️</span>
-                    <span>{{ project.category }}</span>
-                  </div>
-                  <div class="flex items-center gap-1">
-                    <span>⚡</span>
-                    <span>{{ getComplexityText(project.complexity) }}</span>
-                  </div>
+            <!-- Назва проєкту -->
+            <h4 class="text-lg md:text-xl font-bold text-gray-800 mb-3">{{ project.name }}</h4>
+            
+            <!-- Опис проєкту -->
+            <p class="text-sm md:text-base text-gray-600 mb-4">{{ project.description }}</p>
+            
+            <!-- Категорія та складність -->
+            <div class="flex flex-col sm:flex-row sm:items-center gap-3 mb-4 text-sm md:text-base">
+              <div>
+                <span class="text-gray-500">Категорія: </span>
+                <span class="font-semibold text-gray-800">{{ project.category }}</span>
+              </div>
+              <div>
+                <span class="text-gray-500">Складність: </span>
+                <span class="font-semibold text-gray-800">{{ getComplexityText(project.complexity) }}</span>
+              </div>
+            </div>
+            
+            <!-- Потрібні ролі на проєкті -->
+            <div v-if="project.roles && project.roles.length > 0" class="mb-4">
+              <h5 class="text-sm md:text-base font-bold text-gray-800 mb-3">Потрібні ролі на проєкті:</h5>
+              <div class="space-y-2">
+                <div
+                  v-for="role in project.roles"
+                  :key="role.id"
+                  class="flex items-center justify-between p-3 bg-white rounded-lg border border-gray-200"
+                >
+                  <span class="text-sm md:text-base text-gray-800 font-medium">{{ role.name }}</span>
+                  <span class="text-sm md:text-base text-gray-600">Потрібно: {{ role.required }}</span>
                 </div>
               </div>
             </div>
             
-            <div class="text-xs text-gray-500">
+            <!-- AI рекомендації -->
+            <div class="text-xs md:text-sm text-gray-500 mb-3">
               <span>AI рекомендації: {{ project.recommendations?.length || 0 }} студентів</span>
             </div>
+            
+            <!-- Кнопка перегляду -->
+            <button
+              class="w-full px-4 py-2 bg-savoy text-white rounded-lg hover:bg-savoy/90 transition-colors text-sm md:text-base font-semibold"
+              @click="navigateToProject(project.id)"
+            >
+              Переглянути деталі
+            </button>
           </div>
         </div>
       </div>

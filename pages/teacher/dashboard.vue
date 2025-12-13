@@ -112,34 +112,54 @@
           </button>
         </div>
         
-        <div class="space-y-3 sm:space-y-4">
+        <div class="space-y-4 sm:space-y-6">
           <div
             v-for="project in pendingProjects.slice(0, 3)"
             :key="project.id"
-            class="p-3 sm:p-4 border border-gray-200 rounded-lg hover:border-savoy transition-colors cursor-pointer"
-            @click="navigateToProject(project.id)"
+            class="p-4 sm:p-5 md:p-6 border border-yellow-200 bg-yellow-50 rounded-lg hover:border-yellow-300 hover:shadow-sm transition-all"
           >
-            <div class="flex flex-col sm:flex-row items-start sm:justify-between gap-2 sm:gap-3 mb-2 sm:mb-3">
-              <div class="flex-1 min-w-0">
-                <div class="flex flex-col sm:flex-row sm:items-center gap-2 mb-1.5 sm:mb-2">
-                  <h4 class="font-bold text-sm sm:text-base md:text-lg text-gray-800 line-clamp-2 pr-2">{{ project.name }}</h4>
-                  <span class="px-2 sm:px-3 py-0.5 sm:py-1 bg-yellow-100 text-yellow-700 rounded-lg text-xs font-semibold whitespace-nowrap flex-shrink-0">
-                    Очікує затвердження
-                  </span>
-                </div>
-                <p class="text-xs sm:text-sm text-gray-600 mb-2 line-clamp-2 leading-relaxed">{{ project.description }}</p>
-                <div class="flex flex-wrap items-center gap-2 sm:gap-3 md:gap-4 text-xs sm:text-sm text-gray-500">
-                  <span class="px-2 py-0.5 sm:py-1 bg-gray-100 rounded whitespace-nowrap">{{ project.category }}</span>
-                  <span class="whitespace-nowrap">{{ getComplexityText(project.complexity) }}</span>
-                  <span v-if="project.recommendations" class="whitespace-nowrap">
-                    {{ project.recommendations.length }} рекомендацій
-                  </span>
+            <!-- Назва проєкту -->
+            <h4 class="text-base sm:text-lg md:text-xl font-bold text-gray-800 mb-3">{{ project.name }}</h4>
+            
+            <!-- Опис проєкту -->
+            <p class="text-sm sm:text-base text-gray-600 mb-4">{{ project.description }}</p>
+            
+            <!-- Категорія та складність -->
+            <div class="flex flex-col sm:flex-row sm:items-center gap-3 mb-4 text-sm sm:text-base">
+              <div>
+                <span class="text-gray-500">Категорія: </span>
+                <span class="font-semibold text-gray-800">{{ project.category }}</span>
+              </div>
+              <div>
+                <span class="text-gray-500">Складність: </span>
+                <span class="font-semibold text-gray-800">{{ getComplexityText(project.complexity) }}</span>
+              </div>
+            </div>
+            
+            <!-- Потрібні ролі на проєкті -->
+            <div v-if="project.roles && project.roles.length > 0" class="mb-4">
+              <h5 class="text-sm sm:text-base font-bold text-gray-800 mb-3">Потрібні ролі на проєкті:</h5>
+              <div class="space-y-2">
+                <div
+                  v-for="role in project.roles"
+                  :key="role.id"
+                  class="flex items-center justify-between p-3 bg-white rounded-lg border border-gray-200"
+                >
+                  <span class="text-sm sm:text-base text-gray-800 font-medium">{{ role.name }}</span>
+                  <span class="text-sm sm:text-base text-gray-600">Потрібно: {{ role.required }}</span>
                 </div>
               </div>
             </div>
+            
+            <!-- AI рекомендації -->
+            <div v-if="project.recommendations" class="text-xs sm:text-sm text-gray-500 mb-4">
+              <span>AI рекомендації: {{ project.recommendations.length }} студентів</span>
+            </div>
+            
+            <!-- Кнопка перегляду -->
             <button
-              class="mt-2 sm:mt-3 w-full px-3 sm:px-4 py-2 sm:py-2.5 bg-savoy text-white rounded-lg hover:bg-savoy/90 transition-colors text-xs sm:text-sm md:text-base font-semibold"
-              @click.stop="navigateToProject(project.id)"
+              class="w-full px-4 py-2 sm:py-2.5 bg-savoy text-white rounded-lg hover:bg-savoy/90 transition-colors text-sm sm:text-base font-semibold"
+              @click="navigateToProject(project.id)"
             >
               Переглянути та затвердити
             </button>
@@ -266,7 +286,7 @@ const currentTeacher = computed(() => {
 });
 
 const pendingProjects = computed(() => {
-  return projectsStore.getProjectsPendingApproval || [];
+  return projectsStore.getProjectsPendingApproval;
 });
 
 const activeProjects = computed(() => {
