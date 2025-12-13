@@ -17,6 +17,26 @@
         <p v-if="!isSidebarCollapsed" class="mb-5 tracking-widest mt-5">НАВІГАЦІЯ</p>
       </div>
       
+      <!-- Відображення поточної ролі -->
+      <div v-if="authStore.isAuthenticated" class="px-2 mb-4">
+        <div v-if="!isSidebarCollapsed" class="bg-gray-700 rounded-lg p-3 border border-gray-600">
+          <div class="flex items-center gap-2">
+            <div :class="getRoleIconClass(authStore.userRole)" class="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0">
+              <UserIcon class="w-5 h-5" :class="getRoleIconColor(authStore.userRole)" />
+            </div>
+            <div class="flex-1 min-w-0">
+              <p class="text-xs text-gray-400 mb-1">Поточна роль</p>
+              <p class="text-sm font-semibold text-gray-200 truncate">{{ getRoleLabel(authStore.userRole) }}</p>
+            </div>
+          </div>
+        </div>
+        <div v-else class="flex justify-center">
+          <div :class="getRoleIconClass(authStore.userRole)" class="w-10 h-10 rounded-full flex items-center justify-center" :title="getRoleLabel(authStore.userRole)">
+            <UserIcon class="w-5 h-5" :class="getRoleIconColor(authStore.userRole)" />
+          </div>
+        </div>
+      </div>
+      
       <!-- Пошук проєктів -->
       <div v-if="authStore.isAuthenticated && !isSidebarCollapsed" class="px-2 mb-4">
         <div class="relative">
@@ -178,10 +198,11 @@ import { ref, watch } from "vue";
 import { useStorage } from "@vueuse/core";
 import { useKanbanStore } from "~~/stores";
 import { useAuthStore } from "~~/stores/auth";
-import { ChartBarSquareIcon, ViewColumnsIcon, ChevronLeftIcon, ChevronRightIcon, MagnifyingGlassIcon, XMarkIcon } from "@heroicons/vue/24/outline";
+import { ChartBarSquareIcon, ViewColumnsIcon, ChevronLeftIcon, ChevronRightIcon, MagnifyingGlassIcon, XMarkIcon, UserIcon } from "@heroicons/vue/24/outline";
 import { storeToRefs } from "pinia";
 import RoleSwitcher from "~~/components/RoleSwitcher.vue";
 import MobileHeader from "~~/components/MobileHeader.vue";
+import type { UserRole } from "~~/types";
 
 const boardFormState = isAddBoardFormOpen();
 
@@ -247,5 +268,41 @@ const handleSearchInput = () => {
 const clearSearch = () => {
   searchQuery.value = "";
   router.push("/projects");
+};
+
+// Функція для отримання назви ролі
+const getRoleLabel = (role: UserRole | null): string => {
+  if (!role) return "Не вибрано";
+  const roleLabels: Record<UserRole, string> = {
+    partner: "Партнер",
+    student: "Студент",
+    teacher: "Викладач",
+    admin: "Адміністратор",
+  };
+  return roleLabels[role] || role;
+};
+
+// Функція для отримання класу іконки ролі
+const getRoleIconClass = (role: UserRole | null): string => {
+  if (!role) return "bg-gray-500/20";
+  const roleClasses: Record<UserRole, string> = {
+    partner: "bg-blue-500/20",
+    student: "bg-green-500/20",
+    teacher: "bg-purple-500/20",
+    admin: "bg-red-500/20",
+  };
+  return roleClasses[role] || "bg-savoy/20";
+};
+
+// Функція для отримання кольору іконки ролі
+const getRoleIconColor = (role: UserRole | null): string => {
+  if (!role) return "text-gray-400";
+  const roleColors: Record<UserRole, string> = {
+    partner: "text-blue-400",
+    student: "text-green-400",
+    teacher: "text-purple-400",
+    admin: "text-red-400",
+  };
+  return roleColors[role] || "text-savoy";
 };
 </script>
