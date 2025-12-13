@@ -19,16 +19,6 @@
         </button>
       </div>
       
-      <!-- Інформація про користувача -->
-      <div class="bg-white rounded-lg p-3 shadow-sm border border-gray-200">
-        <div class="flex items-center gap-2 text-sm text-gray-700">
-          <div class="w-2 h-2 rounded-full bg-green-500"></div>
-          <span>{{ authStore.currentUser?.email }}</span>
-          <span class="px-2 py-1 bg-gray-100 rounded text-xs">
-            {{ authStore.currentUser?.role === 'partner' ? 'Партнер' : 'Студент' }}
-          </span>
-        </div>
-      </div>
     </div>
 
     <!-- Заголовок та статистика -->
@@ -59,11 +49,6 @@
         class="board-card rounded-xl bg-white p-5 cursor-pointer w-full h-52 hover:shadow-lg transition-all duration-300 border border-gray-200 group relative overflow-hidden"
         @click="() => navigateToBoard(board)"
       >
-        <!-- Індикатор активності -->
-        <div class="absolute top-3 right-3">
-          <div class="w-2 h-2 rounded-full" :class="getBoardStatusColor(board)"></div>
-        </div>
-        
         <!-- Іконка та назва -->
         <div class="flex flex-col h-full">
           <div class="mb-4">
@@ -75,25 +60,21 @@
           </h2>
           
           <!-- Метадані дошки -->
-          <div class="mt-auto pt-3 border-t border-gray-100 group-hover:border-white/30">
-            <div class="flex items-center justify-between text-sm text-gray-600 group-hover:text-white/80">
-              <div class="flex items-center gap-1">
-                <ClockIcon class="w-4 h-4" />
-                <span>{{ formatDate(board.createdAt) }}</span>
-              </div>
-              <div class="flex items-center gap-2">
-                <!-- Показуємо кількість завдань -->
-                <span class="px-2 py-1 bg-gray-100 group-hover:bg-white/20 rounded text-xs">
-                  {{ getTaskCount(board) }} завд.
-                </span>
-                <!-- Показуємо прогрес, якщо є завдання -->
-                <div v-if="getTaskCount(board) > 0" class="w-16 h-1.5 bg-gray-200 rounded-full overflow-hidden">
-                  <div 
-                    class="h-full bg-green-500" 
-                    :style="{ width: `${getCompletionPercentage(board)}%` }"
-                  ></div>
-                </div>
-              </div>
+          <div class="mt-auto pt-3 border-t border-gray-100 group-hover:border-white/30 space-y-2">
+            <!-- Дедлайн -->
+            <div class="flex items-center gap-1 text-sm text-gray-600 group-hover:text-white/80">
+              <CalendarIcon class="w-4 h-4" />
+              <span>{{ getDeadlineText(board) }}</span>
+            </div>
+            
+            <!-- Кількість не завершених завдань та статус проєкту -->
+            <div class="flex items-center justify-between">
+              <span class="px-2 py-1 bg-gray-100 group-hover:bg-white/20 rounded text-xs text-gray-600 group-hover:text-white/80">
+                {{ getIncompleteTasksCount(board) }} не завершених
+              </span>
+              <span v-if="getProjectStatus(board)" :class="getProjectStatusClass(getProjectStatus(board))" class="px-2 py-1 rounded text-xs font-semibold">
+                {{ getProjectStatusText(getProjectStatus(board)) }}
+              </span>
             </div>
           </div>
         </div>
@@ -157,15 +138,18 @@
 </template>
 
 <script setup lang="ts">
-import { ViewColumnsIcon, ClockIcon, PlusIcon } from "@heroicons/vue/24/outline";
+import { ViewColumnsIcon, CalendarIcon, PlusIcon } from "@heroicons/vue/24/outline";
 import { storeToRefs } from "pinia";
 import { useKanbanStore } from "~~/stores";
 import { useAuthStore } from "~~/stores/auth";
+import { useProjectsStore } from "~~/stores/projects";
 import { computed, onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
+import type { Project } from "~~/types";
 
 const store = useKanbanStore();
 const authStore = useAuthStore();
+const projectsStore = useProjectsStore();
 const router = useRouter();
 const { boards } = storeToRefs(store);
 const loading = ref(false);
@@ -243,13 +227,95 @@ const getCompletionPercentage = (board: any) => {
   return 0;
 };
 
-// Отримуємо колір статусу дошки
-const getBoardStatusColor = (board: any) => {
-  const percentage = getCompletionPercentage(board);
-  if (percentage === 100) return 'bg-green-500';
-  if (percentage > 50) return 'bg-blue-500';
-  if (percentage > 0) return 'bg-amber-500';
-  return 'bg-gray-400';
+// Отримуємо проєкт за boardId
+const getProjectForBoard = (board: any): Project | undefined => {
+  if (!board.id) return undefined;
+  // Шукаємо проєкт, який має цей boardId
+  return projectsStore.projects.find((p: Project) => p.boardId === board.id);
+};
+
+// Отримуємо текст дедлайну
+const getDeadlineText = (board: any): string => {
+  const project = getProjectForBoard(board);
+  if (project?.deadline) {
+    const deadline = new Date(project.deadline);
+    const now = new Date();
+    const diffTime = deadline.getTime() - now.getTime();
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    
+    if (diffDays < 0) {
+      return `Прострочено: ${deadline.toLocaleDateString('uk-UA', { day: 'numeric', month: 'short', year: 'numeric' })}`;
+    }
+    if (diffDays === 0) {
+      return 'Дедлайн сьогодні';
+    }
+    if (diffDays === 1) {
+      return 'Дедлайн завтра';
+    }
+    if (diffDays < 7) {
+      return `Дедлайн через ${diffDays} днів`;
+    }
+    
+    return deadline.toLocaleDateString('uk-UA', {
+      day: 'numeric',
+      month: 'short',
+      year: 'numeric'
+    });
+  }
+  // Якщо немає дедлайну, показуємо дату створення
+  return formatDate(board.createdAt);
+};
+
+// Отримуємо кількість не завершених завдань
+const getIncompleteTasksCount = (board: any): number => {
+  const totalTasks = getTaskCount(board);
+  if (totalTasks === 0) return 0;
+  
+  if (board.columns) {
+    const completedTasks = board.columns.reduce((total: number, column: any) => {
+      if (column.name?.toLowerCase().includes('done') || column.name?.toLowerCase().includes('завершено')) {
+        return total + (column.tasks?.length || 0);
+      }
+      return total;
+    }, 0);
+    return totalTasks - completedTasks;
+  }
+  
+  return totalTasks;
+};
+
+// Отримуємо статус проєкту
+const getProjectStatus = (board: any): Project["status"] | null => {
+  const project = getProjectForBoard(board);
+  return project?.status || null;
+};
+
+// Отримуємо текст статусу проєкту
+const getProjectStatusText = (status: Project["status"] | null): string => {
+  if (!status) return "";
+  const map: Record<Project["status"], string> = {
+    draft: "Чернетка",
+    pending_ai: "AI аналіз",
+    pending_approval: "Очікує затвердження",
+    active: "Активний",
+    completed: "Завершено",
+    cancelled: "Скасовано",
+  };
+  return map[status] || "";
+};
+
+// Отримуємо клас статусу проєкту
+const getProjectStatusClass = (status: Project["status"] | null): string => {
+  if (!status) return "";
+  const map: Record<Project["status"], string> = {
+    draft: "bg-gray-100 text-gray-700",
+    pending_ai: "bg-blue-100 text-blue-700",
+    pending_approval: "bg-yellow-100 text-yellow-700",
+    active: "bg-green-100 text-green-700",
+    completed: "bg-gray-100 text-gray-700",
+    cancelled: "bg-red-100 text-red-700",
+  };
+  return map[status] || "";
 };
 
 // Форматування дати
@@ -304,6 +370,7 @@ onMounted(() => {
     if (authStore.isPartner) {
       router.push("/projects");
     }
+    // Адміністратор залишається на головній сторінці
   }, 50);
 });
 </script>

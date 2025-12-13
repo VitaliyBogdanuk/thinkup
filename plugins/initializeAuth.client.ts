@@ -1,13 +1,14 @@
 import { defineNuxtPlugin } from "#app";
 import { useAuthStore } from "~~/stores/auth";
-import { mockPartners } from "~~/utils/mockData";
+import { mockAdmin } from "~~/utils/mockData";
 
 export default defineNuxtPlugin(() => {
   const authStore = useAuthStore();
   
-  // Ініціалізуємо користувача як партнера за замовчуванням, якщо він не авторизований
-  if (!authStore.currentUser) {
-    authStore.login(mockPartners[0]);
+  // Ініціалізуємо користувача як адміністратора за замовчуванням для демо
+  // Перевіряємо, чи користувач не встановлений або не є адміністратором
+  if (!authStore.currentUser || authStore.currentUser.role !== "admin") {
+    authStore.login(mockAdmin);
   }
 });
 

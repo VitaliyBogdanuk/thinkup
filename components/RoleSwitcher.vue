@@ -126,7 +126,7 @@ const getRouteForRole = (role: UserRole): string => {
     case "student":
       return "/student/dashboard";
     case "admin":
-      return "/admin";
+      return "/";
     default:
       return "/";
   }
