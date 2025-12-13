@@ -130,6 +130,7 @@
     </div>
     <FormAddBoard />
     <RoleSwitcher />
+    <PWAInstallButton />
   </main>
 </template>
 <script setup lang="ts">
@@ -141,6 +142,7 @@ import { ChartBarSquareIcon, ViewColumnsIcon, ChevronLeftIcon, ChevronRightIcon 
 import { storeToRefs } from "pinia";
 import RoleSwitcher from "~~/components/RoleSwitcher.vue";
 import MobileHeader from "~~/components/MobileHeader.vue";
+import PWAInstallButton from "~~/components/PWAInstallButton.vue";
 
 const boardFormState = isAddBoardFormOpen();
 

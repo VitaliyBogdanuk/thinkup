@@ -10,15 +10,19 @@
   "devDependencies": {
     "@nuxtjs/tailwindcss": "^6.4.1",
     "@types/uuid": "^9.0.1",
-    "nuxt": "^3.2.2"
+    "nuxt": "^3.2.2",
+    "sharp": "^0.34.5"
   },
   "overrides": {
     "vue": "latest"
   },
   "dependencies": {
     "@heroicons/vue": "^2.0.16",
+    "@nuxtjs/pwa": "^3.3.5",
     "@pinia/nuxt": "^0.4.7",
+    "@vite-pwa/nuxt": "^1.1.0",
     "@vueuse/nuxt": "^9.13.0",
+    "firebase": "^12.6.0",
     "pinia": "^2.0.32",
     "uuid": "^9.0.0"
   }
