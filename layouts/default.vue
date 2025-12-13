@@ -16,9 +16,9 @@
         </NuxtLink>
       </div>
       
-      <!-- Відображення поточної ролі -->
-      <div v-if="authStore.isAuthenticated" class="px-2 mb-4">
-        <div v-if="!isSidebarCollapsed" class="bg-gray-700 rounded-lg p-3 border border-gray-600">
+      <!-- Відображення поточної ролі з дропдаун меню -->
+      <div v-if="authStore.isAuthenticated" class="px-2 mb-4 relative" ref="roleDropdownRef">
+        <div v-if="!isSidebarCollapsed" class="bg-gray-700 rounded-lg p-3 border border-gray-600 cursor-pointer hover:bg-gray-600 transition-colors" @click="toggleRoleDropdown">
           <div class="flex items-center gap-2">
             <div :class="getRoleIconClass(authStore.userRole || authStore.currentUser?.role || null)" class="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0">
               <UserIcon class="w-5 h-5" :class="getRoleIconColor(authStore.userRole || authStore.currentUser?.role || null)" />
@@ -27,13 +27,70 @@
               <p class="text-xs text-gray-400 mb-1">Поточна роль</p>
               <p class="text-sm font-semibold text-gray-200 truncate">{{ getRoleLabel(authStore.userRole || authStore.currentUser?.role || null) }}</p>
             </div>
+            <ChevronDownIcon 
+              class="w-4 h-4 text-gray-400 transition-transform flex-shrink-0"
+              :class="{ 'rotate-180': isRoleDropdownOpen }"
+            />
           </div>
         </div>
         <div v-else class="flex justify-center">
-          <div :class="getRoleIconClass(authStore.userRole || authStore.currentUser?.role || null)" class="w-10 h-10 rounded-full flex items-center justify-center" :title="getRoleLabel(authStore.userRole || authStore.currentUser?.role || null)">
+          <div 
+            :class="getRoleIconClass(authStore.userRole || authStore.currentUser?.role || null)" 
+            class="w-10 h-10 rounded-full flex items-center justify-center cursor-pointer hover:opacity-80 transition-opacity" 
+            :title="getRoleLabel(authStore.userRole || authStore.currentUser?.role || null)"
+            @click="toggleRoleDropdown"
+          >
             <UserIcon class="w-5 h-5" :class="getRoleIconColor(authStore.userRole || authStore.currentUser?.role || null)" />
           </div>
         </div>
+        
+        <!-- Дропдаун меню -->
+        <transition name="fade">
+          <div 
+            v-if="isRoleDropdownOpen && !isSidebarCollapsed" 
+            class="absolute top-full left-0 right-0 mt-2 bg-white rounded-lg shadow-lg border border-gray-200 p-2 z-50"
+          >
+            <div class="space-y-1">
+              <button
+                v-for="role in availableRoles"
+                :key="role.value"
+                @click="switchRole(role.value as UserRole)"
+                :class="[
+                  'w-full text-left px-3 py-2 rounded text-sm transition-colors',
+                  (authStore.userRole || authStore.currentUser?.role) === role.value
+                    ? 'bg-savoy text-white'
+                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                ]"
+              >
+                {{ role.label }}
+              </button>
+            </div>
+          </div>
+        </transition>
+        
+        <!-- Дропдаун меню для згорнутого сайдбару -->
+        <transition name="fade">
+          <div 
+            v-if="isRoleDropdownOpen && isSidebarCollapsed" 
+            class="absolute top-0 left-full ml-2 bg-white rounded-lg shadow-lg border border-gray-200 p-2 z-50 min-w-[180px]"
+          >
+            <div class="space-y-1">
+              <button
+                v-for="role in availableRoles"
+                :key="role.value"
+                @click="switchRole(role.value as UserRole)"
+                :class="[
+                  'w-full text-left px-3 py-2 rounded text-sm transition-colors',
+                  (authStore.userRole || authStore.currentUser?.role) === role.value
+                    ? 'bg-savoy text-white'
+                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                ]"
+              >
+                {{ role.label }}
+              </button>
+            </div>
+          </div>
+        </transition>
       </div>
       
       <!-- Пошук проєктів -->
@@ -256,20 +313,23 @@
   </main>
 </template>
 <script setup lang="ts">
-import { ref, watch } from "vue";
+import { ref, watch, computed, onMounted, onBeforeUnmount, nextTick } from "vue";
 import { useStorage } from "@vueuse/core";
 import { useKanbanStore } from "~~/stores";
 import { useAuthStore } from "~~/stores/auth";
-import { ChartBarSquareIcon, ViewColumnsIcon, ChevronLeftIcon, ChevronRightIcon, MagnifyingGlassIcon, XMarkIcon, UserIcon } from "@heroicons/vue/24/outline";
+import { useProjectsStore } from "~~/stores/projects";
+import { ChartBarSquareIcon, ViewColumnsIcon, ChevronLeftIcon, ChevronRightIcon, MagnifyingGlassIcon, XMarkIcon, UserIcon, ChevronDownIcon } from "@heroicons/vue/24/outline";
 import { storeToRefs } from "pinia";
 import RoleSwitcher from "~~/components/RoleSwitcher.vue";
 import MobileHeader from "~~/components/MobileHeader.vue";
-import type { UserRole } from "~~/types";
+import { mockPartners, mockStudents, mockTeachers, mockAdmin } from "~~/utils/mockData";
+import type { UserRole, User, Student, Teacher, Partner } from "~~/types";
 
 const boardFormState = isAddBoardFormOpen();
 
 const store = useKanbanStore();
 const authStore = useAuthStore();
+const projectsStore = useProjectsStore();
 
 const { boards } = storeToRefs(store);
 
@@ -367,6 +427,89 @@ const getRoleIconColor = (role: UserRole | null): string => {
   };
   return roleColors[role] || "text-savoy";
 };
+
+// Дропдаун меню для перемикання ролей
+const isRoleDropdownOpen = ref(false);
+const roleDropdownRef = ref<HTMLElement | null>(null);
+
+const availableRoles = [
+  { value: "partner", label: "Партнер" },
+  { value: "student", label: "Студент" },
+  { value: "teacher", label: "Викладач" },
+  { value: "admin", label: "Адміністратор" },
+];
+
+const toggleRoleDropdown = () => {
+  isRoleDropdownOpen.value = !isRoleDropdownOpen.value;
+};
+
+const switchRole = (role: UserRole) => {
+  let user: User | null = null;
+
+  switch (role) {
+    case "partner":
+      user = mockPartners[0];
+      break;
+    case "student":
+      user = mockStudents[0];
+      break;
+    case "teacher":
+      user = mockTeachers[0];
+      break;
+    case "admin":
+      user = mockAdmin;
+      break;
+  }
+
+  if (user) {
+    authStore.login(user);
+    isRoleDropdownOpen.value = false;
+    // Перенаправляємо на відповідну сторінку
+    router.push(getRouteForRole(role));
+  }
+};
+
+const getRouteForRole = (role: UserRole): string => {
+  switch (role) {
+    case "partner":
+      return "/projects";
+    case "teacher":
+      return "/teacher/dashboard";
+    case "student":
+      return "/student/dashboard";
+    case "admin":
+      return "/admin";
+    default:
+      return "/";
+  }
+};
+
+// Закриття дропдауну при кліку поза ним
+const handleClickOutside = (event: MouseEvent) => {
+  if (!isRoleDropdownOpen.value) return;
+  const el = roleDropdownRef.value;
+  if (el && !el.contains(event.target as Node)) {
+    isRoleDropdownOpen.value = false;
+  }
+};
+
+// Закриття дропдауну при переході по маршруту
+watch(() => route.path, () => {
+  isRoleDropdownOpen.value = false;
+});
+
+onMounted(() => {
+  document.addEventListener("mousedown", handleClickOutside);
+  nextTick(() => {
+    if (roleDropdownRef.value) {
+      // ref вже встановлений
+    }
+  });
+});
+
+onBeforeUnmount(() => {
+  document.removeEventListener("mousedown", handleClickOutside);
+});
 </script>
 
 <style scoped>
@@ -376,5 +519,15 @@ const getRoleIconColor = (role: UserRole | null): string => {
 
   .sidebox-tab {
     justify-content: flex-start;
+  }
+
+  .fade-enter-active,
+  .fade-leave-active {
+    transition: opacity 0.2s ease;
+  }
+
+  .fade-enter-from,
+  .fade-leave-to {
+    opacity: 0;
   }
 </style>
