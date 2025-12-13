@@ -167,7 +167,7 @@
           v-for="board in boards"
           :key="board.id"
           :to="`/${board.id}`"
-          class="flex gap-2 px-3 py-3 items-center hover:bg-gray-700 transition-colors rounded-r-3xl font-bold text-gray-300 justify-center"
+          class="sidebox-tab flex gap-2 px-3 py-3 items-center hover:bg-gray-700 transition-colors rounded-r-3xl font-bold text-gray-300 justify-center"
           :class="isSidebarCollapsed ? 'mr-0' : 'mr-5'"
           exact-active-class="bg-savoy text-white"
           :title="isSidebarCollapsed ? board.name : ''"
@@ -332,5 +332,9 @@ const getRoleIconColor = (role: UserRole | null): string => {
 <style scoped>
   .sidebar {
     background: #333333;
+  }
+
+  .sidebox-tab {
+    justify-content: flex-start;
   }
 </style>

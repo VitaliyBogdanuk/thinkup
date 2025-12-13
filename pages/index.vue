@@ -39,11 +39,11 @@
       <div
         v-for="board in boards"
         :key="board.id"
-        class="board-card rounded-xl bg-white p-5 cursor-pointer w-full h-56 hover:shadow-lg transition-all duration-300 border border-gray-200 group relative overflow-hidden"
+        class="board-card rounded-xl bg-white p-5 cursor-pointer w-full hover:shadow-lg transition-all duration-300 border border-gray-200 group relative overflow-hidden"
         @click="() => navigateToBoard(board)"
       >
         <!-- Іконка та назва -->
-        <div class="flex flex-col h-full relative z-10">
+        <div class="flex flex-col relative z-10">
           <div class="mb-3 flex-shrink-0">
             <ViewColumnsIcon class="board-card-icon w-8 h-8 text-savoy group-hover:text-white transition-colors" />
           </div>
@@ -61,7 +61,7 @@
             </div>
             
             <!-- Кількість не завершених завдань та статус проєкту -->
-            <div class="flex items-center justify-between">
+            <div class="flex items-center justify-between gap-1">
               <span class="px-2 py-1 bg-gray-100 group-hover:bg-white/20 rounded text-xs text-gray-600 group-hover:text-white/80">
                 {{ getIncompleteTasksCount(board) }} не завершених
               </span>
