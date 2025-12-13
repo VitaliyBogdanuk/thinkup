@@ -46,13 +46,13 @@
       <div
         v-for="board in boards"
         :key="board.id"
-        class="rounded-xl bg-white p-5 cursor-pointer w-full h-52 hover:shadow-lg transition-all duration-300 border border-gray-200 group relative overflow-hidden"
+        class="board-card rounded-xl bg-white p-5 cursor-pointer w-full h-52 hover:shadow-lg transition-all duration-300 border border-gray-200 group relative overflow-hidden"
         @click="() => navigateToBoard(board)"
       >
         <!-- Іконка та назва -->
         <div class="flex flex-col h-full">
           <div class="mb-4">
-            <ViewColumnsIcon class="w-8 h-8 text-savoy group-hover:text-white transition-colors" />
+            <ViewColumnsIcon class="board-card-icon w-8 h-8 text-savoy group-hover:text-white transition-colors" />
           </div>
           
           <h2 class="text-lg font-semibold text-gray-800 group-hover:text-white mb-2 line-clamp-2">
@@ -404,5 +404,15 @@ onMounted(() => {
   align-items: center;
   justify-content: center;
   z-index: 1000;
+}
+</style>
+
+<style scoped>
+.board-card:hover {
+  background-color: #14B8A6;
+}
+
+.board-card-icon {
+  color: #14B8A6;
 }
 </style>
