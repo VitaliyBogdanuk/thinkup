@@ -10,8 +10,8 @@
         <div class="w-full p-5 relative">
         <NuxtLink to="/" exact-active-class="text-savoy" class="block">
           <div class="flex flex-row gap-2 items-center justify-center" :class="isSidebarCollapsed ? '' : 'justify-start'">
-            <ChartBarSquareIcon class="w-10 h-10 flex-shrink-0 text-white" />
-            <h1 v-if="!isSidebarCollapsed" class="whitespace-nowrap text-white">ThinkUp</h1>
+            <ChartBarSquareIcon class="w-10 h-10 flex-shrink-0 text-savoy" />
+            <h1 v-if="!isSidebarCollapsed" class="whitespace-nowrap text-savoy font-bold">ThinkUp</h1>
           </div>
         </NuxtLink>
       </div>
