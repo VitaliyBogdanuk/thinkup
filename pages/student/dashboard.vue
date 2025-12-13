@@ -169,8 +169,7 @@
           <div
             v-for="project in recommendedProjects"
             :key="project.id"
-            class="p-3 sm:p-4 border border-gray-200 rounded-lg hover:border-savoy hover:shadow-sm transition-all cursor-pointer"
-            @click="navigateToProject(project.id)"
+            class="p-3 sm:p-4 border border-gray-200 rounded-lg hover:border-savoy hover:shadow-sm transition-all"
           >
             <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 mb-2">
               <h4 class="font-bold text-sm sm:text-base text-gray-800 break-words flex-1 pr-2">{{ project.name }}</h4>
@@ -201,13 +200,13 @@
             <div class="flex flex-col lg:flex-row gap-2">
               <button
                 class="flex-1 lg:flex-none px-3 sm:px-4 py-2 sm:py-2.5 bg-savoy text-white rounded-lg hover:bg-savoy/90 transition-colors text-xs sm:text-sm font-medium"
-                @click.stop="handleApply(project.id)"
+                @click="handleApply(project.id)"
               >
                 Подати заявку
               </button>
               <button
                 class="flex-1 lg:flex-none px-3 sm:px-4 py-2 sm:py-2.5 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors text-xs sm:text-sm font-medium"
-                @click.stop="navigateToProject(project.id)"
+                @click="navigateToProjectDetails(project.id)"
               >
                 Детальніше
               </button>
@@ -520,6 +519,12 @@ const getMyRoleInProject = (project: Project): string => {
 };
 
 const navigateToProject = (projectId?: string) => {
+  if (!projectId) return;
+  router.push(`/projects/${projectId}`);
+};
+
+// Навігація на опис проєкту (не на дошку)
+const navigateToProjectDetails = (projectId?: string) => {
   if (!projectId) return;
   router.push(`/projects/${projectId}`);
 };
