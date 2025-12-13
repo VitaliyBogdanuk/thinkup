@@ -61,7 +61,7 @@
             </div>
             
             <!-- Кількість не завершених завдань та статус проєкту -->
-            <div class="flex items-center justify-between gap-1">
+            <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-2">
               <span class="px-2 py-1 bg-gray-100 group-hover:bg-white/20 rounded text-xs text-gray-600 group-hover:text-white/80 text-center">
                 {{ getIncompleteTasksCount(board) }} не завершених
               </span>

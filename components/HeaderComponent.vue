@@ -1,12 +1,27 @@
 <template>
   <header
-    class="flex items-center justify-between px-5 h-24 w-full bg-white border-b border-gray-200"
+    class="flex flex-col md:flex-row md:items-center justify-between px-3 md:px-5 py-3 md:py-0 h-auto md:h-24 w-full bg-white border-b border-gray-200 gap-3 md:gap-0"
   >
-    <select class="block md:hidden" v-model="boardIdInView">
-      <option v-for="board in boards" :value="board.id">
-        {{ board.name }}
-      </option>
-    </select>
+    <!-- Мобільна версія: кнопка додавання та дропдаун -->
+    <div class="flex flex-col gap-3 md:hidden w-full">
+      <button
+        @click="toggleFormModal(true)"
+        class="w-full flex gap-2 items-center justify-center bg-savoy text-white rounded-lg px-4 py-2.5 font-semibold hover:bg-savoy/90 transition active:scale-95"
+      >
+        <span>+</span>
+        <span>ДОДАТИ ЗАВДАННЯ</span>
+      </button>
+      <select 
+        class="w-full px-3 py-2 border border-gray-300 rounded-lg text-gray-800 bg-white focus:outline-none focus:ring-2 focus:ring-savoy focus:border-transparent text-sm"
+        v-model="boardIdInView"
+      >
+        <option v-for="board in boards" :value="board.id">
+          {{ board.name }}
+        </option>
+      </select>
+    </div>
+
+    <!-- Десктопна версія -->
     <h2 class="hidden md:block text-gray-800">{{ boardName }}</h2>
     <div class="hidden gap-2 items-center md:flex">
       <button
