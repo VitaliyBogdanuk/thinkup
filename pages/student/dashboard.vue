@@ -102,14 +102,41 @@
               
               <!-- Список партнерів -->
               <div v-if="partnersWorkedWith.length > 0" class="mt-3 sm:mt-4">
-                <p class="text-xs sm:text-sm font-semibold text-gray-700 mb-2">Партнери:</p>
+                <p class="text-xs sm:text-sm font-semibold text-gray-700 mb-2">Відгуки партнерів з якими працював:</p>
                 <div class="flex flex-wrap gap-2">
                   <div
                     v-for="partner in partnersWorkedWith"
                     :key="partner.id"
-                    class="px-2 sm:px-3 py-1 sm:py-1.5 bg-savoy/10 text-savoy rounded-lg text-xs sm:text-sm font-medium border border-savoy/20 break-words"
+                    class="px-2 sm:px-3 py-1.5 sm:py-2 bg-savoy/10 text-gray-800 rounded-lg text-xs sm:text-sm font-medium border border-savoy/20 hover:bg-savoy/20 transition-all cursor-pointer break-words group relative"
+                    @click="openPartnerReview(partner)"
                   >
-                    {{ partner.companyName }}
+                    <div class="flex items-center gap-1.5">
+                      <!-- Аватар партнера (перша літера назви) -->
+                      <div class="w-5 h-5 rounded-full bg-savoy/30 flex items-center justify-center flex-shrink-0">
+                        <span class="text-xs font-bold text-savoy">{{ partner.companyName.charAt(0).toUpperCase() }}</span>
+                      </div>
+                      
+                      <!-- Назва компанії -->
+                      <span class="font-medium truncate max-w-[100px] sm:max-w-[120px]">{{ partner.companyName }}</span>
+                      
+                      <!-- Оцінка партнера -->
+                      <div v-if="getPartnerReview(partner.id)" class="flex items-center gap-0.5 flex-shrink-0">
+                        <span class="text-xs font-bold">{{ getPartnerReview(partner.id)?.rating.toFixed(1) }}</span>
+                      </div>
+                      <div v-else class="flex items-center gap-0.5 flex-shrink-0">
+                        <span class="text-xs font-bold text-gray-500"> <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"><path d="M12 17.414 3.293 8.707l1.414-1.414L12 14.586l7.293-7.293 1.414 1.414L12 17.414z"/></svg></span>
+                      </div>
+                      
+                      <!-- Іконка відгуку (якщо є) -->
+                      <div v-if="getPartnerReview(partner.id)" class="flex-shrink-0">
+                        <svg class="w-3.5 h-3.5 text-gray-500 group-hover:text-savoy transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+                        </svg>
+                      </div>
+                    </div>
+                    
+                    <!-- Індикатор що є відгук -->
+                    <div v-if="getPartnerReview(partner.id)" class="absolute -top-1 -right-1 w-2 h-2 bg-savoy rounded-full"></div>
                   </div>
                 </div>
               </div>
@@ -169,7 +196,8 @@
           <div
             v-for="project in recommendedProjects"
             :key="project.id"
-            class="p-3 sm:p-4 border border-gray-200 rounded-lg hover:border-savoy hover:shadow-sm transition-all"
+            class="p-3 sm:p-4 border border-gray-200 rounded-lg hover:border-savoy hover:shadow-sm transition-all cursor-pointer"
+            @click="navigateToProject(project.id)"
           >
             <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 mb-2">
               <h4 class="font-bold text-sm sm:text-base text-gray-800 break-words flex-1 pr-2">{{ project.name }}</h4>
@@ -200,13 +228,13 @@
             <div class="flex flex-col lg:flex-row gap-2">
               <button
                 class="flex-1 lg:flex-none px-3 sm:px-4 py-2 sm:py-2.5 bg-savoy text-white rounded-lg hover:bg-savoy/90 transition-colors text-xs sm:text-sm font-medium"
-                @click="handleApply(project.id)"
+                @click.stop="handleApply(project.id)"
               >
                 Подати заявку
               </button>
               <button
                 class="flex-1 lg:flex-none px-3 sm:px-4 py-2 sm:py-2.5 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors text-xs sm:text-sm font-medium"
-                @click="navigateToProjectDetails(project.id)"
+                @click.stop="navigateToProject(project.id)"
               >
                 Детальніше
               </button>
@@ -293,6 +321,81 @@
       </div>
     </div>
   </section>
+
+  <!-- Модальне вікно для відгуку партнера -->
+  <div v-if="selectedPartnerReview" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+    <div class="bg-white rounded-xl max-w-md w-full max-h-[90vh] overflow-y-auto">
+      <div class="p-4 sm:p-6">
+        <!-- Заголовок -->
+        <div class="flex items-center justify-between mb-4">
+          <h3 class="text-lg font-bold text-gray-800">Відгук партнера</h3>
+          <button
+            @click="selectedPartnerReview = null"
+            class="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+          >
+            <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+        
+        <!-- Інформація про партнера -->
+        <div class="flex items-center gap-3 mb-4">
+          <div class="w-12 h-12 rounded-full bg-savoy/20 flex items-center justify-center">
+            <span class="text-savoy font-bold text-lg">
+              {{ selectedPartnerReview.partnerName.charAt(0) }}
+            </span>
+          </div>
+          <div>
+            <h4 class="font-bold text-gray-800">{{ selectedPartnerReview.partnerName }}</h4>
+            <p class="text-sm text-gray-600">{{ selectedPartnerReview.projectName }}</p>
+            <p class="text-xs text-gray-500">{{ formatReviewDate(selectedPartnerReview.date) }}</p>
+          </div>
+        </div>
+        
+        <!-- Оцінка -->
+        <div class="mb-4">
+          <div class="flex items-center gap-2 mb-2">
+            <span class="text-sm text-gray-600">Оцінка:</span>
+            <div class="flex items-center gap-1">
+              <span v-for="n in 5" :key="n" class="text-lg">
+                <span v-if="n <= selectedPartnerReview.rating" class="text-amber-500">★</span>
+                <span v-else class="text-gray-300">☆</span>
+              </span>
+              <span class="font-bold text-gray-800 ml-2">{{ selectedPartnerReview.rating.toFixed(1) }}/5.0</span>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Текст відгуку -->
+        <div class="mb-4">
+          <p class="text-gray-700 leading-relaxed">{{ selectedPartnerReview.comment }}</p>
+        </div>
+        
+        <!-- Навички -->
+        <div v-if="selectedPartnerReview.skills.length > 0" class="mb-6">
+          <p class="text-sm text-gray-600 mb-2">Оцінені навички:</p>
+          <div class="flex flex-wrap gap-1.5">
+            <span
+              v-for="skill in selectedPartnerReview.skills"
+              :key="skill"
+              class="px-2 py-1 bg-gray-100 text-gray-700 rounded text-xs"
+            >
+              {{ skill }}
+            </span>
+          </div>
+        </div>
+        
+        <!-- Кнопка закриття -->
+        <button
+          @click="selectedPartnerReview = null"
+          class="w-full py-3 bg-savoy text-white rounded-lg hover:bg-savoy/90 transition-colors font-medium"
+        >
+          Закрити
+        </button>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -314,6 +417,92 @@ const router = useRouter();
 const authStore = useAuthStore();
 const projectsStore = useProjectsStore();
 
+const showAllReviews = ref(false);
+const selectedPartnerReview = ref<any>(null);
+
+const mockPartnerReviews = [
+  {
+    id: "1",
+    partnerId: "partner1",
+    partnerName: "TechCorp Ukraine",
+    projectName: "Розробка CRM системи",
+    rating: 4.5,
+    comment: "Чудовий фахівець! Швидко вчиться новим технологіям, відповідально підходить до задач. Особливо вразила робота з React та TypeScript.",
+    skills: ["React", "TypeScript", "Teamwork"],
+    date: "2024-01-15"
+  },
+  {
+    id: "2",
+    partnerId: "partner2",
+    partnerName: "DesignStudio Pro",
+    projectName: "Редизайн корпоративного сайту",
+    rating: 5.0,
+    comment: "Найкращий студент з яким ми працювали! Не тільки технічні навички на високому рівні, але й відмінні комунікаційні здібності.",
+    skills: ["UI/UX Design", "Figma", "Communication"],
+    date: "2023-11-30"
+  },
+  {
+    id: "3",
+    partnerId: "partner3",
+    partnerName: "DataAnalytics Inc",
+    projectName: "Аналіз ринку електронної комерції",
+    rating: 4.0,
+    comment: "Дуже старанний працівник. Відмінно справляється з аналітичними завданнями. Рекомендую для проектів, де потрібна увага до деталей.",
+    skills: ["Data Analysis", "Excel", "Research"],
+    date: "2023-10-20"
+  },
+  {
+    id: "4",
+    partnerId: "partner4",
+    partnerName: "StartUp Lab",
+    projectName: "MVP мобільного додатку",
+    rating: 4.8,
+    comment: "Прагне до вдосконалення та завжди відкритий для зворотного зв'язку. Дуже цінний член команди для стартапів.",
+    skills: ["Mobile Development", "Problem Solving", "Adaptability"],
+    date: "2023-09-10"
+  },
+  {
+    id: "5",
+    partnerId: "partner5",
+    partnerName: "EcoTech Solutions",
+    projectName: "Розробка платформи для екомоніторингу",
+    rating: 3.5,
+    comment: "Хороший спеціаліст, але потребує більше досвіду в командній роботі. Технічні навички на рівні.",
+    skills: ["Backend", "Python", "API Development"],
+    date: "2023-08-05"
+  }
+];
+
+// Обчислювані властивості
+const partnerReviews = computed(() => {
+  if (showAllReviews.value) {
+    return mockPartnerReviews;
+  }
+  return mockPartnerReviews.slice(0, 4);
+});
+
+const averagePartnerRating = computed(() => {
+  if (mockPartnerReviews.length === 0) return 0;
+  const sum = mockPartnerReviews.reduce((acc, review) => acc + review.rating, 0);
+  return sum / mockPartnerReviews.length;
+});
+
+// Функція форматування дати для відгуків
+const formatReviewDate = (dateString: string): string => {
+  const date = new Date(dateString);
+  const now = new Date();
+  const diffTime = Math.abs(now.getTime() - date.getTime());
+  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+  
+  if (diffDays < 30) {
+    return `${diffDays} днів тому`;
+  } else if (diffDays < 365) {
+    const months = Math.floor(diffDays / 30);
+    return `${months} місяців тому`;
+  } else {
+    return date.toLocaleDateString('uk-UA', { month: 'short', year: 'numeric' });
+  }
+};
 
 // Комп'ютед властивості
 const currentStudent = computed(() => {
@@ -380,6 +569,29 @@ const recommendedProjects = computed(() => {
     .sort((a: any, b: any) => b.matchPercentage - a.matchPercentage)
     .slice(0, 6);
 });
+
+// Отримати відгук партнера
+const getPartnerReview = (partnerId: string) => {
+  return mockPartnerReviews.find(review => review.partnerId === partnerId);
+};
+
+// Відкрити відгук партнера
+const openPartnerReview = (partner: Partner) => {
+  const review = getPartnerReview(partner.id);
+  if (review) {
+    selectedPartnerReview.value = review;
+  } else {
+    // Якщо відгуку немає, показуємо інформацію про партнера
+    selectedPartnerReview.value = {
+      partnerName: partner.companyName,
+      projectName: "Немає інформації",
+      rating: 0,
+      comment: "Цей партнер ще не залишив відгук.",
+      skills: [],
+      date: new Date().toISOString()
+    };
+  }
+};
 
 const formatDate = (dateString: string): string => {
   const date = new Date(dateString);
@@ -508,7 +720,6 @@ const getProjectProgress = (projectId: string): number => {
 const getMyRoleInProject = (project: Project): string => {
   if (!currentStudent.value) return '';
   
-  // Шукаємо роль студента в проєкті
   for (const role of project.roles) {
     if (role.assigned.includes(currentStudent.value.id)) {
       return role.name;
@@ -536,12 +747,21 @@ const handleApply = (projectId?: string) => {
   const project = projectsStore.getProjectById(projectId);
   alert(`Заявку на проєкт "${project?.name || 'проєкт'}" подано! Викладач розгляне вашу кандидатуру.`);
 };
+
+const unreadCount = ref(0);
 </script>
 
 <style scoped>
 .line-clamp-2 {
   display: -webkit-box;
   -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.line-clamp-3 {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
