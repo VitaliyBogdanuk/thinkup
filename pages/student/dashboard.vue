@@ -622,16 +622,6 @@ const recommendedProjects = computed(() => {
 // Відкрити відгук партнера (тепер використовуємо реальні відгуки)
 const openPartnerReview = (review: PartnerReview) => {
   selectedPartnerReview.value = review;
-      id: `review_${partner.id}`,
-      partnerId: partner.id,
-      partnerName: partner.companyName,
-      projectName: "Проєкт співпраці",
-      rating: 4.5,
-      comment: "Якісна професійна робота. Студент демонстрував високий рівень відповідальності та технічних навичок.",
-      skills: ["Professionalism", "Technical Skills", "Teamwork", "Communication"],
-      date: new Date().toISOString().split('T')[0]
-    };
-  }
 };
 
 const formatDate = (dateString: string): string => {
