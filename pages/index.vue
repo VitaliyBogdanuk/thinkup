@@ -5,17 +5,14 @@
       <!-- Логотип -->
       <div class="mb-8 flex justify-center">
         <div class="w-24 h-24 sm:w-32 sm:h-32 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center border-4 border-white/30 shadow-2xl">
-          <span class="text-4xl sm:text-5xl md:text-6xl font-bold text-white">TU</span>
+          <span class="text-4xl sm:text-5xl md:text-6xl font-bold text-white">DW</span>
         </div>
       </div>
       
       <!-- Назва проєкту -->
-      <h1 class="text-4xl sm:text-5xl md:text-6xl font-bold text-white mb-4 drop-shadow-lg">
+      <h1 class="text-4xl sm:text-5xl md:text-6xl font-bold text-white mb-12 drop-shadow-lg">
         DeepWater
       </h1>
-      <p class="text-xl sm:text-2xl text-white/90 mb-12 drop-shadow-md">
-        Платформа для управління проєктами
-      </p>
       
       <!-- Кнопка "Почати" -->
       <button
@@ -485,5 +482,8 @@ onMounted(() => {
 .board-card > div {
   position: relative;
   z-index: 10;
+}
+.bg-gradient-to-br{
+  background-color: aquamarine;
 }
 </style>
