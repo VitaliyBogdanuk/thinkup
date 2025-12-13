@@ -309,6 +309,82 @@ export const useProjectsStore = defineStore("projects", {
         }
       });
     },
+
+    // Прийняття запрошення на проєкт студентом
+    acceptProjectInvitation(projectId: string, studentId: string): void {
+      const project = this.getProjectById(projectId);
+      if (!project) return;
+
+      // Додаємо студента до команди, якщо його там ще немає
+      if (!project.team.includes(studentId)) {
+        project.team.push(studentId);
+        
+        // Знаходимо відповідну роль і додаємо студента
+        const availableRole = project.roles.find(
+          (role) => role.assigned.length < role.required
+        );
+        if (availableRole) {
+          availableRole.assigned.push(studentId);
+        }
+        
+        project.updatedAt = new Date().toISOString();
+      }
+    },
+
+    // Подача заявки студентом на проєкт
+    applyToProject(projectId: string, studentId: string): void {
+      const project = this.getProjectById(projectId);
+      if (!project) return;
+
+      // Симуляція подачі заявки - можна додати логіку для зберігання заявок
+      // Поки що просто показуємо, що заявка подана
+      // В реальній системі тут була б таблиця заявок
+    },
+
+    // Прийняття заявки студента викладачем
+    acceptStudentApplication(projectId: string, studentId: string, teacherId: string): void {
+      const project = this.getProjectById(projectId);
+      if (!project) return;
+
+      // Додаємо студента до команди, якщо його там ще немає
+      if (!project.team.includes(studentId)) {
+        project.team.push(studentId);
+        
+        // Знаходимо відповідну роль і додаємо студента
+        const availableRole = project.roles.find(
+          (role) => role.assigned.length < role.required
+        );
+        if (availableRole) {
+          availableRole.assigned.push(studentId);
+        }
+        
+        project.updatedAt = new Date().toISOString();
+      }
+    },
+
+    // Затвердження проєкту викладачем
+    approveProjectByTeacher(projectId: string, teacherId: string): void {
+      const project = this.getProjectById(projectId);
+      if (!project) return;
+
+      project.status = "active";
+      project.approvedBy = teacherId;
+      project.approvedAt = new Date().toISOString();
+      project.updatedAt = new Date().toISOString();
+    },
+
+    // Продовження терміну проєкту
+    extendProjectDeadline(projectId: string, days: number = 7): void {
+      const project = this.getProjectById(projectId);
+      if (!project || !project.deadline) return;
+
+      const currentDeadline = new Date(project.deadline);
+      const newDeadline = new Date(currentDeadline);
+      newDeadline.setDate(newDeadline.getDate() + days);
+      
+      project.deadline = newDeadline.toISOString().split("T")[0];
+      project.updatedAt = new Date().toISOString();
+    },
   },
 });
 

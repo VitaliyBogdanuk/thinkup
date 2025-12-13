@@ -409,29 +409,36 @@ const navigateToProject = (projectId: string) => {
 };
 
 const viewProjectApplications = (projectId: string) => {
-  router.push(`/projects/${projectId}/applications`);
-};
-
-const extendDeadline = (projectId: string) => {
-  console.log('Продовжено термін для проєкту:', projectId);
-  alert('Запит на продовження терміну відправлено викладачу');
-};
-
-const acceptProjectInvitation = async (projectId: string, notificationId: string) => {
-  console.log('Прийнято запрошення на проєкт:', projectId);
-  markAsRead(notificationId);
+  // Переходимо на сторінку проєкту, де можна переглянути заявки
   navigateToProject(projectId);
 };
 
+const extendDeadline = (projectId: string) => {
+  projectsStore.extendProjectDeadline(projectId, 7);
+  alert('Термін проєкту продовжено на 7 днів');
+};
+
+const acceptProjectInvitation = async (projectId: string, notificationId: string) => {
+  if (authStore.currentUser && authStore.isStudent) {
+    projectsStore.acceptProjectInvitation(projectId, authStore.currentUser.id);
+    markAsRead(notificationId);
+    alert('Ви успішно приєдналися до проєкту!');
+    navigateToProject(projectId);
+  }
+};
+
 const declineProjectInvitation = (projectId: string, notificationId: string) => {
-  console.log('Відхилено запрошення на проєкт:', projectId);
   markAsRead(notificationId);
   notifications.value = notifications.value.filter(n => n.id !== notificationId);
 };
 
 const handleApply = (projectId: string) => {
-  console.log('Подано заявку на проєкт:', projectId);
-  navigateToProject(projectId);
+  if (authStore.currentUser && authStore.isStudent) {
+    projectsStore.applyToProject(projectId, authStore.currentUser.id);
+    const project = projectsStore.getProjectById(projectId);
+    alert(`Заявку на проєкт "${project?.name || 'проєкт'}" подано! Викладач розгляне вашу кандидатуру.`);
+    navigateToProject(projectId);
+  }
 };
 
 const reviewProjectSubmission = (projectId: string) => {
@@ -439,21 +446,28 @@ const reviewProjectSubmission = (projectId: string) => {
 };
 
 const acceptStudentApplication = (projectId: string, studentId: string, notificationId: string) => {
-  console.log('Прийнято заявку студента:', studentId, 'на проєкт:', projectId);
-  markAsRead(notificationId);
-  navigateToProject(projectId);
+  if (authStore.currentUser && authStore.isTeacher) {
+    projectsStore.acceptStudentApplication(projectId, studentId, authStore.currentUser.id);
+    markAsRead(notificationId);
+    const student = projectsStore.getStudentById(studentId);
+    alert(`Заявку студента ${student?.fullName || studentId} прийнято!`);
+    navigateToProject(projectId);
+  }
 };
 
 const declineStudentApplication = (projectId: string, studentId: string, notificationId: string) => {
-  console.log('Відхилено заявку студента:', studentId, 'на проєкт:', projectId);
   markAsRead(notificationId);
   notifications.value = notifications.value.filter(n => n.id !== notificationId);
 };
 
 const approveProject = (projectId: string, notificationId: string) => {
-  console.log('Затверджено проєкт:', projectId);
-  markAsRead(notificationId);
-  navigateToProject(projectId);
+  if (authStore.currentUser && authStore.isTeacher) {
+    projectsStore.approveProjectByTeacher(projectId, authStore.currentUser.id);
+    markAsRead(notificationId);
+    const project = projectsStore.getProjectById(projectId);
+    alert(`Проєкт "${project?.name || 'проєкт'}" затверджено!`);
+    navigateToProject(projectId);
+  }
 };
 
 // Функції для відображення іконок
