@@ -1,5 +1,5 @@
 <template>
-  <div class="hidden md:block fixed bottom-4 right-4 z-50 sm:bottom-6 sm:right-6">
+  <div id="role-switcher-root" ref="switcherRef" class="hidden md:block fixed bottom-4 right-4 z-50 sm:bottom-6 sm:right-6">
     <!-- Згорнутий стан -->
     <button
       v-if="!isExpanded"
@@ -49,7 +49,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from "vue";
+import { computed, ref, onMounted, onBeforeUnmount, nextTick } from "vue";
 import { useRouter } from "vue-router";
 import { UserIcon, ChevronDownIcon } from "@heroicons/vue/24/outline";
 import { useAuthStore } from "~~/stores/auth";
@@ -137,5 +137,32 @@ const getRoleLabel = (role: UserRole | null): string => {
   const roleObj = roles.find((r) => r.value === role);
   return roleObj?.label || role;
 };
+
+const switcherRef = ref<HTMLElement | null>(null);
+
+// Закриття при кліку поза RoleSwitcher
+const handleClickOutside = (event: MouseEvent) => {
+  if (!isExpanded.value) return;
+  const el = switcherRef.value;
+  if (el && !el.contains(event.target as Node)) {
+    isExpanded.value = false;
+  }
+};
+
+onMounted(() => {
+  document.addEventListener("mousedown", handleClickOutside);
+  // Закриття при переході по маршруту
+  router.afterEach(() => {
+    isExpanded.value = false;
+  });
+  // Для коректної роботи ref
+  nextTick(() => {
+    switcherRef.value = document.getElementById("role-switcher-root");
+  });
+});
+
+onBeforeUnmount(() => {
+  document.removeEventListener("mousedown", handleClickOutside);
+});
 </script>
 
