@@ -1,6 +1,6 @@
 <template>
-  <!-- Splash екран, якщо користувач не авторизований -->
-  <div v-if="!authStore.isAuthenticated" class="fixed inset-0 bg-gradient-to-br from-savoy via-savoy/90 to-savoy/80 flex items-center justify-center">
+  <!-- Splash екран - завжди показується на головній сторінці -->
+  <div v-if="showSplash" class="fixed inset-0 bg-gradient-to-br from-savoy via-savoy/90 to-savoy/80 flex items-center justify-center z-50">
     <div class="text-center px-4 sm:px-6">
       <!-- Логотип -->
       <div class="mb-8 flex justify-center">
@@ -152,8 +152,8 @@ import { storeToRefs } from "pinia";
 import { useKanbanStore } from "~~/stores";
 import { useAuthStore } from "~~/stores/auth";
 import { useProjectsStore } from "~~/stores/projects";
-import { computed, onMounted, ref } from "vue";
-import { useRouter } from "vue-router";
+import { computed, onMounted, ref, watch } from "vue";
+import { useRouter, useRoute } from "vue-router";
 import type { Project } from "~~/types";
 import CreateProject from "~~/components/project/CreateProject.vue";
 import { mockPartners } from "~~/utils/mockData";
@@ -162,10 +162,21 @@ const store = useKanbanStore();
 const authStore = useAuthStore();
 const projectsStore = useProjectsStore();
 const router = useRouter();
+const route = useRoute();
 const { boards } = storeToRefs(store);
 const loading = ref(false);
 
 const addBoardState = ref(false);
+
+// Показуємо splash екран на головній сторінці (тільки на "/")
+const showSplash = ref(true);
+
+// Перевіряємо, чи ми на головній сторінці
+watch(() => route.path, (newPath) => {
+  if (newPath !== '/') {
+    showSplash.value = false;
+  }
+}, { immediate: true });
 
 // Завантажуємо дошки при монтажі
 onMounted(async () => {
@@ -397,20 +408,19 @@ const handleStart = () => {
   
   if (user) {
     authStore.login(user);
+    // Ховаємо splash екран
+    showSplash.value = false;
     // Перенаправляємо на дашборд партнера
     router.push("/projects");
   }
 };
 
-// Перенаправляємо партнера на сторінку проєктів при першому відкритті
+// Не перенаправляємо автоматично, оскільки тепер це робиться через кнопку "Почати"
 onMounted(() => {
-  // Невелика затримка для забезпечення ініціалізації користувача
-  setTimeout(() => {
-    if (authStore.isPartner) {
-      router.push("/projects");
-    }
-    // Адміністратор залишається на головній сторінці
-  }, 50);
+  // Перевіряємо, чи ми на головній сторінці
+  if (route.path === '/') {
+    showSplash.value = true;
+  }
 });
 </script>
 
