@@ -27,7 +27,7 @@
         <button
           v-for="role in roles"
           :key="role.value"
-          @click="switchRole(role.value)"
+          @click="switchRole(role.value as UserRole)"
           :class="[
             'w-full text-left px-3 py-2 rounded text-sm transition-colors',
             currentRole === role.value
@@ -126,7 +126,7 @@ const getRouteForRole = (role: UserRole): string => {
     case "student":
       return "/student/dashboard";
     case "admin":
-      return "/";
+      return "/admin";
     default:
       return "/";
   }

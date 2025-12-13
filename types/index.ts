@@ -187,3 +187,25 @@ interface AdminNotification extends BaseNotification {
   type: "new_user_registration" | "project_created" | "system_alert" | "user_report" | "system_update";
   userId?: string;
 }
+
+// Експорт типів
+export type {
+  UserRole,
+  ProjectCategory,
+  ComplexityLevel,
+  User,
+  Partner,
+  Student,
+  Teacher,
+  Project,
+  ProjectRole,
+  StudentRecommendation,
+  Task,
+  Board,
+  Column,
+  BaseNotification,
+  PartnerNotification,
+  StudentNotification,
+  TeacherNotification,
+  AdminNotification,
+};

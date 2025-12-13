@@ -169,14 +169,14 @@
       
       <div v-if="authStore.isAdmin" class="px-2">
         <NuxtLink
-          to="/"
+          to="/admin"
           class="flex gap-2 px-3 py-3 items-center hover:bg-gray-700 transition-colors rounded-r-3xl font-bold text-gray-300 justify-start"
           :class="isSidebarCollapsed ? 'mr-0' : 'mr-5'"
           exact-active-class="bg-savoy text-white"
-          :title="isSidebarCollapsed ? 'Головна' : ''"
+          :title="isSidebarCollapsed ? 'Панель адміністратора' : ''"
         >
           <ViewColumnsIcon class="w-5 h-5 flex-shrink-0" />
-          <span v-if="!isSidebarCollapsed">Головна</span>
+          <span v-if="!isSidebarCollapsed">Панель адміністратора</span>
         </NuxtLink>
         <NuxtLink
           to="/projects"
