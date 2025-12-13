@@ -116,7 +116,8 @@
               id="deadline"
               v-model="formData.deadline"
               type="date"
-              class="w-full"
+              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-savoy/50 cursor-pointer"
+              @click="(e) => (e.target as HTMLInputElement).showPicker()"
             />
           </div>
 
