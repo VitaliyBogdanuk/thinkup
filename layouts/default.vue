@@ -43,16 +43,6 @@
       
       <div v-if="authStore.isTeacher" class="px-2">
         <NuxtLink
-          to="/teacher/profile"
-          class="flex gap-2 px-3 py-3 items-center hover:bg-gray-700 transition-colors rounded-r-3xl font-bold text-gray-300 justify-center"
-          :class="isSidebarCollapsed ? 'mr-0' : 'mr-5'"
-          exact-active-class="bg-savoy text-white"
-          :title="isSidebarCollapsed ? 'Мій профіль' : ''"
-        >
-          <ViewColumnsIcon class="w-5 h-5 flex-shrink-0" />
-          <span v-if="!isSidebarCollapsed">Мій профіль</span>
-        </NuxtLink>
-        <NuxtLink
           to="/teacher/dashboard"
           class="flex gap-2 px-3 py-3 items-center hover:bg-gray-700 transition-colors rounded-r-3xl font-bold text-gray-300 justify-center"
           :class="isSidebarCollapsed ? 'mr-0' : 'mr-5'"
