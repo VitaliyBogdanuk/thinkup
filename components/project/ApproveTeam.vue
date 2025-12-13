@@ -7,36 +7,6 @@
     </div>
 
     <div v-else class="space-y-6">
-      <!-- Інформація про проєкт -->
-      <div class="bg-gray-50 rounded-lg p-4">
-        <h4 class="font-semibold text-gray-800 mb-2">{{ project.name }}</h4>
-        <p class="text-sm text-gray-600">{{ project.description }}</p>
-        <div class="flex flex-col sm:flex-row gap-2 sm:gap-4 mt-2 text-sm">
-          <span class="text-gray-600">Категорія: <span class="font-semibold">{{ project.category }}</span></span>
-          <span class="text-gray-600">Складність: <span class="font-semibold">{{ getComplexityText(project.complexity) }}</span></span>
-        </div>
-        
-        <!-- Ролі проєкту -->
-        <div v-if="project.roles && project.roles.length > 0" class="mt-4 pt-4 border-t border-gray-200">
-          <h5 class="font-semibold text-gray-800 mb-3">Потрібні ролі на проєкті:</h5>
-          <div class="space-y-2">
-            <div
-              v-for="role in project.roles"
-              :key="role.id"
-              class="flex items-center justify-between p-2 bg-white rounded border border-gray-200"
-            >
-              <span class="text-sm font-medium text-gray-800">{{ role.name }}</span>
-              <span class="text-xs text-gray-600">
-                Потрібно: <span class="font-semibold">{{ role.required }}</span>
-                <span v-if="role.assigned.length > 0" class="ml-2">
-                  | Призначено: <span class="font-semibold">{{ role.assigned.length }}</span>
-                </span>
-              </span>
-            </div>
-          </div>
-        </div>
-      </div>
-
       <!-- AI Аналіз -->
       <div v-if="project.aiAnalysis" class="bg-blue-50 rounded-lg p-4">
         <h4 class="font-semibold text-gray-800 mb-2">AI Аналіз проєкту</h4>
