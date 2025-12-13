@@ -1,27 +1,27 @@
 <template>
-  <section class="w-full h-full overflow-y-auto flex-1 p-4 md:p-10 bg-lightGray">
-    <h1 class="text-xl md:text-2xl font-bold text-gray-800 mb-4 md:mb-6">Мій профіль</h1>
+  <section class="w-full h-full overflow-y-auto flex-1 p-3 sm:p-4 md:p-10 bg-lightGray">
+    <h1 class="text-lg sm:text-xl md:text-2xl font-bold text-gray-800 mb-3 sm:mb-4 md:mb-6">Мій профіль</h1>
 
     <div v-if="!currentStudent" class="text-center py-16 text-gray-500">
       <p>Студент не знайдено</p>
     </div>
 
-    <div v-else class="space-y-6">
+    <div v-else class="space-y-4 sm:space-y-5 md:space-y-6">
       <!-- Сповіщення -->
-      <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-        <div class="flex items-center justify-between mb-4">
-          <h3 class="text-xl font-bold text-gray-800">Сповіщення</h3>
-          <div class="flex items-center gap-4">
+      <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-3 sm:p-4 md:p-6">
+        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 sm:gap-3 md:gap-4 mb-3 sm:mb-4">
+          <h3 class="text-base sm:text-lg md:text-xl font-bold text-gray-800">Сповіщення</h3>
+          <div class="flex items-center gap-2 sm:gap-3 md:gap-4 w-full sm:w-auto flex-wrap">
             <button 
               v-if="unreadCount > 0"
               @click="markAllAsRead"
-              class="text-sm text-savoy hover:text-savoy/80 transition-colors"
+              class="text-xs sm:text-sm text-savoy hover:text-savoy/80 transition-colors px-2 py-1.5 rounded-md hover:bg-savoy/5 whitespace-nowrap"
             >
               Позначити все як прочитане
             </button>
             <button
               @click="toggleNotifications"
-              class="text-sm text-gray-500 hover:text-gray-700 transition-colors"
+              class="text-xs sm:text-sm text-gray-500 hover:text-gray-700 transition-colors px-2 py-1.5 rounded-md hover:bg-gray-100 whitespace-nowrap"
             >
               {{ showNotifications ? 'Сховати' : 'Показати' }}
             </button>
@@ -32,75 +32,75 @@
           <p>Немає нових сповіщень</p>
         </div>
 
-        <div v-else-if="showNotifications" class="space-y-3">
+        <div v-else-if="showNotifications" class="space-y-2 sm:space-y-3">
           <div 
             v-for="notification in notifications"
             :key="notification.id"
             :class="[
-              'p-4 rounded-lg border transition-all cursor-pointer hover:shadow-sm',
+              'p-3 sm:p-4 rounded-lg border transition-all cursor-pointer hover:shadow-sm',
               notification.read ? 'bg-gray-50 border-gray-200' : 'bg-blue-50 border-blue-200'
             ]"
             @click="handleNotificationClick(notification)"
           >
-            <div class="flex items-start gap-3">
+            <div class="flex items-start gap-2 sm:gap-3">
               <!-- Іконка типу сповіщення -->
-              <div class="flex-shrink-0 mt-1">
-                <div v-if="notification.type === 'project_invitation'" class="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center">
-                  <span class="text-green-600 text-lg">🎯</span>
+              <div class="flex-shrink-0 mt-0.5 sm:mt-1">
+                <div v-if="notification.type === 'project_invitation'" class="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-green-100 flex items-center justify-center">
+                  <span class="text-green-600 text-base sm:text-lg">🎯</span>
                 </div>
-                <div v-else-if="notification.type === 'project_update'" class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center">
-                  <span class="text-blue-600 text-lg">🔄</span>
+                <div v-else-if="notification.type === 'project_update'" class="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-blue-100 flex items-center justify-center">
+                  <span class="text-blue-600 text-base sm:text-lg">🔄</span>
                 </div>
-                <div v-else-if="notification.type === 'new_project'" class="w-8 h-8 rounded-full bg-purple-100 flex items-center justify-center">
-                  <span class="text-purple-600 text-lg">🚀</span>
+                <div v-else-if="notification.type === 'new_project'" class="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-purple-100 flex items-center justify-center">
+                  <span class="text-purple-600 text-base sm:text-lg">🚀</span>
                 </div>
-                <div v-else class="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center">
-                  <span class="text-gray-600 text-lg">📢</span>
+                <div v-else class="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-gray-100 flex items-center justify-center">
+                  <span class="text-gray-600 text-base sm:text-lg">📢</span>
                 </div>
               </div>
               
               <div class="flex-1 min-w-0">
-                <div class="flex items-start justify-between mb-1">
-                  <h4 class="font-semibold text-gray-800">{{ notification.title }}</h4>
-                  <div class="flex items-center gap-2">
+                <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-1 sm:gap-2 mb-1.5 sm:mb-2">
+                  <h4 class="font-semibold text-sm sm:text-base text-gray-800 break-words pr-2">{{ notification.title }}</h4>
+                  <div class="flex items-center gap-2 flex-shrink-0">
                     <span class="text-xs text-gray-500 whitespace-nowrap">
                       {{ formatTimeAgo(notification.createdAt) }}
                     </span>
                     <span 
                       v-if="!notification.read"
-                      class="w-2 h-2 rounded-full bg-savoy"
+                      class="w-2 h-2 rounded-full bg-savoy flex-shrink-0"
                     ></span>
                   </div>
                 </div>
-                <p class="text-sm text-gray-600 mb-2">{{ notification.message }}</p>
+                <p class="text-xs sm:text-sm text-gray-600 mb-2 sm:mb-3 break-words leading-relaxed">{{ notification.message }}</p>
                 
                 <!-- Додаткові дії для запрошень на проєкт -->
-                <div v-if="notification.type === 'project_invitation' && !notification.read" class="flex gap-2 mt-3">
+                <div v-if="notification.type === 'project_invitation' && !notification.read" class="flex flex-col lg:flex-row gap-2 mt-3">
                   <button
                     @click.stop="acceptProjectInvitation(notification.projectId, notification.id)"
-                    class="px-4 py-2 bg-savoy text-white rounded-lg hover:bg-savoy/90 transition-colors text-sm"
+                    class="flex-1 lg:flex-none px-3 sm:px-4 py-2 sm:py-2.5 bg-savoy text-white rounded-lg hover:bg-savoy/90 transition-colors text-xs sm:text-sm font-medium"
                   >
                     Прийняти
                   </button>
                   <button
                     @click.stop="declineProjectInvitation(notification.projectId, notification.id)"
-                    class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors text-sm"
+                    class="flex-1 lg:flex-none px-3 sm:px-4 py-2 sm:py-2.5 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors text-xs sm:text-sm font-medium"
                   >
                     Відхилити
                   </button>
                 </div>
 
                 <!-- Додаткові дії для нового проєкту -->
-                <div v-if="notification.type === 'new_project' && !notification.read" class="flex gap-2 mt-3">
+                <div v-if="notification.type === 'new_project' && !notification.read" class="flex flex-col lg:flex-row gap-2 mt-3">
                   <button
                     @click.stop="navigateToProject(notification.projectId)"
-                    class="px-4 py-2 bg-savoy text-white rounded-lg hover:bg-savoy/90 transition-colors text-sm"
+                    class="flex-1 lg:flex-none px-3 sm:px-4 py-2 sm:py-2.5 bg-savoy text-white rounded-lg hover:bg-savoy/90 transition-colors text-xs sm:text-sm font-medium whitespace-nowrap"
                   >
                     Переглянути проєкт
                   </button>
                   <button
                     @click.stop="handleApply(notification.projectId)"
-                    class="px-4 py-2 bg-green-100 text-green-700 rounded-lg hover:bg-green-200 transition-colors text-sm"
+                    class="flex-1 lg:flex-none px-3 sm:px-4 py-2 sm:py-2.5 bg-green-100 text-green-700 rounded-lg hover:bg-green-200 transition-colors text-xs sm:text-sm font-medium whitespace-nowrap"
                     v-if="notification.projectId"
                   >
                     Подати заявку
@@ -117,48 +117,48 @@
       </div>
 
       <!-- Профіль студента -->
-      <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-        <div class="flex flex-col sm:flex-row items-start gap-4 sm:gap-6">
-          <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-savoy/20 flex items-center justify-center flex-shrink-0">
-            <span class="text-savoy text-2xl sm:text-3xl font-bold">
+      <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-3 sm:p-4 md:p-6">
+        <div class="flex flex-col sm:flex-row items-start gap-3 sm:gap-4 md:gap-6">
+          <div class="w-14 h-14 sm:w-16 sm:h-16 md:w-20 md:h-20 rounded-full bg-savoy/20 flex items-center justify-center flex-shrink-0 mx-auto sm:mx-0">
+            <span class="text-savoy text-xl sm:text-2xl md:text-3xl font-bold">
               {{ currentStudent.fullName.charAt(0).toUpperCase() }}
             </span>
           </div>
-          <div class="flex-1 min-w-0">
-            <h2 class="text-xl sm:text-2xl font-bold text-gray-800 mb-2">{{ currentStudent.fullName }}</h2>
-            <p class="text-gray-600 mb-1 text-sm sm:text-base">{{ currentStudent.course }} курс, {{ currentStudent.specialty }}</p>
-            <p class="text-gray-500 text-xs sm:text-sm mb-4 break-all">{{ currentStudent.email }}</p>
-            <div class="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-4">
-              <div>
+          <div class="flex-1 min-w-0 w-full">
+            <h2 class="text-base sm:text-lg md:text-xl lg:text-2xl font-bold text-gray-800 mb-1.5 sm:mb-2 text-center sm:text-left break-words">{{ currentStudent.fullName }}</h2>
+            <p class="text-gray-600 mb-1 text-xs sm:text-sm md:text-base text-center sm:text-left">{{ currentStudent.course }} курс, {{ currentStudent.specialty }}</p>
+            <p class="text-gray-500 text-xs sm:text-sm mb-3 sm:mb-4 break-all text-center sm:text-left">{{ currentStudent.email }}</p>
+            <div class="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-3 md:gap-4 flex-wrap">
+              <div class="flex items-center gap-1.5 sm:gap-2">
                 <span class="text-xs sm:text-sm text-gray-500">Рейтинг:</span>
-                <span class="ml-2 text-base sm:text-lg font-bold text-savoy">{{ currentStudent.rating.toFixed(1) }}/5.0</span>
+                <span class="text-sm sm:text-base md:text-lg font-bold text-savoy">{{ currentStudent.rating.toFixed(1) }}/5.0</span>
               </div>
-              <div>
+              <div class="flex items-center gap-1.5 sm:gap-2">
                 <span class="text-xs sm:text-sm text-gray-500">Доступність:</span>
-                <span class="ml-2 text-base sm:text-lg font-semibold text-gray-800">{{ currentStudent.availability }} год/тиждень</span>
+                <span class="text-sm sm:text-base md:text-lg font-semibold text-gray-800">{{ currentStudent.availability }} год/тиждень</span>
               </div>
-              <div>
+              <div class="flex items-center gap-1.5 sm:gap-2">
                 <span class="text-xs sm:text-sm text-gray-500">Статус:</span>
-                <span :class="getStatusClass(currentStudent.status)" class="ml-2 px-2 py-1 rounded-full text-xs font-semibold">
+                <span :class="getStatusClass(currentStudent.status)" class="px-2 py-0.5 sm:py-1 rounded-full text-xs font-semibold">
                   {{ getStudentStatusText(currentStudent.status) }}
                 </span>
               </div>
               <!-- Лічильник непрочитаних сповіщень -->
-              <div v-if="unreadCount > 0">
+              <div v-if="unreadCount > 0" class="flex items-center gap-1.5 sm:gap-2">
                 <span class="text-xs sm:text-sm text-gray-500">Нові сповіщення:</span>
-                <span class="ml-2 px-2 py-1 bg-red-100 text-red-700 rounded-full text-xs font-semibold">
+                <span class="px-2 py-0.5 sm:py-1 bg-red-100 text-red-700 rounded-full text-xs font-semibold">
                   {{ unreadCount }}
                 </span>
               </div>
             </div>
             
             <!-- Портфоліо посилання -->
-            <div v-if="currentStudent.portfolio" class="mt-4 flex flex-wrap gap-3">
+            <div v-if="currentStudent.portfolio" class="mt-4 flex flex-wrap gap-2 sm:gap-3 justify-center sm:justify-start">
               <a 
                 v-if="currentStudent.portfolio.github"
                 :href="currentStudent.portfolio.github"
                 target="_blank"
-                class="flex items-center gap-1 text-sm text-gray-600 hover:text-savoy transition-colors"
+                class="flex items-center gap-1.5 text-xs sm:text-sm text-gray-600 hover:text-savoy transition-colors px-3 py-1.5 rounded-lg hover:bg-gray-50"
               >
                 <span>📁</span>
                 <span>GitHub</span>
@@ -167,7 +167,7 @@
                 v-if="currentStudent.portfolio.behance"
                 :href="currentStudent.portfolio.behance"
                 target="_blank"
-                class="flex items-center gap-1 text-sm text-gray-600 hover:text-savoy transition-colors"
+                class="flex items-center gap-1.5 text-xs sm:text-sm text-gray-600 hover:text-savoy transition-colors px-3 py-1.5 rounded-lg hover:bg-gray-50"
               >
                 <span>🎨</span>
                 <span>Behance</span>
@@ -176,7 +176,7 @@
                 v-if="currentStudent.portfolio.website"
                 :href="currentStudent.portfolio.website"
                 target="_blank"
-                class="flex items-center gap-1 text-sm text-gray-600 hover:text-savoy transition-colors"
+                class="flex items-center gap-1.5 text-xs sm:text-sm text-gray-600 hover:text-savoy transition-colors px-3 py-1.5 rounded-lg hover:bg-gray-50"
               >
                 <span>🌐</span>
                 <span>Website</span>
@@ -184,39 +184,39 @@
             </div>
             
             <!-- Статистика проєктів -->
-            <div class="mt-6 pt-6 border-t border-gray-200">
-              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div class="bg-gray-50 rounded-lg p-4">
-                  <div class="flex items-center gap-2 mb-2">
-                    <span class="text-2xl">✅</span>
-                    <div>
+            <div class="mt-4 sm:mt-5 md:mt-6 pt-4 sm:pt-5 md:pt-6 border-t border-gray-200">
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                <div class="bg-gray-50 rounded-lg p-3 sm:p-4">
+                  <div class="flex flex-col lg:flex-row lg:items-center gap-2 lg:gap-3 mb-2 items-center text-center lg:text-left">
+                    <span class="text-lg sm:text-xl md:text-2xl flex-shrink-0">✅</span>
+                    <div class="flex-1 min-w-0 flex flex-col lg:flex-row lg:items-center lg:gap-2 items-center lg:items-start">
                       <p class="text-xs text-gray-500">Завершених проєктів</p>
-                      <p class="text-2xl font-bold text-gray-800">{{ completedProjects.length }}</p>
+                      <p class="text-lg sm:text-xl md:text-2xl font-bold text-gray-800">{{ completedProjects.length }}</p>
                     </div>
                   </div>
-                  <p class="text-xs text-gray-600 mt-2">З {{ myProjects.length }} загальних проєктів</p>
+                  <p class="text-xs text-gray-600 mt-1.5 sm:mt-2 text-center lg:text-left">З {{ myProjects.length }} загальних проєктів</p>
                 </div>
                 
-                <div class="bg-gray-50 rounded-lg p-4">
-                  <div class="flex items-center gap-2 mb-2">
-                    <span class="text-2xl">🤝</span>
-                    <div>
+                <div class="bg-gray-50 rounded-lg p-3 sm:p-4">
+                  <div class="flex flex-col lg:flex-row lg:items-center gap-2 lg:gap-3 mb-2 items-center text-center lg:text-left">
+                    <span class="text-lg sm:text-xl md:text-2xl flex-shrink-0">🤝</span>
+                    <div class="flex-1 min-w-0 flex flex-col lg:flex-row lg:items-center lg:gap-2 items-center lg:items-start">
                       <p class="text-xs text-gray-500">Партнерів</p>
-                      <p class="text-2xl font-bold text-gray-800">{{ partnersWorkedWith.length }}</p>
+                      <p class="text-lg sm:text-xl md:text-2xl font-bold text-gray-800">{{ partnersWorkedWith.length }}</p>
                     </div>
                   </div>
-                  <p class="text-xs text-gray-600 mt-2">З якими працював</p>
+                  <p class="text-xs text-gray-600 mt-1.5 sm:mt-2 text-center lg:text-left">З якими працював</p>
                 </div>
               </div>
               
               <!-- Список партнерів -->
-              <div v-if="partnersWorkedWith.length > 0" class="mt-4">
-                <p class="text-sm font-semibold text-gray-700 mb-2">Партнери:</p>
+              <div v-if="partnersWorkedWith.length > 0" class="mt-3 sm:mt-4">
+                <p class="text-xs sm:text-sm font-semibold text-gray-700 mb-2">Партнери:</p>
                 <div class="flex flex-wrap gap-2">
                   <div
                     v-for="partner in partnersWorkedWith"
                     :key="partner.id"
-                    class="px-3 py-1.5 bg-savoy/10 text-savoy rounded-lg text-sm font-medium border border-savoy/20"
+                    class="px-2 sm:px-3 py-1 sm:py-1.5 bg-savoy/10 text-savoy rounded-lg text-xs sm:text-sm font-medium border border-savoy/20 break-words"
                   >
                     {{ partner.companyName }}
                   </div>
@@ -228,31 +228,31 @@
       </div>
 
       <!-- Навички -->
-      <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-        <h3 class="text-xl font-bold text-gray-800 mb-4">Навички</h3>
-        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 md:gap-4">
+      <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-3 sm:p-4 md:p-6">
+        <h3 class="text-base sm:text-lg md:text-xl font-bold text-gray-800 mb-3 sm:mb-4">Навички</h3>
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-2.5 sm:gap-3 md:gap-4">
           <div
             v-for="skill in currentStudent.skills"
             :key="skill.id"
-            class="p-3 bg-gray-50 rounded-lg border border-gray-200 hover:shadow-sm transition-shadow"
+            class="p-2.5 sm:p-3 md:p-4 bg-gray-50 rounded-lg border border-gray-200 hover:shadow-sm transition-shadow"
           >
-            <div class="flex items-center justify-between mb-2">
-              <span class="font-semibold text-gray-800">{{ skill.name }}</span>
-              <div class="flex items-center gap-1">
+            <div class="flex flex-col gap-1.5 sm:gap-2 mb-1.5 sm:mb-2">
+              <span class="font-semibold text-sm sm:text-base text-gray-800 break-words">{{ skill.name }}</span>
+              <div class="flex items-center gap-1.5 flex-shrink-0">
                 <span
                   :class="getSkillLevelClass(skill.level)"
-                  class="px-2 py-0.5 rounded text-xs font-semibold"
+                  class="px-2 py-0.5 rounded text-xs font-semibold whitespace-nowrap"
                 >
                   {{ getSkillLevelText(skill.level) }}
                 </span>
-                <span v-if="skill.verified" class="text-green-500" title="Перевірена навичка">
+                <span v-if="skill.verified" class="text-green-500 text-sm sm:text-base flex-shrink-0" title="Перевірена навичка">
                   ✓
                 </span>
               </div>
             </div>
-            <div class="flex items-center justify-between">
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 sm:gap-2">
               <p class="text-xs text-gray-500 capitalize">{{ getSkillCategoryText(skill.category) }}</p>
-              <div v-if="skill.verified" class="text-xs text-green-600 font-medium">
+              <div v-if="skill.verified" class="text-xs text-green-600 font-medium whitespace-nowrap">
                 Перевірено
               </div>
             </div>
@@ -261,61 +261,61 @@
       </div>
 
       <!-- Рекомендовані проєкти -->
-      <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-        <div class="flex items-center justify-between mb-4">
-          <h3 class="text-xl font-bold text-gray-800">Рекомендовані проєкти</h3>
-          <span v-if="recommendedProjects.length > 0" class="text-sm text-gray-500">
+      <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-3 sm:p-4 md:p-6">
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-3 md:gap-4 mb-3 sm:mb-4">
+          <h3 class="text-base sm:text-lg md:text-xl font-bold text-gray-800">Рекомендовані проєкти</h3>
+          <span v-if="recommendedProjects.length > 0" class="text-xs sm:text-sm text-gray-500 whitespace-nowrap">
             {{ recommendedProjects.length }} проєктів
           </span>
         </div>
         
-        <div v-if="recommendedProjects.length === 0" class="text-center py-8 text-gray-500">
-          <p>Наразі немає рекомендованих проєктів</p>
-          <p class="text-sm mt-2">Оновіть свої навички або зачекайте на нові проєкти</p>
+        <div v-if="recommendedProjects.length === 0" class="text-center py-5 sm:py-6 md:py-8 text-gray-500 px-4">
+          <p class="text-sm sm:text-base">Наразі немає рекомендованих проєктів</p>
+          <p class="text-xs sm:text-sm mt-2">Оновіть свої навички або зачекайте на нові проєкти</p>
         </div>
 
-        <div v-else class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div v-else class="grid grid-cols-1 lg:grid-cols-2 gap-3 sm:gap-4">
           <div
             v-for="project in recommendedProjects"
             :key="project.id"
-            class="p-4 border border-gray-200 rounded-lg hover:border-savoy hover:shadow-sm transition-all cursor-pointer"
+            class="p-3 sm:p-4 border border-gray-200 rounded-lg hover:border-savoy hover:shadow-sm transition-all cursor-pointer"
             @click="navigateToProject(project.id)"
           >
-            <div class="flex items-start justify-between mb-2">
-              <h4 class="font-bold text-gray-800">{{ project.name }}</h4>
-              <span class="text-xs px-2 py-1 bg-blue-100 text-blue-700 rounded">
+            <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 mb-2">
+              <h4 class="font-bold text-sm sm:text-base text-gray-800 break-words flex-1 pr-2">{{ project.name }}</h4>
+              <span class="text-xs px-2 py-1 bg-blue-100 text-blue-700 rounded whitespace-nowrap flex-shrink-0">
                 {{ getMatchPercentage(project) }}% відповідність
               </span>
             </div>
-            <p class="text-sm text-gray-600 mb-3 line-clamp-2">{{ project.description }}</p>
+            <p class="text-xs sm:text-sm text-gray-600 mb-2 sm:mb-3 line-clamp-2 leading-relaxed">{{ project.description }}</p>
             
             <!-- Рекомендована роль -->
-            <div v-if="project.recommendations" class="mb-3">
+            <div v-if="project.recommendations" class="mb-2 sm:mb-3">
               <p class="text-xs text-gray-500">Рекомендована роль:</p>
-              <p class="text-sm font-medium text-savoy">
+              <p class="text-xs sm:text-sm font-medium text-savoy break-words">
                 {{ getRecommendedRole(project) }}
               </p>
             </div>
             
-            <div class="flex items-center justify-between text-xs text-gray-500">
-              <div class="flex items-center gap-3">
-                <span class="px-2 py-1 bg-gray-100 rounded">{{ project.category }}</span>
-                <span>{{ getComplexityText(project.complexity) }}</span>
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 text-xs text-gray-500 mb-2 sm:mb-3">
+              <div class="flex items-center gap-2 sm:gap-3 flex-wrap">
+                <span class="px-2 py-0.5 sm:py-1 bg-gray-100 rounded whitespace-nowrap">{{ project.category }}</span>
+                <span class="whitespace-nowrap">{{ getComplexityText(project.complexity) }}</span>
               </div>
-              <span v-if="project.deadline" class="text-gray-600">
+              <span v-if="project.deadline" class="text-gray-600 whitespace-nowrap">
                 Дедлайн: {{ formatDate(project.deadline) }}
               </span>
             </div>
             
-            <div class="mt-4 flex gap-2">
+            <div class="flex flex-col lg:flex-row gap-2">
               <button
-                class="flex-1 px-4 py-2 bg-savoy text-white rounded-lg hover:bg-savoy/90 transition-colors text-sm"
+                class="flex-1 lg:flex-none px-3 sm:px-4 py-2 sm:py-2.5 bg-savoy text-white rounded-lg hover:bg-savoy/90 transition-colors text-xs sm:text-sm font-medium"
                 @click.stop="handleApply(project.id)"
               >
                 Подати заявку
               </button>
               <button
-                class="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors text-sm"
+                class="flex-1 lg:flex-none px-3 sm:px-4 py-2 sm:py-2.5 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors text-xs sm:text-sm font-medium"
                 @click.stop="navigateToProject(project.id)"
               >
                 Детальніше
@@ -326,41 +326,41 @@
       </div>
 
       <!-- Мої проєкти -->
-      <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-        <div class="flex items-center justify-between mb-4">
-          <h3 class="text-xl font-bold text-gray-800">Мої проєкти</h3>
-          <span v-if="myProjects.length > 0" class="text-sm text-gray-500">
+      <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-3 sm:p-4 md:p-6">
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-3 md:gap-4 mb-3 sm:mb-4">
+          <h3 class="text-base sm:text-lg md:text-xl font-bold text-gray-800">Мої проєкти</h3>
+          <span v-if="myProjects.length > 0" class="text-xs sm:text-sm text-gray-500 whitespace-nowrap">
             {{ myProjects.length }} проєктів
           </span>
         </div>
         
-        <div v-if="myProjects.length === 0" class="text-center py-8 text-gray-500">
-          <p>Ви ще не приймаєте участі в проєктах</p>
-          <p class="text-sm mt-2">Подайте заявку на рекомендовані проєкти або чекайте на запрошення</p>
+        <div v-if="myProjects.length === 0" class="text-center py-5 sm:py-6 md:py-8 text-gray-500 px-4">
+          <p class="text-sm sm:text-base">Ви ще не приймаєте участі в проєктах</p>
+          <p class="text-xs sm:text-sm mt-2">Подайте заявку на рекомендовані проєкти або чекайте на запрошення</p>
         </div>
 
-        <div v-else class="space-y-4">
+        <div v-else class="space-y-3 sm:space-y-4">
           <div
             v-for="project in myProjects"
             :key="project.id"
-            class="p-4 border border-gray-200 rounded-lg hover:border-savoy hover:shadow-sm transition-all cursor-pointer"
+            class="p-3 sm:p-4 border border-gray-200 rounded-lg hover:border-savoy hover:shadow-sm transition-all cursor-pointer"
             @click="navigateToProject(project.id)"
           >
-            <div class="flex items-start justify-between mb-3">
-              <div class="flex-1">
-                <div class="flex items-center gap-2 mb-1">
-                  <h4 class="font-bold text-gray-800">{{ project.name }}</h4>
+            <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 sm:gap-3 mb-2 sm:mb-3">
+              <div class="flex-1 min-w-0">
+                <div class="flex flex-col sm:flex-row sm:items-center gap-2 mb-1.5 sm:mb-2">
+                  <h4 class="font-bold text-sm sm:text-base text-gray-800 break-words pr-2">{{ project.name }}</h4>
                   <span
                     :class="getProjectStatusClass(project.status)"
-                    class="px-3 py-1 rounded-lg text-xs font-semibold"
+                    class="px-2 sm:px-3 py-0.5 sm:py-1 rounded-lg text-xs font-semibold whitespace-nowrap flex-shrink-0"
                   >
                     {{ getProjectStatusText(project.status) }}
                   </span>
                 </div>
-                <p class="text-sm text-gray-600 mb-2">{{ project.description }}</p>
+                <p class="text-xs sm:text-sm text-gray-600 mb-2 line-clamp-2 leading-relaxed">{{ project.description }}</p>
                 
                 <!-- Інформація про проєкт -->
-                <div class="flex flex-wrap items-center gap-3 text-xs text-gray-500">
+                <div class="flex flex-wrap items-center gap-2 sm:gap-3 text-xs text-gray-500">
                   <div class="flex items-center gap-1">
                     <span>👥</span>
                     <span>{{ project.team.length }} учасників</span>
@@ -381,9 +381,9 @@
               </div>
               
               <!-- Прогрес (якщо є борд) -->
-              <div v-if="project.boardId" class="ml-4 text-right">
+              <div v-if="project.boardId" class="sm:ml-4 text-left sm:text-right flex-shrink-0 mt-2 sm:mt-0">
                 <p class="text-xs text-gray-500 mb-1">Прогрес</p>
-                <div class="w-24 h-2 bg-gray-200 rounded-full overflow-hidden">
+                <div class="w-full sm:w-24 h-2 bg-gray-200 rounded-full overflow-hidden">
                   <div 
                     class="h-full bg-savoy transition-all duration-300"
                     :style="{ width: getProjectProgress(project.id) + '%' }"
@@ -394,9 +394,9 @@
             </div>
             
             <!-- Ваша роль у проєкті -->
-            <div v-if="getMyRoleInProject(project)" class="mt-3 pt-3 border-t border-gray-100">
+            <div v-if="getMyRoleInProject(project)" class="mt-2 sm:mt-3 pt-2 sm:pt-3 border-t border-gray-100">
               <p class="text-xs text-gray-500">Ваша роль:</p>
-              <p class="text-sm font-medium text-gray-800">{{ getMyRoleInProject(project) }}</p>
+              <p class="text-xs sm:text-sm font-medium text-gray-800 break-words">{{ getMyRoleInProject(project) }}</p>
             </div>
           </div>
         </div>
