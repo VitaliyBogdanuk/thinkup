@@ -342,5 +342,9 @@ const handleSubmit = async () => {
   width: 0;
   height: 0;
 }
+
+.popup-modal {
+    top: 54%;
+}
 </style>
 
