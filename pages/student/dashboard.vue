@@ -486,14 +486,14 @@ const completedProjects = computed(() => {
   return myProjects.value.filter((p: Project) => p.status === 'completed');
 });
 
-// Партнери, проєкти яких виконував студент
+// Партнери, проєкти яких виконував студент (тільки з завершених проєктів)
 const partnersWorkedWith = computed(() => {
   if (!currentStudent.value) return [];
   
   const partnerIds = new Set<string>();
   
-  // Збираємо унікальні ID партнерів з проєктів, де студент брав участь
-  myProjects.value.forEach((project: Project) => {
+  // Збираємо унікальні ID партнерів тільки з завершених проєктів, де студент брав участь
+  completedProjects.value.forEach((project: Project) => {
     if (project.partnerId) {
       partnerIds.add(project.partnerId);
     }
