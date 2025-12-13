@@ -3,7 +3,7 @@
     <!-- Логотип -->
     <NuxtLink to="/" class="flex items-center gap-2">
       <ChartBarSquareIcon class="w-7 h-7 text-savoy" />
-      <h1 class="text-base font-bold text-savoy">ThinkUp</h1>
+      <h1 class="text-base font-bold text-savoy">DeepWater</h1>
     </NuxtLink>
 
     <!-- Кнопки справа -->
