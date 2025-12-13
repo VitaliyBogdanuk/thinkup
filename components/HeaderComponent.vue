@@ -27,6 +27,7 @@
 </template>
 <script setup lang="ts">
 import { useKanbanStore } from "~~/stores";
+import { useProjectsStore } from "~~/stores/projects";
 import {
   Bars2Icon,
   XMarkIcon,
@@ -40,11 +41,24 @@ const router = useRouter();
 
 //Store
 const store = useKanbanStore();
+const projectsStore = useProjectsStore();
 const { boards } = storeToRefs(store);
 
 const boardId = route.params.board.toString();
 const boardName = computed(() => {
-  return boards.value?.find((board) => board.id === boardId)?.name;
+  // Спочатку шукаємо дошку
+  const board = boards.value?.find((board) => board.id === boardId);
+  if (board?.name) {
+    return board.name;
+  }
+  
+  // Якщо дошка не знайдена, шукаємо проєкт за boardId
+  const project = projectsStore.projects.find((p) => p.boardId === boardId);
+  if (project?.name) {
+    return project.name;
+  }
+  
+  return "Дошка";
 });
 
 //Refs
