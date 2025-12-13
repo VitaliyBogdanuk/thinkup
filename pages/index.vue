@@ -11,7 +11,7 @@
       
       <!-- Назва проєкту -->
       <h1 class="text-4xl sm:text-5xl md:text-6xl font-bold text-white mb-4 drop-shadow-lg">
-        ThinkUP
+        DeepWater
       </h1>
       <p class="text-xl sm:text-2xl text-white/90 mb-12 drop-shadow-md">
         Платформа для управління проєктами
