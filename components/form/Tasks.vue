@@ -15,87 +15,87 @@
 
         <div class="flex-1 overflow-y-auto pr-2">
           <div class="space-y-6">
-            <div class="flex flex-col space-y-2">
-              <label for="task_name" class="text-gray-800">Назва</label>
-              <input
-                v-model.trim="taskName"
-                type="text"
-                name="task_name"
-                placeholder="напр. Вивчення Nuxt.js"
+          <div class="flex flex-col space-y-2">
+            <label for="task_name" class="text-gray-800">Назва</label>
+            <input
+              v-model.trim="taskName"
+              type="text"
+              name="task_name"
+              placeholder="напр. Вивчення Nuxt.js"
                 class="w-full"
-              />
-            </div>
+            />
+          </div>
 
             <div class="flex flex-col space-y-2">
-              <label for="task_description" class="text-gray-800">Опис</label>
-              <textarea
-                v-model.trim="taskDescription"
-                type="text"
-                name="task_description"
-                placeholder="напр. Вивчити як генерувати серверно-рендерені сторінки"
+            <label for="task_description" class="text-gray-800">Опис</label>
+            <textarea
+              v-model.trim="taskDescription"
+              type="text"
+              name="task_description"
+              placeholder="напр. Вивчити як генерувати серверно-рендерені сторінки"
                 rows="4"
                 class="w-full resize-none"
-              />
-            </div>
+            />
+          </div>
 
-            <div class="space-y-2">
-              <p class="text-gray-800">Поточний статус</p>
+          <div class="space-y-2">
+            <p class="text-gray-800">Поточний статус</p>
               <select name="status" v-model="taskColumnId" class="w-full">
+              <option
+                v-for="column in boardColumns"
+                :key="column.id"
+                :value="column.id"
+              >
+                {{ column.name }}
+              </option>
+            </select>
+          </div>
+
+          <!-- Поля для проєктних дошок -->
+          <template v-if="isProjectBoard">
+            <div class="space-y-2">
+              <p class="text-gray-800">Призначити студента</p>
+                <select name="assigned_student" v-model="assignedStudentId" class="w-full">
+                <option value="">Не призначено</option>
                 <option
-                  v-for="column in boardColumns"
-                  :key="column.id"
-                  :value="column.id"
+                  v-for="student in availableStudents"
+                  :key="student.id"
+                  :value="student.id"
                 >
-                  {{ column.name }}
+                  {{ student.fullName }}
                 </option>
               </select>
             </div>
 
-            <!-- Поля для проєктних дошок -->
-            <template v-if="isProjectBoard">
-              <div class="space-y-2">
-                <p class="text-gray-800">Призначити студента</p>
-                <select name="assigned_student" v-model="assignedStudentId" class="w-full">
-                  <option value="">Не призначено</option>
-                  <option
-                    v-for="student in availableStudents"
-                    :key="student.id"
-                    :value="student.id"
-                  >
-                    {{ student.fullName }}
-                  </option>
-                </select>
-              </div>
-
-              <div class="space-y-2">
-                <p class="text-gray-800">Пріоритет</p>
+            <div class="space-y-2">
+              <p class="text-gray-800">Пріоритет</p>
                 <select name="priority" v-model="taskPriority" class="w-full">
-                  <option value="low">Низький</option>
-                  <option value="medium">Середній</option>
-                  <option value="high">Високий</option>
-                </select>
-              </div>
+                <option value="low">Низький</option>
+                <option value="medium">Середній</option>
+                <option value="high">Високий</option>
+              </select>
+            </div>
 
-              <div class="space-y-2">
-                <label for="estimated_hours" class="text-gray-800">Оцінка часу (години)</label>
-                <input
-                  id="estimated_hours"
-                  v-model.number="estimatedHours"
-                  type="number"
-                  min="0"
-                  placeholder="напр. 8"
-                  class="w-full"
-                />
-              </div>
-            </template>
-          </div>
+            <div class="space-y-2">
+              <label for="estimated_hours" class="text-gray-800">Оцінка часу (години)</label>
+              <input
+                id="estimated_hours"
+                v-model.number="estimatedHours"
+                type="number"
+                min="0"
+                placeholder="напр. 8"
+                class="w-full"
+              />
+            </div>
+          </template>
+        </div>
         </div>
         <div class="flex-shrink-0 pt-4 border-t border-gray-200">
-          <BaseButton
-            :label="buttonLabel"
-            @action="taskToEditState ? editTaskInfos() : createNewTask()"
+        <BaseButton
+          :label="buttonLabel"
+          @action="taskToEditState ? editTaskInfos() : createNewTask()"
             class="bg-savoy text-white w-full"
-          />
+        />
         </div>
       </div>
     </div>
