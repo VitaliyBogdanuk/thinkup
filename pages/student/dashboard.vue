@@ -1,7 +1,6 @@
 <template>
   <div>
     <section class="w-full h-full overflow-y-auto flex-1 p-3 sm:p-4 md:p-10 bg-lightGray">
-      <!-- Весь ваш контент залишається тут -->
       <h1 class="text-lg sm:text-xl md:text-2xl font-bold text-gray-800 mb-3 sm:mb-4 md:mb-6">Мій профіль</h1>
 
       <div v-if="!currentStudent" class="text-center py-16 text-gray-500">
@@ -104,7 +103,17 @@
                 
                 <!-- Список партнерів -->
                 <div v-if="partnersWorkedWith.length > 0" class="mt-3 sm:mt-4">
-                  <p class="text-xs sm:text-sm font-semibold text-gray-700 mb-2">Відгуки партнерів з якими працював:</p>
+                  <div class="flex items-center justify-between mb-2">
+                    <p class="text-xs sm:text-sm font-semibold text-gray-700">Відгуки партнерів:</p>
+                    <div class="flex items-center gap-1">
+                      <div class="flex items-center gap-0.5">
+                        <span class="text-amber-500 text-xs">★</span>
+                        <span class="text-xs font-bold">{{ partnersReviewStats.averageRating.toFixed(1) }}</span>
+                      </div>
+                      <span class="text-xs text-gray-500">({{ partnersReviewStats.totalReviews }})</span>
+                    </div>
+                  </div>
+                  
                   <div class="flex flex-wrap gap-2">
                     <div
                       v-for="partner in partnersWorkedWith"
@@ -113,7 +122,7 @@
                       @click="openPartnerReview(partner)"
                     >
                       <div class="flex items-center gap-1.5">
-                        <!-- Аватар партнера (перша літера назви) -->
+                        <!-- Аватар партнера -->
                         <div class="w-5 h-5 rounded-full bg-savoy/30 flex items-center justify-center flex-shrink-0">
                           <span class="text-xs font-bold text-savoy">{{ partner.companyName.charAt(0).toUpperCase() }}</span>
                         </div>
@@ -122,23 +131,18 @@
                         <span class="font-medium truncate max-w-[100px] sm:max-w-[120px]">{{ partner.companyName }}</span>
                         
                         <!-- Оцінка партнера -->
-                        <div v-if="getPartnerReview(partner.id)" class="flex items-center gap-0.5 flex-shrink-0">
-                          <span class="text-xs font-bold">{{ getPartnerReview(partner.id)?.rating.toFixed(1) }}</span>
-                        </div>
-                        <div v-else class="flex items-center gap-0.5 flex-shrink-0">
-                          <span class="text-xs font-bold text-gray-500"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"><path d="M12 17.414 3.293 8.707l1.414-1.414L12 14.586l7.293-7.293 1.414 1.414L12 17.414z"/></svg></span>
+                        <div class="flex items-center gap-0.5 flex-shrink-0">
+                          <span class="text-amber-500 text-xs">★</span>
+                          <span class="text-xs font-bold">{{ getPartnerReview(partner.id)?.rating.toFixed(1) || '4.5' }}</span>
                         </div>
                         
-                        <!-- Іконка відгуку (якщо є) -->
-                        <div v-if="getPartnerReview(partner.id)" class="flex-shrink-0">
+                        <!-- Іконка відгуку -->
+                        <div class="flex-shrink-0">
                           <svg class="w-3.5 h-3.5 text-gray-500 group-hover:text-savoy transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
                           </svg>
                         </div>
                       </div>
-                      
-                      <!-- Індикатор що є відгук -->
-                      <div v-if="getPartnerReview(partner.id)" class="absolute -top-1 -right-1 w-2 h-2 bg-savoy rounded-full"></div>
                     </div>
                   </div>
                 </div>
@@ -345,7 +349,7 @@
           <div class="flex items-center gap-3 mb-4">
             <div class="w-12 h-12 rounded-full bg-savoy/20 flex items-center justify-center">
               <span class="text-savoy font-bold text-lg">
-                {{ selectedPartnerReview.partnerName.charAt(0) }}
+                {{ selectedPartnerReview.partnerName?.charAt(0) || '?' }}
               </span>
             </div>
             <div>
@@ -361,12 +365,16 @@
               <span class="text-sm text-gray-600">Оцінка:</span>
               <div class="flex items-center gap-1">
                 <span v-for="n in 5" :key="n" class="text-lg">
-                  <span v-if="n <= selectedPartnerReview.rating" class="text-amber-500">★</span>
+                  <span v-if="n <= Math.floor(selectedPartnerReview.rating)" class="text-amber-500">★</span>
+                  <span v-else-if="n === Math.ceil(selectedPartnerReview.rating) && selectedPartnerReview.rating % 1 !== 0" class="text-amber-500">½</span>
                   <span v-else class="text-gray-300">☆</span>
                 </span>
                 <span class="font-bold text-gray-800 ml-2">{{ selectedPartnerReview.rating.toFixed(1) }}/5.0</span>
               </div>
             </div>
+            <p class="text-xs text-gray-500">
+              {{ getRatingDescription(selectedPartnerReview.rating) }}
+            </p>
           </div>
           
           <!-- Текст відгуку -->
@@ -375,7 +383,7 @@
           </div>
           
           <!-- Навички -->
-          <div v-if="selectedPartnerReview.skills.length > 0" class="mb-6">
+          <div v-if="selectedPartnerReview.skills && selectedPartnerReview.skills.length > 0" class="mb-6">
             <p class="text-sm text-gray-600 mb-2">Оцінені навички:</p>
             <div class="flex flex-wrap gap-1.5">
               <span
@@ -423,87 +431,184 @@ const projectsStore = useProjectsStore();
 const showAllReviews = ref(false);
 const selectedPartnerReview = ref<any>(null);
 
-const mockPartnerReviews = [
-  {
-    id: "1",
-    partnerId: "partner1",
-    partnerName: "TechCorp Ukraine",
-    projectName: "Розробка CRM системи",
-    rating: 4.5,
-    comment: "Чудовий фахівець! Швидко вчиться новим технологіям, відповідально підходить до задач. Особливо вразила робота з React та TypeScript.",
-    skills: ["React", "TypeScript", "Teamwork"],
-    date: "2024-01-15"
-  },
-  {
-    id: "2",
-    partnerId: "partner2",
-    partnerName: "DesignStudio Pro",
-    projectName: "Редизайн корпоративного сайту",
-    rating: 5.0,
-    comment: "Найкращий студент з яким ми працювали! Не тільки технічні навички на високому рівні, але й відмінні комунікаційні здібності.",
-    skills: ["UI/UX Design", "Figma", "Communication"],
-    date: "2023-11-30"
-  },
-  {
-    id: "3",
-    partnerId: "partner3",
-    partnerName: "DataAnalytics Inc",
-    projectName: "Аналіз ринку електронної комерції",
-    rating: 4.0,
-    comment: "Дуже старанний працівник. Відмінно справляється з аналітичними завданнями. Рекомендую для проектів, де потрібна увага до деталей.",
-    skills: ["Data Analysis", "Excel", "Research"],
-    date: "2023-10-20"
-  },
-  {
-    id: "4",
-    partnerId: "partner4",
-    partnerName: "StartUp Lab",
-    projectName: "MVP мобільного додатку",
-    rating: 4.8,
-    comment: "Прагне до вдосконалення та завжди відкритий для зворотного зв'язку. Дуже цінний член команди для стартапів.",
-    skills: ["Mobile Development", "Problem Solving", "Adaptability"],
-    date: "2023-09-10"
-  },
-  {
-    id: "5",
-    partnerId: "partner5",
-    partnerName: "EcoTech Solutions",
-    projectName: "Розробка платформи для екомоніторингу",
-    rating: 3.5,
-    comment: "Хороший спеціаліст, але потребує більше досвіду в командній роботі. Технічні навички на рівні.",
-    skills: ["Backend", "Python", "API Development"],
-    date: "2023-08-05"
-  }
-];
+// Функція для отримання відгуку для існуючого партнера
+const getPartnerReview = (partnerId: string) => {
+  // Знаходимо партнера в store
+  const partner = projectsStore.partners.find(p => p.id === partnerId);
+  if (!partner) return null;
+  
+  const companyName = partner.companyName;
+  
+  // Визначаємо тип компанії для більш реалістичного відгуку
+  const getCompanyType = () => {
+    const name = companyName.toLowerCase();
+    if (name.includes('tech') || name.includes('it') || name.includes('software')) return 'tech';
+    if (name.includes('design') || name.includes('creative') || name.includes('studio')) return 'design';
+    if (name.includes('data') || name.includes('analytics') || name.includes('research')) return 'data';
+    if (name.includes('startup') || name.includes('lab') || name.includes('innov')) return 'startup';
+    if (name.includes('eco') || name.includes('green') || name.includes('sustain')) return 'eco';
+    if (name.includes('fin') || name.includes('bank') || name.includes('money')) return 'finance';
+    if (name.includes('health') || name.includes('med') || name.includes('care')) return 'health';
+    return 'general';
+  };
+  
+  const companyType = getCompanyType();
+  
+  // Генеруємо відгук відповідно до типу компанії
+  const reviewTemplates: Record<string, any> = {
+    tech: {
+      projectName: "Розробка програмного забезпечення",
+      comments: [
+        "Відмінна робота з технічними завданнями. Швидко освоїв наш стек технологій та якісно виконував поставлені задачі.",
+        "Проявив себе як вдумливий розробник. Особливо вразила робота з архітектурою додатків та оптимізацією продуктивності.",
+        "Технічні навички на високому рівні. Швидко знаходив оптимальні рішення складних проблем та ефективно використовував сучасні технології."
+      ],
+      skills: ["JavaScript", "TypeScript", "React", "Node.js", "Git", "API Development"]
+    },
+    design: {
+      projectName: "Дизайн користувацького інтерфейсу",
+      comments: [
+        "Креативний підхід до дизайну та чудове відчуття естетики. Робота з Figma на професійному рівні.",
+        "Вражаюча увага до деталей та здатність створювати інтуїтивно зрозумілі інтерфейси. Чудовий UX дизайн.",
+        "Проявив себе як талановитий дизайнер з гарним розумінням принципів користувацького досвіду."
+      ],
+      skills: ["UI/UX Design", "Figma", "Prototyping", "User Research", "Adobe Creative Suite"]
+    },
+    data: {
+      projectName: "Аналіз та обробка даних",
+      comments: [
+        "Відмінні аналітичні здібності. Якісно структурував дані та робив корисні висновки для бізнесу.",
+        "Професійна робота з великими наборами даних. Чіткі аналітичні звіти та релевантні рекомендації.",
+        "Вражаюча здатність виявляти закономірності в даних та будувати прогнозні моделі."
+      ],
+      skills: ["Python", "SQL", "Data Analysis", "Statistics", "Machine Learning", "Excel"]
+    },
+    startup: {
+      projectName: "Розробка MVP стартапу",
+      comments: [
+        "Відмінно адаптувався до динамічного середовища стартапу. Швидко вчився та ефективно працював в умовах невизначеності.",
+        "Ключовий учасник команди. Не тільки технічні навички, але й здатність бачити картину в цілому та пропонувати бізнес-рішення.",
+        "Гнучкість та адаптивність - ключові якості для роботи в стартапі. Завжди готовий взяти на себе нові виклики."
+      ],
+      skills: ["Full-stack Development", "Agile", "Product Management", "Problem Solving", "Adaptability"]
+    },
+    eco: {
+      projectName: "Розробка екологічних рішень",
+      comments: [
+        "Вражаюча мотивація до створення сталого майбутнього. Технічні навички поєднувалися з глибоким розумінням екологічних проблем.",
+        "Якісна робота над проєктом, що має соціальну значущість. Демонстрував відповідальність та прискіпливість до деталей.",
+        "Проявив себе як відповідальний фахівець з гарним розумінням екологічних технологій та принципів сталого розвитку."
+      ],
+      skills: ["Sustainable Tech", "IoT", "Data Monitoring", "Environmental Science", "Project Management"]
+    },
+    finance: {
+      projectName: "Розробка фінансового рішення",
+      comments: [
+        "Відмінна робота з фінансовими даними та алгоритмами. Дотримувався високих стандартів безпеки та точності.",
+        "Проявив себе як уважний та відповідальний фахівець. Важливі якості для роботи з фінансовими системами.",
+        "Якісна реалізація складних фінансових алгоритмів. Чудове розуміння бізнес-логіки та технічних вимог."
+      ],
+      skills: ["Security", "Encryption", "Financial Algorithms", "Compliance", "API Integration"]
+    },
+    health: {
+      projectName: "Розробка медичного рішення",
+      comments: [
+        "Вражаюча відповідальність та увага до деталей - критично важливо для медичних проєктів. Дотримувався всіх стандартів безпеки.",
+        "Якісна робота з чутливими даними. Проявив розуміння медичних процесів та технічних вимог охорони здоров'я.",
+        "Професійний підхід до розробки медичних рішень. Важливі якості - точність, надійність та дотримання протоколів."
+      ],
+      skills: ["Healthcare APIs", "Data Privacy", "Security", "Medical Standards", "Quality Assurance"]
+    },
+    general: {
+      projectName: "Корпоративний проєкт співпраці",
+      comments: [
+        "Відмінна професійна робота. Демонстрував високий рівень відповідальності та якості виконання завдань.",
+        "Проявив себе як цінний член команди. Хороші комунікаційні навички та здатність ефективно співпрацювати.",
+        "Стабільна та якісна робота протягом усього проєкту. Заслуговує на високу оцінку за професіоналізм."
+      ],
+      skills: ["Communication", "Teamwork", "Problem Solving", "Project Management", "Professionalism"]
+    }
+  };
+  
+  const template = reviewTemplates[companyType] || reviewTemplates.general;
+  const randomComment = template.comments[Math.floor(Math.random() * template.comments.length)];
+  
+  // Генеруємо випадкову оцінку (4.0-5.0)
+  const rating = 4.0 + Math.random() * 1.0;
+  
+  // Генеруємо випадкову дату за останній рік
+  const randomDate = new Date();
+  randomDate.setMonth(randomDate.getMonth() - Math.floor(Math.random() * 12));
+  
+  return {
+    id: `review_${partnerId}`,
+    partnerId: partnerId,
+    partnerName: companyName,
+    projectName: template.projectName,
+    rating: parseFloat(rating.toFixed(1)),
+    comment: randomComment,
+    skills: [...template.skills].sort(() => 0.5 - Math.random()).slice(0, 4),
+    date: randomDate.toISOString().split('T')[0]
+  };
+};
+
+// Функція для опису рейтингу
+const getRatingDescription = (rating: number): string => {
+  if (rating >= 4.8) return "Відмінно";
+  if (rating >= 4.3) return "Дуже добре";
+  if (rating >= 3.8) return "Добре";
+  if (rating >= 3.3) return "Задовільно";
+  return "Можна краще";
+};
 
 // Обчислювані властивості
 const partnerReviews = computed(() => {
   if (showAllReviews.value) {
-    return mockPartnerReviews;
+    return partnersWorkedWith.value.map(partner => getPartnerReview(partner.id)).filter(Boolean);
   }
-  return mockPartnerReviews.slice(0, 4);
+  return partnersWorkedWith.value.map(partner => getPartnerReview(partner.id)).filter(Boolean).slice(0, 4);
 });
 
-const averagePartnerRating = computed(() => {
-  if (mockPartnerReviews.length === 0) return 0;
-  const sum = mockPartnerReviews.reduce((acc, review) => acc + review.rating, 0);
-  return sum / mockPartnerReviews.length;
+// Статистика для всіх партнерів
+const partnersReviewStats = computed(() => {
+  const reviews = partnersWorkedWith.value.map(partner => getPartnerReview(partner.id)).filter(Boolean);
+  
+  if (reviews.length === 0) {
+    return { averageRating: 0, totalReviews: 0 };
+  }
+  
+  const totalRating = reviews.reduce((sum, review) => sum + review!.rating, 0);
+  const averageRating = totalRating / reviews.length;
+  
+  return {
+    averageRating: parseFloat(averageRating.toFixed(1)),
+    totalReviews: reviews.length
+  };
 });
 
 // Функція форматування дати для відгуків
 const formatReviewDate = (dateString: string): string => {
-  const date = new Date(dateString);
-  const now = new Date();
-  const diffTime = Math.abs(now.getTime() - date.getTime());
-  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-  
-  if (diffDays < 30) {
-    return `${diffDays} днів тому`;
-  } else if (diffDays < 365) {
-    const months = Math.floor(diffDays / 30);
-    return `${months} місяців тому`;
-  } else {
-    return date.toLocaleDateString('uk-UA', { month: 'short', year: 'numeric' });
+  try {
+    const date = new Date(dateString);
+    const now = new Date();
+    const diffTime = Math.abs(now.getTime() - date.getTime());
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    
+    if (diffDays === 0) return "Сьогодні";
+    if (diffDays === 1) return "Вчора";
+    if (diffDays < 30) return `${diffDays} днів тому`;
+    if (diffDays < 365) {
+      const months = Math.floor(diffDays / 30);
+      return `${months} ${months === 1 ? 'місяць' : months < 5 ? 'місяці' : 'місяців'} тому`;
+    }
+    
+    return date.toLocaleDateString('uk-UA', { 
+      day: 'numeric', 
+      month: 'long', 
+      year: 'numeric' 
+    });
+  } catch {
+    return "Недавно";
   }
 };
 
@@ -573,25 +678,24 @@ const recommendedProjects = computed(() => {
     .slice(0, 6);
 });
 
-// Отримати відгук партнера
-const getPartnerReview = (partnerId: string) => {
-  return mockPartnerReviews.find(review => review.partnerId === partnerId);
-};
-
 // Відкрити відгук партнера
 const openPartnerReview = (partner: Partner) => {
+  // Завжди створюємо фейковий відгук для цього партнера
   const review = getPartnerReview(partner.id);
+  
   if (review) {
     selectedPartnerReview.value = review;
   } else {
-    // Якщо відгуку немає, показуємо інформацію про партнера
+    // Якщо щось пішло не так, створюємо простий відгук
     selectedPartnerReview.value = {
+      id: `review_${partner.id}`,
+      partnerId: partner.id,
       partnerName: partner.companyName,
-      projectName: "Немає інформації",
-      rating: 0,
-      comment: "Цей партнер ще не залишив відгук.",
-      skills: [],
-      date: new Date().toISOString()
+      projectName: "Проєкт співпраці",
+      rating: 4.5,
+      comment: "Якісна професійна робота. Студент демонстрував високий рівень відповідальності та технічних навичок.",
+      skills: ["Professionalism", "Technical Skills", "Teamwork", "Communication"],
+      date: new Date().toISOString().split('T')[0]
     };
   }
 };

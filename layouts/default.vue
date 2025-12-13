@@ -304,7 +304,7 @@
     </div>
       <div class="flex-1 overflow-hidden flex flex-col min-w-0">
       <MobileHeader />
-      <div class="flex-1 overflow-hidden mt-14 md:mt-0">
+      <div class="flex-1 overflow-auto mt-14 md:mt-0">
         <slot></slot>
       </div>
     </div>
