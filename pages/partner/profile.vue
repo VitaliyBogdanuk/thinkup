@@ -32,31 +32,31 @@
         <div class="mt-6 pt-6 border-t border-gray-200">
           <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div class="bg-gray-50 rounded-lg p-4">
-              <div class="flex items-center gap-2 mb-2">
-                <span class="text-2xl">📊</span>
-                <div>
+              <div class="flex flex-col lg:flex-row lg:items-center gap-2 lg:gap-3 items-center text-center lg:text-left">
+                <span class="text-xl sm:text-2xl flex-shrink-0">📊</span>
+                <div class="flex-1 min-w-0 flex flex-col lg:flex-row lg:items-center lg:gap-2 items-center lg:items-start">
                   <p class="text-xs text-gray-500">Всього проєктів</p>
-                  <p class="text-2xl font-bold text-gray-800">{{ myProjects.length }}</p>
+                  <p class="text-xl sm:text-2xl font-bold text-gray-800">{{ myProjects.length }}</p>
                 </div>
               </div>
             </div>
             
             <div class="bg-gray-50 rounded-lg p-4">
-              <div class="flex items-center gap-2 mb-2">
-                <span class="text-2xl">✅</span>
-                <div>
+              <div class="flex flex-col lg:flex-row lg:items-center gap-2 lg:gap-3 items-center text-center lg:text-left">
+                <span class="text-xl sm:text-2xl flex-shrink-0">✅</span>
+                <div class="flex-1 min-w-0 flex flex-col lg:flex-row lg:items-center lg:gap-2 items-center lg:items-start">
                   <p class="text-xs text-gray-500">Завершених</p>
-                  <p class="text-2xl font-bold text-gray-800">{{ completedProjects.length }}</p>
+                  <p class="text-xl sm:text-2xl font-bold text-gray-800">{{ completedProjects.length }}</p>
                 </div>
               </div>
             </div>
             
             <div class="bg-gray-50 rounded-lg p-4">
-              <div class="flex items-center gap-2 mb-2">
-                <span class="text-2xl">🚀</span>
-                <div>
+              <div class="flex flex-col lg:flex-row lg:items-center gap-2 lg:gap-3 items-center text-center lg:text-left">
+                <span class="text-xl sm:text-2xl flex-shrink-0">🚀</span>
+                <div class="flex-1 min-w-0 flex flex-col lg:flex-row lg:items-center lg:gap-2 items-center lg:items-start">
                   <p class="text-xs text-gray-500">Активних</p>
-                  <p class="text-2xl font-bold text-gray-800">{{ activeProjects.length }}</p>
+                  <p class="text-xl sm:text-2xl font-bold text-gray-800">{{ activeProjects.length }}</p>
                 </div>
               </div>
             </div>
