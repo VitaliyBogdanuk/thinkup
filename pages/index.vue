@@ -421,7 +421,7 @@ onMounted(() => {
 .board-card:hover .board-card-icon,
 .board-card:hover h2,
 .board-card:hover .text-gray-600,
-.board-card:hover .text-gray-800,{
+.board-card:hover .text-gray-800 {
   color: white !important;
 }
 
