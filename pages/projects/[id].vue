@@ -14,12 +14,22 @@
             <h1 class="text-lg md:text-2xl font-bold text-gray-800 mb-2 line-clamp-2">{{ project.name }}</h1>
             <p class="text-sm md:text-base text-gray-600 line-clamp-3">{{ project.description }}</p>
           </div>
-          <span
-            :class="getStatusClass(project.status)"
-            class="px-3 py-1 rounded-lg text-xs md:text-sm font-semibold whitespace-nowrap flex-shrink-0"
-          >
-            {{ getStatusText(project.status) }}
-          </span>
+          <div class="flex flex-col sm:flex-row items-end sm:items-center gap-2 sm:gap-3">
+            <a
+              v-if="project.technicalSpecification"
+              href="#technical-spec"
+              class="px-3 py-1.5 md:px-4 md:py-2 bg-savoy text-white rounded-lg hover:bg-savoy/90 transition-colors text-xs md:text-sm font-semibold whitespace-nowrap flex-shrink-0 flex items-center gap-1.5"
+            >
+              <span>📄</span>
+              <span>Перейти до ТЗ</span>
+            </a>
+            <span
+              :class="getStatusClass(project.status)"
+              class="px-3 py-1 rounded-lg text-xs md:text-sm font-semibold whitespace-nowrap flex-shrink-0"
+            >
+              {{ getStatusText(project.status) }}
+            </span>
+          </div>
         </div>
 
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 md:gap-4 mt-4 pt-4 border-t border-gray-200">
@@ -36,6 +46,21 @@
             <p class="font-semibold text-gray-800 text-sm md:text-base">
               {{ authStore.isTeacher && project.status === 'pending_approval' && teamCount > 0 ? teamCount : project.team.length }} студентів
             </p>
+          </div>
+        </div>
+
+        <!-- Потрібні ролі на проєкті -->
+        <div v-if="project.roles && project.roles.length > 0" class="mt-4 pt-4 border-t border-gray-200">
+          <h3 class="text-sm md:text-base font-bold text-gray-800 mb-3">Потрібні ролі на проєкті:</h3>
+          <div class="space-y-2">
+            <div
+              v-for="role in project.roles"
+              :key="role.id"
+              class="flex items-center justify-between p-3 bg-gray-50 rounded-lg border border-gray-200"
+            >
+              <span class="text-sm md:text-base text-gray-800 font-medium">{{ role.name }}</span>
+              <span class="text-sm md:text-base text-gray-600">Потрібно: {{ role.required }}</span>
+            </div>
           </div>
         </div>
       </div>
@@ -99,7 +124,7 @@
       </div>
 
       <!-- Технічне завдання -->
-      <div v-if="project.technicalSpecification" class="mb-4 md:mb-6 bg-white rounded-xl shadow-sm border border-gray-200 p-4 md:p-6">
+      <div v-if="project.technicalSpecification" id="technical-spec" class="mb-4 md:mb-6 bg-white rounded-xl shadow-sm border border-gray-200 p-4 md:p-6 scroll-mt-4">
         <h3 class="text-lg md:text-xl font-bold text-gray-800 mb-4">Технічне завдання (ТЗ)</h3>
         <div class="bg-gray-50 rounded-lg p-4 md:p-6 border border-gray-200">
           <pre class="whitespace-pre-wrap text-sm md:text-base text-gray-700 font-sans overflow-x-auto">{{ project.technicalSpecification }}</pre>
