@@ -1,5 +1,34 @@
 <template>
-  <section class="w-full h-full overflow-y-auto flex-1 p-4 sm:p-6 lg:p-10 bg-lightGray">
+  <!-- Splash екран, якщо користувач не авторизований -->
+  <div v-if="!authStore.isAuthenticated" class="fixed inset-0 bg-gradient-to-br from-savoy via-savoy/90 to-savoy/80 flex items-center justify-center">
+    <div class="text-center px-4 sm:px-6">
+      <!-- Логотип -->
+      <div class="mb-8 flex justify-center">
+        <div class="w-24 h-24 sm:w-32 sm:h-32 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center border-4 border-white/30 shadow-2xl">
+          <span class="text-4xl sm:text-5xl md:text-6xl font-bold text-white">TU</span>
+        </div>
+      </div>
+      
+      <!-- Назва проєкту -->
+      <h1 class="text-4xl sm:text-5xl md:text-6xl font-bold text-white mb-4 drop-shadow-lg">
+        ThinkUP
+      </h1>
+      <p class="text-xl sm:text-2xl text-white/90 mb-12 drop-shadow-md">
+        Платформа для управління проєктами
+      </p>
+      
+      <!-- Кнопка "Почати" -->
+      <button
+        @click="handleStart"
+        class="px-8 sm:px-12 py-4 sm:py-5 bg-white text-savoy rounded-xl font-bold text-lg sm:text-xl hover:bg-white/90 transition-all duration-300 shadow-2xl hover:scale-105 active:scale-95"
+      >
+        Почати
+      </button>
+    </div>
+  </div>
+  
+  <!-- Звичайний контент для авторизованих користувачів -->
+  <section v-else class="w-full h-full overflow-y-auto flex-1 p-4 sm:p-6 lg:p-10 bg-lightGray">
     <!-- Панель навігації для аутентифікованих користувачів -->
     <div v-if="authStore.isAuthenticated" class="mb-8 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
       <div class="flex flex-col sm:flex-row items-start sm:items-center gap-4">
@@ -127,6 +156,7 @@ import { computed, onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
 import type { Project } from "~~/types";
 import CreateProject from "~~/components/project/CreateProject.vue";
+import { mockPartners } from "~~/utils/mockData";
 
 const store = useKanbanStore();
 const authStore = useAuthStore();
@@ -358,6 +388,18 @@ const handleProjectCreated = (projectId: string) => {
     store.loadBoards();
   }
   addBoardState.value = false;
+};
+
+// Обробка кнопки "Почати" на splash екрані
+const handleStart = () => {
+  // Виконуємо той самий код, що й при виборі ролі партнера
+  const user = mockPartners[0];
+  
+  if (user) {
+    authStore.login(user);
+    // Перенаправляємо на дашборд партнера
+    router.push("/projects");
+  }
 };
 
 // Перенаправляємо партнера на сторінку проєктів при першому відкритті
