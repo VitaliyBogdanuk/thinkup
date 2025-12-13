@@ -47,12 +47,32 @@
         />
       </div>
 
-      <!-- Рекомендації для партнерів -->
-      <div v-if="authStore.isPartner && project.recommendations" class="mb-4 md:mb-6">
-        <StudentRecommendations
-          :project-id="project.id"
-          :recommendations="project.recommendations"
-        />
+      <!-- Команда проєкту для партнерів (тільки для активних проєктів) -->
+      <div v-if="authStore.isPartner && (project.status === 'active' || project.status === 'completed')" class="mb-4 md:mb-6">
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-4 md:p-6">
+          <h3 class="text-xl font-bold text-gray-800 mb-4">Команда проєкту</h3>
+          <div v-if="project.team && project.team.length > 0" class="space-y-3">
+            <div
+              v-for="studentId in project.team"
+              :key="studentId"
+              class="flex items-center gap-3 md:gap-4 p-3 md:p-4 border border-gray-200 rounded-lg"
+            >
+              <div class="w-10 h-10 md:w-12 md:h-12 rounded-full bg-savoy/20 flex items-center justify-center flex-shrink-0">
+                <span class="text-savoy font-bold text-sm md:text-base">
+                  {{ getStudentInitial(studentId) }}
+                </span>
+              </div>
+              <div class="flex-1 min-w-0">
+                <p class="font-semibold text-gray-800">{{ getStudentName(studentId) }}</p>
+                <p class="text-xs md:text-sm text-gray-600">{{ getStudentInfo(studentId) }}</p>
+                <p class="text-xs md:text-sm text-gray-500 mt-1">{{ getStudentRole(studentId) }}</p>
+              </div>
+            </div>
+          </div>
+          <div v-else class="text-gray-500 text-center py-8">
+            Команда ще не сформована
+          </div>
+        </div>
       </div>
 
       <!-- Канбан-дошка -->
@@ -170,6 +190,29 @@ const getComplexityText = (complexity: ComplexityLevel): string => {
 
 const handleTeamApproved = () => {
   router.push("/projects");
+};
+
+// Функції для отримання інформації про студентів (для партнерів)
+const getStudentName = (studentId: string): string => {
+  const student = projectsStore.getStudentById(studentId);
+  return student?.fullName || "Невідомий студент";
+};
+
+const getStudentInitial = (studentId: string): string => {
+  const student = projectsStore.getStudentById(studentId);
+  return student?.fullName?.charAt(0).toUpperCase() || "?";
+};
+
+const getStudentInfo = (studentId: string): string => {
+  const student = projectsStore.getStudentById(studentId);
+  if (!student) return "";
+  return `${student.course} курс, ${student.specialty}`;
+};
+
+const getStudentRole = (studentId: string): string => {
+  if (!project.value) return "";
+  const role = project.value.roles.find(r => r.assigned.includes(studentId));
+  return role ? role.name : "Учасник";
 };
 </script>
 
