@@ -33,7 +33,9 @@
           </div>
           <div>
             <p class="text-xs md:text-sm text-gray-500">Команда</p>
-            <p class="font-semibold text-gray-800 text-sm md:text-base">{{ project.team.length }} студентів</p>
+            <p class="font-semibold text-gray-800 text-sm md:text-base">
+              {{ authStore.isTeacher && project.status === 'pending_approval' && teamCount > 0 ? teamCount : project.team.length }} студентів
+            </p>
           </div>
         </div>
       </div>
@@ -44,6 +46,7 @@
           :project-id="project.id"
           @approved="handleTeamApproved"
           @cancel="$router.push('/projects')"
+          @team-updated="handleTeamUpdated"
         />
       </div>
 
@@ -128,7 +131,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from "vue";
+import { computed, ref, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { useProjectsStore } from "~~/stores/projects";
 import { useAuthStore } from "~~/stores/auth";
@@ -145,6 +148,16 @@ const authStore = useAuthStore();
 
 const projectId = route.params.id as string;
 const project = computed(() => projectsStore.getProjectById(projectId));
+
+// Локальний стан для лічильника команди (для оновлення в реальному часі)
+const teamCount = ref(0);
+
+// Ініціалізуємо teamCount при завантаженні проєкту
+watch(project, (newProject) => {
+  if (newProject) {
+    teamCount.value = newProject.team.length;
+  }
+}, { immediate: true });
 
 // Форма додавання завдання
 const isTaskFormOpenState = isTaskFormOpen();
@@ -190,6 +203,10 @@ const getComplexityText = (complexity: ComplexityLevel): string => {
 
 const handleTeamApproved = () => {
   router.push("/projects");
+};
+
+const handleTeamUpdated = (count: number) => {
+  teamCount.value = count;
 };
 
 // Функції для отримання інформації про студентів (для партнерів)
