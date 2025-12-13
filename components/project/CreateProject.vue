@@ -5,10 +5,12 @@
         class="w-full sm:w-fit h-fit max-w-2xl max-h-[90vh] flex flex-col p-4 sm:p-6 md:p-8 bg-white rounded-xl gap-6 md:gap-10 relative m-4 sm:m-10 shadow-lg border border-gray-200 overflow-y-auto"
       >
         <button
-          class="absolute right-0 translate-x-4 -translate-y-5 top-0 rounded-full bg-gray-200 hover:bg-gray-300 p-3 transition-colors"
+          class="absolute top-4 right-4 rounded-full bg-white hover:bg-gray-100 text-gray-800 p-2 flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-200 z-30 border-2 border-gray-200 hover:scale-110 active:scale-95"
           @click="closeModal"
+          title="Закрити"
+          aria-label="Закрити модальне вікно"
         >
-          <XMarkIcon class="w-5 h-5 text-gray-800" />
+          <XMarkIcon class="w-5 h-5" />
         </button>
 
         <h2 class="text-gray-800">Створити новий проєкт</h2>
