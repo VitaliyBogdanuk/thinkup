@@ -71,7 +71,7 @@
       <div v-if="authStore.isPartner" class="px-2">
         <NuxtLink
           to="/partner/profile"
-          class="flex gap-2 px-3 py-3 items-center hover:bg-gray-700 transition-colors rounded-r-3xl font-bold text-gray-300 justify-center"
+          class="flex gap-2 px-3 py-3 items-center hover:bg-gray-700 transition-colors rounded-r-3xl font-bold text-gray-300 justify-start"
           :class="isSidebarCollapsed ? 'mr-0' : 'mr-5'"
           exact-active-class="bg-savoy text-white"
           :title="isSidebarCollapsed ? 'Мій профіль' : ''"
@@ -81,7 +81,7 @@
         </NuxtLink>
         <NuxtLink
           to="/projects"
-          class="flex gap-2 px-3 py-3 items-center hover:bg-gray-700 transition-colors rounded-r-3xl font-bold text-gray-300 justify-center"
+          class="flex gap-2 px-3 py-3 items-center hover:bg-gray-700 transition-colors rounded-r-3xl font-bold text-gray-300 justify-start"
           :class="isSidebarCollapsed ? 'mr-0' : 'mr-5'"
           exact-active-class="bg-savoy text-white"
           :title="isSidebarCollapsed ? 'Мої проєкти' : ''"
@@ -94,7 +94,7 @@
       <div v-if="authStore.isTeacher" class="px-2">
         <NuxtLink
           to="/teacher/dashboard"
-          class="flex gap-2 px-3 py-3 items-center hover:bg-gray-700 transition-colors rounded-r-3xl font-bold text-gray-300 justify-center"
+          class="flex gap-2 px-3 py-3 items-center hover:bg-gray-700 transition-colors rounded-r-3xl font-bold text-gray-300 justify-start"
           :class="isSidebarCollapsed ? 'mr-0' : 'mr-5'"
           exact-active-class="bg-savoy text-white"
           :title="isSidebarCollapsed ? 'Панель викладача' : ''"
@@ -104,7 +104,7 @@
         </NuxtLink>
         <NuxtLink
           to="/projects"
-          class="flex gap-2 px-3 py-3 items-center hover:bg-gray-700 transition-colors rounded-r-3xl font-bold text-gray-300 justify-center"
+          class="flex gap-2 px-3 py-3 items-center hover:bg-gray-700 transition-colors rounded-r-3xl font-bold text-gray-300 justify-start"
           :class="isSidebarCollapsed ? 'mr-0' : 'mr-5'"
           exact-active-class="bg-savoy text-white"
           :title="isSidebarCollapsed ? 'Всі проєкти' : ''"
@@ -117,7 +117,7 @@
       <div v-if="authStore.isStudent" class="px-2">
         <NuxtLink
           to="/student/dashboard"
-          class="flex gap-2 px-3 py-3 items-center hover:bg-gray-700 transition-colors rounded-r-3xl font-bold text-gray-300 justify-center"
+          class="flex gap-2 px-3 py-3 items-center hover:bg-gray-700 transition-colors rounded-r-3xl font-bold text-gray-300 justify-start"
           :class="isSidebarCollapsed ? 'mr-0' : 'mr-5'"
           exact-active-class="bg-savoy text-white"
           :title="isSidebarCollapsed ? 'Мій профіль' : ''"
@@ -127,7 +127,7 @@
         </NuxtLink>
         <NuxtLink
           to="/projects"
-          class="flex gap-2 px-3 py-3 items-center hover:bg-gray-700 transition-colors rounded-r-3xl font-bold text-gray-300 justify-center"
+          class="flex gap-2 px-3 py-3 items-center hover:bg-gray-700 transition-colors rounded-r-3xl font-bold text-gray-300 justify-start"
           :class="isSidebarCollapsed ? 'mr-0' : 'mr-5'"
           exact-active-class="bg-savoy text-white"
           :title="isSidebarCollapsed ? 'Всі проєкти' : ''"
@@ -140,7 +140,7 @@
       <div v-if="authStore.isAdmin" class="px-2">
         <NuxtLink
           to="/"
-          class="flex gap-2 px-3 py-3 items-center hover:bg-gray-700 transition-colors rounded-r-3xl font-bold text-gray-300 justify-center"
+          class="flex gap-2 px-3 py-3 items-center hover:bg-gray-700 transition-colors rounded-r-3xl font-bold text-gray-300 justify-start"
           :class="isSidebarCollapsed ? 'mr-0' : 'mr-5'"
           exact-active-class="bg-savoy text-white"
           :title="isSidebarCollapsed ? 'Головна' : ''"
@@ -150,7 +150,7 @@
         </NuxtLink>
         <NuxtLink
           to="/projects"
-          class="flex gap-2 px-3 py-3 items-center hover:bg-gray-700 transition-colors rounded-r-3xl font-bold text-gray-300 justify-center"
+          class="flex gap-2 px-3 py-3 items-center hover:bg-gray-700 transition-colors rounded-r-3xl font-bold text-gray-300 justify-start"
           :class="isSidebarCollapsed ? 'mr-0' : 'mr-5'"
           exact-active-class="bg-savoy text-white"
           :title="isSidebarCollapsed ? 'Всі проєкти' : ''"
@@ -167,7 +167,7 @@
           v-for="board in boards"
           :key="board.id"
           :to="`/${board.id}`"
-          class="sidebox-tab flex gap-2 px-3 py-3 items-center hover:bg-gray-700 transition-colors rounded-r-3xl font-bold text-gray-300 justify-center"
+          class="flex gap-2 px-3 py-3 items-center hover:bg-gray-700 transition-colors rounded-r-3xl font-bold text-gray-300 justify-center"
           :class="isSidebarCollapsed ? 'mr-0' : 'mr-5'"
           exact-active-class="bg-savoy text-white"
           :title="isSidebarCollapsed ? board.name : ''"

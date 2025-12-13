@@ -62,10 +62,10 @@
             
             <!-- Кількість не завершених завдань та статус проєкту -->
             <div class="flex items-center justify-between gap-1">
-              <span class="px-2 py-1 bg-gray-100 group-hover:bg-white/20 rounded text-xs text-gray-600 group-hover:text-white/80">
+              <span class="px-2 py-1 bg-gray-100 group-hover:bg-white/20 rounded text-xs text-gray-600 group-hover:text-white/80 text-center">
                 {{ getIncompleteTasksCount(board) }} не завершених
               </span>
-              <span v-if="getProjectStatus(board)" :class="getProjectStatusClass(getProjectStatus(board))" class="px-2 py-1 rounded text-xs font-semibold group-hover:opacity-90">
+              <span v-if="getProjectStatus(board)" :class="getProjectStatusClass(getProjectStatus(board))" class="px-2 py-1 rounded text-xs font-semibold group-hover:opacity-90 text-center">
                 {{ getProjectStatusText(getProjectStatus(board)) }}
               </span>
             </div>
