@@ -133,7 +133,7 @@
           exact-active-class="bg-savoy text-white"
           :title="isSidebarCollapsed ? 'Мій профіль' : ''"
         >
-          <ViewColumnsIcon class="w-5 h-5 flex-shrink-0" />
+          <UserIcon class="w-5 h-5 flex-shrink-0" />
           <span v-if="!isSidebarCollapsed">Мій профіль</span>
         </NuxtLink>
         <NuxtLink
@@ -143,7 +143,7 @@
           exact-active-class="bg-savoy text-white"
           :title="isSidebarCollapsed ? 'Мої проєкти' : ''"
         >
-          <ViewColumnsIcon class="w-5 h-5 flex-shrink-0" />
+          <BriefcaseIcon class="w-5 h-5 flex-shrink-0" />
           <span v-if="!isSidebarCollapsed">Мої проєкти</span>
         </NuxtLink>
         <NuxtLink
@@ -154,7 +154,7 @@
           :title="isSidebarCollapsed ? 'Сповіщення' : ''"
         >
           <div class="relative">
-            <ViewColumnsIcon class="w-5 h-5 flex-shrink-0" />
+            <BellIcon class="w-5 h-5 flex-shrink-0" />
             <span
               v-if="notificationsStore.unreadCount > 0"
               class="absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white text-xs font-bold rounded-full flex items-center justify-center"
@@ -180,7 +180,7 @@
           exact-active-class="bg-savoy text-white"
           :title="isSidebarCollapsed ? 'Панель викладача' : ''"
         >
-          <ViewColumnsIcon class="w-5 h-5 flex-shrink-0" />
+          <Squares2X2Icon class="w-5 h-5 flex-shrink-0" />
           <span v-if="!isSidebarCollapsed">Панель викладача</span>
         </NuxtLink>
         <NuxtLink
@@ -190,7 +190,7 @@
           exact-active-class="bg-savoy text-white"
           :title="isSidebarCollapsed ? 'Всі проєкти' : ''"
         >
-          <ViewColumnsIcon class="w-5 h-5 flex-shrink-0" />
+          <BriefcaseIcon class="w-5 h-5 flex-shrink-0" />
           <span v-if="!isSidebarCollapsed">Всі проєкти</span>
         </NuxtLink>
         <NuxtLink
@@ -201,7 +201,7 @@
           :title="isSidebarCollapsed ? 'Сповіщення' : ''"
         >
           <div class="relative">
-            <ViewColumnsIcon class="w-5 h-5 flex-shrink-0" />
+            <BellIcon class="w-5 h-5 flex-shrink-0" />
             <span
               v-if="notificationsStore.unreadCount > 0"
               class="absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white text-xs font-bold rounded-full flex items-center justify-center"
@@ -227,7 +227,7 @@
           exact-active-class="bg-savoy text-white"
           :title="isSidebarCollapsed ? 'Мій профіль' : ''"
         >
-          <ViewColumnsIcon class="w-5 h-5 flex-shrink-0" />
+          <UserIcon class="w-5 h-5 flex-shrink-0" />
           <span v-if="!isSidebarCollapsed">Мій профіль</span>
         </NuxtLink>
         <NuxtLink
@@ -237,7 +237,7 @@
           exact-active-class="bg-savoy text-white"
           :title="isSidebarCollapsed ? 'Всі проєкти' : ''"
         >
-          <ViewColumnsIcon class="w-5 h-5 flex-shrink-0" />
+          <BriefcaseIcon class="w-5 h-5 flex-shrink-0" />
           <span v-if="!isSidebarCollapsed">Всі проєкти</span>
         </NuxtLink>
         <NuxtLink
@@ -248,7 +248,7 @@
           :title="isSidebarCollapsed ? 'Сповіщення' : ''"
         >
           <div class="relative">
-            <ViewColumnsIcon class="w-5 h-5 flex-shrink-0" />
+            <BellIcon class="w-5 h-5 flex-shrink-0" />
             <span
               v-if="notificationsStore.unreadCount > 0"
               class="absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white text-xs font-bold rounded-full flex items-center justify-center"
@@ -274,7 +274,7 @@
           exact-active-class="bg-savoy text-white"
           :title="isSidebarCollapsed ? 'Панель адміністратора' : ''"
         >
-          <ViewColumnsIcon class="w-5 h-5 flex-shrink-0" />
+          <Squares2X2Icon class="w-5 h-5 flex-shrink-0" />
           <span v-if="!isSidebarCollapsed">Панель адміністратора</span>
         </NuxtLink>
         <NuxtLink
@@ -314,7 +314,7 @@
           exact-active-class="bg-savoy text-white"
           :title="isSidebarCollapsed ? 'Всі проєкти' : ''"
         >
-          <ViewColumnsIcon class="w-5 h-5 flex-shrink-0" />
+          <BriefcaseIcon class="w-5 h-5 flex-shrink-0" />
           <span v-if="!isSidebarCollapsed">Всі проєкти</span>
         </NuxtLink>
         <NuxtLink
@@ -325,7 +325,7 @@
           :title="isSidebarCollapsed ? 'Сповіщення' : ''"
         >
           <div class="relative">
-            <ViewColumnsIcon class="w-5 h-5 flex-shrink-0" />
+            <BellIcon class="w-5 h-5 flex-shrink-0" />
             <span
               v-if="notificationsStore.unreadCount > 0"
               class="absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white text-xs font-bold rounded-full flex items-center justify-center"
@@ -419,7 +419,7 @@ import { useKanbanStore } from "~~/stores";
 import { useAuthStore } from "~~/stores/auth";
 import { useProjectsStore } from "~~/stores/projects";
 import { useNotificationsStore } from "~~/stores/notifications";
-import { ChartBarSquareIcon, ViewColumnsIcon, ChevronLeftIcon, ChevronRightIcon, MagnifyingGlassIcon, XMarkIcon, UserIcon, ChevronDownIcon, UserGroupIcon, AcademicCapIcon, BuildingOfficeIcon, InformationCircleIcon } from "@heroicons/vue/24/outline";
+import { ChartBarSquareIcon, ViewColumnsIcon, ChevronLeftIcon, ChevronRightIcon, MagnifyingGlassIcon, XMarkIcon, UserIcon, ChevronDownIcon, UserGroupIcon, AcademicCapIcon, BuildingOfficeIcon, InformationCircleIcon, BellIcon, FolderIcon, BriefcaseIcon, Squares2X2Icon, IdentificationIcon } from "@heroicons/vue/24/outline";
 import { storeToRefs } from "pinia";
 import RoleSwitcher from "~~/components/RoleSwitcher.vue";
 import MobileHeader from "~~/components/MobileHeader.vue";
