@@ -87,6 +87,10 @@ export const useProjectsStore = defineStore("projects", {
           }
           return acc;
         }, [] as PartnerReview[]);
+        
+        // Оновлюємо рейтинги всіх студентів на основі відгуків
+        await this.updateAllStudentRatings();
+        
         this.isInitialized = true;
       } catch (error) {
         console.error("Failed to load data from MongoDB:", error);
@@ -713,12 +717,37 @@ export const useProjectsStore = defineStore("projects", {
       if (!student) return;
 
       const reviews = this.getReviewsByStudent(studentId);
-      if (reviews.length === 0) return;
+      if (reviews.length === 0) {
+        // Якщо відгуків немає, залишаємо початковий рейтинг
+        return;
+      }
 
       const averageRating = reviews.reduce((sum, review) => sum + review.rating, 0) / reviews.length;
-      student.rating = parseFloat(averageRating.toFixed(1));
+      const newRating = parseFloat(averageRating.toFixed(1));
       
-      await this.updateStudent(studentId, { rating: student.rating });
+      // Оновлюємо рейтинг тільки якщо він змінився
+      if (student.rating !== newRating) {
+        student.rating = newRating;
+        await this.updateStudent(studentId, { rating: student.rating });
+      }
+    },
+
+    // Оновлення рейтингів всіх студентів на основі відгуків
+    async updateAllStudentRatings(): Promise<void> {
+      // Оновлюємо рейтинги всіх студентів, які мають відгуки
+      const studentsWithReviews = new Set<string>();
+      this.partnerReviews.forEach((review) => {
+        studentsWithReviews.add(review.studentId);
+      });
+
+      // Оновлюємо рейтинги паралельно
+      const updatePromises = Array.from(studentsWithReviews).map((studentId) =>
+        this.updateStudentRating(studentId).catch((error) => {
+          console.error(`Failed to update rating for student ${studentId}:`, error);
+        })
+      );
+
+      await Promise.all(updatePromises);
     },
   },
 });

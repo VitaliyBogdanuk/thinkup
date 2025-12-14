@@ -23,7 +23,8 @@
               <div class="flex flex-col sm:flex-row items-center sm:items-start gap-2 sm:gap-3 md:gap-4 flex-wrap">
                 <div class="flex items-center gap-1.5 sm:gap-2">
                   <span class="text-xs sm:text-sm text-gray-500">Рейтинг:</span>
-                  <span class="text-sm sm:text-base md:text-lg font-bold text-savoy">{{ currentStudent.rating.toFixed(1) }}/5.0</span>
+                  <span class="text-sm sm:text-base md:text-lg font-bold text-savoy">{{ calculatedStudentRating.toFixed(1) }}/5.0</span>
+                  <span v-if="studentReviews.length > 0" class="text-xs text-gray-500">({{ studentReviews.length }} {{ studentReviews.length === 1 ? 'відгук' : studentReviews.length < 5 ? 'відгуки' : 'відгуків' }})</span>
                 </div>
                 <div class="flex items-center gap-1.5 sm:gap-2">
                   <span class="text-xs sm:text-sm text-gray-500">Доступність:</span>
@@ -523,6 +524,22 @@ const partnersReviewStats = computed(() => {
     averageRating: parseFloat(averageRating.toFixed(1)),
     totalReviews: reviews.length
   };
+});
+
+// Обчислений рейтинг студента на основі відгуків партнерів
+const calculatedStudentRating = computed(() => {
+  const reviews = studentReviews.value;
+  
+  if (reviews.length === 0) {
+    // Якщо відгуків немає, повертаємо початковий рейтинг студента
+    return currentStudent.value?.rating || 0;
+  }
+  
+  // Обчислюємо середній рейтинг з усіх відгуків
+  const totalRating = reviews.reduce((sum, review) => sum + review.rating, 0);
+  const averageRating = totalRating / reviews.length;
+  
+  return parseFloat(averageRating.toFixed(1));
 });
 
 // Функція форматування дати для відгуків
