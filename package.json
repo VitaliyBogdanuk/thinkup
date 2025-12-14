@@ -5,13 +5,15 @@
     "dev": "nuxt dev",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
-    "postinstall": "nuxt prepare"
+    "postinstall": "nuxt prepare",
+    "optimize-favicon": "node scripts/optimize-favicon.js"
   },
   "devDependencies": {
     "@nuxtjs/tailwindcss": "^6.4.1",
-    "@types/uuid": "^9.0.1",
     "@types/mongodb": "^4.0.7",
-    "nuxt": "^3.2.2"
+    "@types/uuid": "^9.0.1",
+    "nuxt": "^3.2.2",
+    "sharp": "^0.34.5"
   },
   "overrides": {
     "vue": "latest"
