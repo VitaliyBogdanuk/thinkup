@@ -436,7 +436,7 @@ const handleSubmit = async () => {
     assigned: [],
   }));
 
-  const project = projectsStore.createProject({
+  const project = await projectsStore.createProject({
     name: formData.value.name.trim(),
     description: formData.value.description.trim(),
     technicalSpecification: formData.value.technicalSpecification.trim(),
@@ -448,11 +448,7 @@ const handleSubmit = async () => {
     team: [],
   });
 
-  // Запускаємо AI-аналіз
-  await projectsStore.analyzeProjectWithAI(project.id);
-  
-  // Генеруємо рекомендації студентів
-  await projectsStore.generateStudentRecommendations(project.id);
+  // AI-аналіз та генерація рекомендацій виконуються автоматично в createProject
 
   emit("created", project.id);
   closeModal();

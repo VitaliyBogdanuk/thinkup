@@ -130,14 +130,18 @@ export const useProjectsStore = defineStore("projects", {
       try {
         const projectsApi = useProjectsApi();
         const savedProject = await projectsApi.createProject(newProject);
-        this.projects.push(savedProject);
         
         // Оновлюємо проєкт з boardId, якщо дошка була створена
         if (board && savedProject.boardId !== board.id) {
+          savedProject.boardId = board.id;
+          savedProject.board = board;
           await this.updateProject(savedProject.id, {
             boardId: board.id,
           });
         }
+        
+        // Оновлюємо проєкт в store, щоб він мав актуальний boardId
+        this.projects.push(savedProject);
         
         // Створюємо сповіщення про створення проєкту
         try {
@@ -152,7 +156,17 @@ export const useProjectsStore = defineStore("projects", {
           console.error("Failed to create notifications:", notifError);
         }
         
-        return savedProject;
+        // Автоматично запускаємо AI-аналіз та генерацію рекомендацій
+        try {
+          await this.analyzeProjectWithAI(savedProject.id);
+          await this.generateStudentRecommendations(savedProject.id);
+        } catch (aiError) {
+          console.error("Failed to run AI analysis:", aiError);
+          // Продовжуємо навіть якщо AI-аналіз не вдався
+        }
+        
+        // Повертаємо оновлений проєкт зі store
+        return this.getProjectById(savedProject.id) || savedProject;
       } catch (error) {
         console.error("Failed to create project in MongoDB:", error);
         // Додаємо локально навіть якщо API не працює
