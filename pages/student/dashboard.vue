@@ -439,12 +439,12 @@ import NotificationPopup from "~~/components/NotificationPopup.vue";
 import type { 
   Student, 
   Project, 
-  Skill, 
   Partner,
   PartnerReview,
   ProjectCategory,
   ComplexityLevel,
-  StudentRecommendation
+  StudentRecommendation,
+  Skill
 } from "~~/types";
 
 const router = useRouter();
@@ -586,14 +586,68 @@ const partnersWorkedWith = computed(() => {
   
   // Отримуємо об'єкти партнерів
   return Array.from(partnerIds)
-    .map(partnerId => projectsStore.partners.find(p => p.id === partnerId))
+    .map((partnerId: string) => projectsStore.partners.find((p: Partner) => p.id === partnerId))
     .filter((p): p is Partner => p !== undefined);
 });
 
-// Реальні відгуки про студента
+// Реальні відгуки про студента + демо-відгуки
 const studentReviews = computed(() => {
   if (!currentStudent.value) return [];
-  return projectsStore.getReviewsByStudent(currentStudent.value.id);
+  
+  const realReviews = projectsStore.getReviewsByStudent(currentStudent.value.id);
+  
+  // Якщо є реальні відгуки, повертаємо їх
+  if (realReviews.length > 0) {
+    return realReviews;
+  }
+  
+  // Генеруємо демо-відгуки на основі завершених проєктів
+  const demoReviews: PartnerReview[] = [];
+  const student = currentStudent.value;
+  
+  completedProjects.value.forEach((project: Project) => {
+    if (project.partnerId && project.team.includes(student.id)) {
+      const partner = projectsStore.partners.find((p: Partner) => p.id === project.partnerId);
+      if (partner) {
+        // Генеруємо відгук на основі навичок студента та проєкту
+        const studentSkills = student.skills?.map((s) => s.name) || [];
+        const relevantSkills = studentSkills.slice(0, 3); // Беремо перші 3 навички
+        
+        // Генеруємо оцінку на основі рейтингу студента (з невеликою варіацією)
+        const baseRating = student.rating;
+        const rating = Math.min(5, Math.max(4, baseRating + (Math.random() * 0.5 - 0.25)));
+        
+        // Генеруємо коментар на основі проєкту та навичок
+        const comments = [
+          `Відмінно виконав завдання на проєкті "${project.name}". Показав високий рівень професійності та відповідальності.`,
+          `Студент продемонстрував чудові навички під час роботи над проєктом "${project.name}". Рекомендую для подальшої співпраці.`,
+          `Якісна робота на проєкті "${project.name}". Студент швидко адаптувався до вимог та ефективно вирішував поставлені задачі.`,
+          `Професійний підхід до роботи на проєкті "${project.name}". Відмінна комунікація та готовність до навчання.`,
+          `Студент показав високий рівень компетентності під час виконання проєкту "${project.name}". Готовий до складних завдань.`,
+        ];
+        
+        const comment = comments[Math.floor(Math.random() * comments.length)];
+        
+        const review: PartnerReview = {
+          id: `demo-review-${project.id}-${student.id}`,
+          partnerId: partner.id,
+          partnerName: partner.companyName,
+          studentId: student.id,
+          projectId: project.id,
+          projectName: project.name,
+          rating: Math.round(rating * 10) / 10, // Округлюємо до 1 знака після коми
+          comment: comment,
+          skills: relevantSkills.length > 0 ? relevantSkills : undefined,
+          date: project.updatedAt || project.createdAt,
+          createdAt: project.updatedAt || project.createdAt,
+        };
+        
+        demoReviews.push(review);
+      }
+    }
+  });
+  
+  return demoReviews;
 });
 
 // Рекомендовані проєкти на основі навичок
@@ -749,7 +803,8 @@ const getProjectProgress = (projectId: string): number => {
     cancelled: 0,
   };
   
-  return statusProgress[project.status];
+  const status = project.status as keyof typeof statusProgress;
+  return statusProgress[status] || 0;
 };
 
 const getMyRoleInProject = (project: Project): string => {
