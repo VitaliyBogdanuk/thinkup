@@ -15,7 +15,20 @@
 
         <h2 class="text-gray-800">Створити новий проєкт</h2>
 
-        <form @submit.prevent="handleSubmit" class="flex flex-col gap-6">
+        <!-- Лоадер під час створення проєкту -->
+        <div v-if="isLoading" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div class="bg-white rounded-xl p-6 md:p-8 max-w-md w-full mx-4 shadow-xl">
+            <div class="flex flex-col items-center gap-4">
+              <div class="w-12 h-12 border-4 border-savoy/30 border-t-savoy rounded-full animate-spin"></div>
+              <div class="text-center">
+                <p class="text-lg font-semibold text-gray-800 mb-2">{{ currentStep }}</p>
+                <p class="text-sm text-gray-600">{{ stepDescription }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <form @submit.prevent="handleSubmit" class="flex flex-col gap-6" :class="{ 'opacity-50 pointer-events-none': isLoading }">
           <div class="flex flex-col gap-2">
             <label for="project_name" class="text-gray-800 font-semibold">Назва проєкту *</label>
             <input
@@ -243,6 +256,9 @@ const fileInput = ref<HTMLInputElement | null>(null);
 const uploadedFileName = ref<string>("");
 const fileUploadError = ref<string>("");
 const validationErrors = ref<Record<string, string>>({});
+const isLoading = ref(false);
+const currentStep = ref("");
+const stepDescription = ref("");
 
 // Дозволені формати файлів
 const allowedFileTypes = [".txt"];
@@ -429,29 +445,61 @@ const handleSubmit = async () => {
     return;
   }
 
-  const projectRoles: ProjectRole[] = formData.value.roles.map((role) => ({
-    id: uuidv4(),
-    name: role.name.trim(),
-    required: role.required,
-    assigned: [],
-  }));
+  isLoading.value = true;
 
-  const project = await projectsStore.createProject({
-    name: formData.value.name.trim(),
-    description: formData.value.description.trim(),
-    technicalSpecification: formData.value.technicalSpecification.trim(),
-    category: formData.value.category,
-    complexity: formData.value.complexity,
-    deadline: formData.value.deadline,
-    partnerId: authStore.currentUser.id,
-    roles: projectRoles,
-    team: [],
-  });
+  try {
+    const projectRoles: ProjectRole[] = formData.value.roles.map((role) => ({
+      id: uuidv4(),
+      name: role.name.trim(),
+      required: role.required,
+      assigned: [],
+    }));
 
-  // AI-аналіз та генерація рекомендацій виконуються автоматично в createProject
+    // Етап 1: Створення проєкту
+    currentStep.value = "Створення проєкту...";
+    stepDescription.value = "Зберігаємо дані проєкту";
 
-  emit("created", project.id);
-  closeModal();
+    const project = await projectsStore.createProject({
+      name: formData.value.name.trim(),
+      description: formData.value.description.trim(),
+      technicalSpecification: formData.value.technicalSpecification.trim(),
+      category: formData.value.category,
+      complexity: formData.value.complexity,
+      deadline: formData.value.deadline,
+      partnerId: authStore.currentUser.id,
+      roles: projectRoles,
+      team: [],
+    }, { skipAI: true }); // Пропускаємо автоматичний AI-аналіз, щоб показати прогрес
+
+    // Етап 2: AI-аналіз
+    currentStep.value = "AI-аналіз проєкту...";
+    stepDescription.value = "Аналізуємо технічне завдання та створюємо структуру";
+
+    await projectsStore.analyzeProjectWithAI(project.id);
+
+    // Етап 3: Підбір студентів
+    currentStep.value = "Підбір студентів...";
+    stepDescription.value = "Генеруємо рекомендації для команди";
+
+    await projectsStore.generateStudentRecommendations(project.id);
+
+    // Етап 4: Завершення
+    currentStep.value = "Завершення...";
+    stepDescription.value = "Фіналізуємо проєкт";
+
+    // Невелика затримка перед закриттям
+    await new Promise(resolve => setTimeout(resolve, 300));
+
+    emit("created", project.id);
+    closeModal();
+  } catch (error) {
+    console.error("Failed to create project:", error);
+    alert("Помилка при створенні проєкту. Спробуйте ще раз.");
+  } finally {
+    isLoading.value = false;
+    currentStep.value = "";
+    stepDescription.value = "";
+  }
 };
 </script>
 

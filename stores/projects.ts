@@ -108,7 +108,7 @@ export const useProjectsStore = defineStore("projects", {
     },
 
     // Створення проєкту партнером
-    async createProject(projectData: Omit<Project, "id" | "createdAt" | "updatedAt" | "status" | "boardId">): Promise<Project> {
+    async createProject(projectData: Omit<Project, "id" | "createdAt" | "updatedAt" | "status" | "boardId">, options?: { skipAI?: boolean }): Promise<Project> {
       const newProject: Project = {
         ...projectData,
         id: uuidv4(),
@@ -156,13 +156,15 @@ export const useProjectsStore = defineStore("projects", {
           console.error("Failed to create notifications:", notifError);
         }
         
-        // Автоматично запускаємо AI-аналіз та генерацію рекомендацій
-        try {
-          await this.analyzeProjectWithAI(savedProject.id);
-          await this.generateStudentRecommendations(savedProject.id);
-        } catch (aiError) {
-          console.error("Failed to run AI analysis:", aiError);
-          // Продовжуємо навіть якщо AI-аналіз не вдався
+        // Автоматично запускаємо AI-аналіз та генерацію рекомендацій (якщо не пропущено)
+        if (!options?.skipAI) {
+          try {
+            await this.analyzeProjectWithAI(savedProject.id);
+            await this.generateStudentRecommendations(savedProject.id);
+          } catch (aiError) {
+            console.error("Failed to run AI analysis:", aiError);
+            // Продовжуємо навіть якщо AI-аналіз не вдався
+          }
         }
         
         // Повертаємо оновлений проєкт зі store
