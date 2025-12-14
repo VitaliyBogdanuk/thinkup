@@ -260,7 +260,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from "vue";
+import { computed, ref, onMounted, watch } from "vue";
 import { useRouter } from "vue-router";
 import { useAuthStore } from "~~/stores/auth";
 import { useProjectsStore } from "~~/stores/projects";
@@ -275,6 +275,17 @@ const router = useRouter();
 const authStore = useAuthStore();
 const projectsStore = useProjectsStore();
 const showCreateModal = ref(false);
+
+// Завантажуємо дані при монтуванні компонента
+onMounted(async () => {
+  try {
+    if (!projectsStore.isInitialized) {
+      await projectsStore.loadAll();
+    }
+  } catch (error) {
+    console.error('Failed to load projects:', error);
+  }
+});
 
 
 // Комп'ютед властивості

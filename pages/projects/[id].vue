@@ -78,9 +78,9 @@
           </div>
         </div>
 
-        <!-- Потрібні ролі на проєкті (тільки для проєктів, що не є активними або завершеними) -->
+        <!-- Потрібні ролі на проєкті (для викладачів завжди, для інших - тільки для проєктів, що не є активними або завершеними) -->
         <div 
-          v-if="project.roles && project.roles.length > 0 && project.status !== 'active' && project.status !== 'completed'" 
+          v-if="project.roles && project.roles.length > 0 && (authStore.isTeacher || (project.status !== 'active' && project.status !== 'completed'))" 
           class="mt-4 pt-4 border-t border-gray-200"
         >
           <h3 class="text-sm md:text-base font-bold text-gray-800 mb-3">Потрібні ролі на проєкті:</h3>
@@ -97,14 +97,17 @@
         </div>
       </div>
 
-      <!-- AI Рекомендації (для викладачів) -->
+      <!-- Затвердження команди проєкту (для викладачів) -->
       <div v-if="authStore.isTeacher && project.status === 'pending_approval'" class="mb-4 md:mb-6">
-        <ApproveTeam
-          :project-id="project.id"
-          @approved="handleTeamApproved"
-          @cancel="$router.push('/projects')"
-          @team-updated="handleTeamUpdated"
-        />
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-4 md:p-6 mb-4">
+          <h3 class="text-lg md:text-xl font-bold text-gray-800 mb-4">Затвердження команди проєкту</h3>
+          <ApproveTeam
+            :project-id="project.id"
+            @approved="handleTeamApproved"
+            @cancel="$router.push('/projects')"
+            @team-updated="handleTeamUpdated"
+          />
+        </div>
       </div>
 
       <!-- Команда проєкту для партнерів (тільки для активних проєктів) -->
