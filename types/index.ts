@@ -225,4 +225,5 @@ export type {
   TeacherNotification,
   AdminNotification,
   PartnerReview,
+  Skill,
 };
