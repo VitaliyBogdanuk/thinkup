@@ -45,6 +45,37 @@
           </button>
         </div>
 
+        <!-- Пошук проєктів -->
+        <div v-if="authStore.isAuthenticated" class="px-6 pt-4 pb-2 border-b border-gray-600">
+          <div class="relative">
+            <input
+              v-model="searchQuery"
+              type="text"
+              placeholder="Пошук проєктів..."
+              class="w-full px-3 py-2 pr-20 bg-gray-700 text-gray-200 rounded-lg border border-gray-600 focus:outline-none focus:ring-2 focus:ring-savoy focus:border-transparent text-sm placeholder-gray-400"
+              @keyup.enter="handleSearch"
+              @input="handleSearchInput"
+            />
+            <div class="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-1">
+              <button
+                v-if="searchQuery"
+                @click="clearSearch"
+                class="text-gray-400 hover:text-red-400 transition-colors"
+                title="Очистити"
+              >
+                <XMarkIcon class="w-4 h-4" />
+              </button>
+              <button
+                @click="handleSearch"
+                class="text-gray-400 hover:text-savoy transition-colors"
+                title="Пошук"
+              >
+                <MagnifyingGlassIcon class="w-5 h-5" />
+              </button>
+            </div>
+          </div>
+        </div>
+
         <nav class="flex-1 overflow-y-auto p-6 space-y-4">
           <!-- Навігація залежно від ролі -->
           <div v-if="authStore.isPartner" class="space-y-4">
@@ -336,8 +367,8 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from "vue";
-import { useRouter } from "vue-router";
+import { ref, computed, watch } from "vue";
+import { useRouter, useRoute } from "vue-router";
 import { 
   ChartBarSquareIcon, 
   Bars3Icon, 
@@ -349,7 +380,8 @@ import {
   UserGroupIcon,
   AcademicCapIcon,
   BuildingOfficeIcon,
-  InformationCircleIcon
+  InformationCircleIcon,
+  MagnifyingGlassIcon
 } from "@heroicons/vue/24/outline";
 import { useAuthStore } from "~~/stores/auth";
 import { useKanbanStore } from "~~/stores";
@@ -360,6 +392,7 @@ import { mockPartners, mockStudents, mockTeachers, mockAdmin } from "~~/utils/mo
 import type { UserRole, User, Student, Teacher, Partner } from "~~/types";
 
 const router = useRouter();
+const route = useRoute();
 const authStore = useAuthStore();
 const projectsStore = useProjectsStore();
 const notificationsStore = useNotificationsStore();
@@ -369,6 +402,55 @@ const { boards } = storeToRefs(store);
 
 const isNavMenuOpen = ref(false);
 const isRoleMenuOpen = ref(false);
+
+// Пошук проєктів
+const searchQuery = ref("");
+
+// Синхронізуємо поле пошуку з query параметром
+watch(() => route.query.search, (newSearch) => {
+  if (newSearch && typeof newSearch === "string") {
+    searchQuery.value = newSearch;
+  } else {
+    searchQuery.value = "";
+  }
+}, { immediate: true });
+
+const handleSearch = () => {
+  if (searchQuery.value.trim()) {
+    router.push({
+      path: "/projects",
+      query: { search: searchQuery.value.trim() }
+    });
+  } else {
+    router.push("/projects");
+  }
+  // Закриваємо меню після пошуку
+  isNavMenuOpen.value = false;
+};
+
+let searchTimeout: NodeJS.Timeout | null = null;
+
+const handleSearchInput = () => {
+  // Автоматичний пошук при введенні (з debounce)
+  if (searchTimeout) {
+    clearTimeout(searchTimeout);
+  }
+  
+  searchTimeout = setTimeout(() => {
+    if (searchQuery.value.trim()) {
+      handleSearch();
+    } else if (route.query.search) {
+      // Якщо поле порожнє, але є query параметр, очищаємо його
+      router.push("/projects");
+    }
+  }, 500);
+};
+
+const clearSearch = () => {
+  searchQuery.value = "";
+  router.push("/projects");
+  isNavMenuOpen.value = false;
+};
 
 const roles = [
   { value: "partner", label: "Партнер" },
