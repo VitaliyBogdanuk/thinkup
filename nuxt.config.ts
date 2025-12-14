@@ -5,11 +5,7 @@ export default defineNuxtConfig({
     head: {
       titleTemplate: "DeepWater",
       link: [
-        { rel: "icon", type: "image/png", href: "/favicon.png" },
-        { rel: "icon", type: "image/png", sizes: "32x32", href: "/favicon_32.png" },
-        { rel: "icon", type: "image/png", sizes: "64x64", href: "/favicon_64.png" },
-        { rel: "icon", type: "image/png", sizes: "128x128", href: "/favicon_128.png" },
-        { rel: "apple-touch-icon", sizes: "256x256", href: "/favicon_256.png" },
+        { rel: "icon", type: "image/png", href: "/favicon.ico" },
       ],
       meta: [
         { charset: "utf-8" },
