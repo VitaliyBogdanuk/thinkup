@@ -99,15 +99,12 @@
 
       <!-- Затвердження команди проєкту (для викладачів) -->
       <div v-if="authStore.isTeacher && project.status === 'pending_approval'" class="mb-4 md:mb-6">
-        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-4 md:p-6 mb-4">
-          <h3 class="text-lg md:text-xl font-bold text-gray-800 mb-4">Затвердження команди проєкту</h3>
-          <ApproveTeam
-            :project-id="project.id"
-            @approved="handleTeamApproved"
-            @cancel="$router.push('/projects')"
-            @team-updated="handleTeamUpdated"
-          />
-        </div>
+        <ApproveTeam
+          :project-id="project.id"
+          @approved="handleTeamApproved"
+          @cancel="$router.push('/projects')"
+          @team-updated="handleTeamUpdated"
+        />
       </div>
 
       <!-- Команда проєкту для партнерів (тільки для активних проєктів) -->
