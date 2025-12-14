@@ -126,6 +126,44 @@
         </NuxtLink>
       </div>
 
+      <!-- Рейтинг студентів -->
+      <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-3 sm:p-4 md:p-6">
+        <h3 class="text-base sm:text-lg md:text-xl font-bold text-gray-800 mb-3 sm:mb-4">Рейтинг студентів</h3>
+        <div v-if="topStudents.length === 0" class="text-center py-8 text-gray-500">
+          <p class="text-sm sm:text-base">Немає студентів</p>
+        </div>
+        <div v-else class="space-y-2 sm:space-y-3">
+          <div
+            v-for="(student, index) in topStudents"
+            :key="student.id"
+            class="flex items-center gap-3 sm:gap-4 p-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
+          >
+            <div class="flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 rounded-full flex-shrink-0"
+                 :class="getRankColor(index)">
+              <span class="text-xs sm:text-sm font-bold text-white">{{ index + 1 }}</span>
+            </div>
+            <div class="flex-1 min-w-0">
+              <p class="font-semibold text-sm sm:text-base text-gray-800">{{ student.fullName }}</p>
+              <p class="text-xs sm:text-sm text-gray-600">{{ student.course }} курс, {{ student.specialty }}</p>
+            </div>
+            <div class="flex items-center gap-2 flex-shrink-0">
+              <div class="flex items-center gap-1">
+                <span class="text-amber-500 text-sm sm:text-base">★</span>
+                <span class="text-sm sm:text-base font-bold text-gray-800">{{ student.rating.toFixed(1) }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div v-if="topStudents.length > 0" class="mt-4 pt-4 border-t border-gray-200">
+          <NuxtLink
+            to="/admin/students"
+            class="text-sm sm:text-base text-savoy hover:text-savoy/80 transition-colors font-semibold"
+          >
+            Переглянути всіх студентів →
+          </NuxtLink>
+        </div>
+      </div>
+
       <!-- Останні події -->
       <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-3 sm:p-4 md:p-6">
         <h3 class="text-base sm:text-lg md:text-xl font-bold text-gray-800 mb-3 sm:mb-4">Останні події</h3>
@@ -139,7 +177,7 @@
             :key="notification.id"
             class="flex items-start gap-3 p-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
           >
-            <div class="w-2 h-2 rounded-full bg-savoy mt-2 flex-shrink-0"></div>
+            <div class="w-2 h-2 rounded-full flex-shrink-0 mt-2" :class="getNotificationColor(notification.type)"></div>
             <div class="flex-1 min-w-0">
               <p class="font-semibold text-sm sm:text-base text-gray-800">{{ notification.title }}</p>
               <p class="text-xs sm:text-sm text-gray-600 mt-1">{{ notification.message }}</p>
@@ -183,20 +221,136 @@ const completedProjectsCount = computed(() =>
   projectsStore.projects.filter(p => p.status === 'completed').length
 );
 
+// Демо-дані для останніх подій
+const getDemoNotifications = (): AdminNotification[] => {
+  const now = new Date();
+  return [
+    {
+      id: "notif-1",
+      title: "Новий партнер зареєстрований",
+      message: "Компанія 'Digital Innovations' зареєструвалась як партнер",
+      read: false,
+      createdAt: new Date(now.getTime() - 1 * 60 * 60 * 1000), // 1 година тому
+      type: "new_user_registration",
+      userId: "partner-new-1",
+    },
+    {
+      id: "notif-2",
+      title: "Створено новий проєкт",
+      message: "Партнер 'Tech Solutions Ukraine' створив проєкт 'Розробка мобільного додатку для доставки'",
+      read: false,
+      createdAt: new Date(now.getTime() - 3 * 60 * 60 * 1000), // 3 години тому
+      type: "project_created",
+      projectId: "project-new-1",
+    },
+    {
+      id: "notif-3",
+      title: "Створено новий проєкт",
+      message: "Партнер 'Creative Design Studio' створив проєкт 'Редизайн корпоративного сайту'",
+      read: false,
+      createdAt: new Date(now.getTime() - 6 * 60 * 60 * 1000), // 6 годин тому
+      type: "project_created",
+      projectId: "project-new-2",
+    },
+    {
+      id: "notif-4",
+      title: "Новий партнер зареєстрований",
+      message: "Компанія 'Startup Hub' зареєструвалась як партнер",
+      read: false,
+      createdAt: new Date(now.getTime() - 12 * 60 * 60 * 1000), // 12 годин тому
+      type: "new_user_registration",
+      userId: "partner-new-2",
+    },
+    {
+      id: "notif-5",
+      title: "Створено новий проєкт",
+      message: "Партнер 'Tech Solutions Ukraine' створив проєкт 'E-commerce платформа для продажу одягу'",
+      read: false,
+      createdAt: new Date(now.getTime() - 24 * 60 * 60 * 1000), // 1 день тому
+      type: "project_created",
+      projectId: "project-new-3",
+    },
+    {
+      id: "notif-6",
+      title: "Створено новий проєкт",
+      message: "Партнер 'Creative Design Studio' створив проєкт 'Лендінг-сторінка для стартапу'",
+      read: false,
+      createdAt: new Date(now.getTime() - 2 * 24 * 60 * 60 * 1000), // 2 дні тому
+      type: "project_created",
+      projectId: "project-new-4",
+    },
+    {
+      id: "notif-7",
+      title: "Новий партнер зареєстрований",
+      message: "Компанія 'Web Agency Pro' зареєструвалась як партнер",
+      read: false,
+      createdAt: new Date(now.getTime() - 3 * 24 * 60 * 60 * 1000), // 3 дні тому
+      type: "new_user_registration",
+      userId: "partner-new-3",
+    },
+  ];
+};
+
 // Отримуємо сповіщення адміністратора
 const notifications = computed<AdminNotification[]>(() => {
-  // Можна додати логіку для отримання сповіщень адміністратора
-  return [];
+  // Повертаємо демо-дані, відсортовані за датою (нові зверху)
+  return getDemoNotifications().sort((a, b) => 
+    new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+  );
+});
+
+// Топ студентів за рейтингом
+const topStudents = computed(() => {
+  return [...projectsStore.students]
+    .sort((a, b) => b.rating - a.rating)
+    .slice(0, 10); // Топ 10 студентів
 });
 
 const formatTime = (date: Date): string => {
-  return new Date(date).toLocaleString('uk-UA', {
-    day: '2-digit',
-    month: '2-digit',
-    year: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit'
-  });
+  const now = new Date();
+  const notificationDate = new Date(date);
+  const diffTime = now.getTime() - notificationDate.getTime();
+  const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+  const diffHours = Math.floor(diffTime / (1000 * 60 * 60));
+  const diffMinutes = Math.floor(diffTime / (1000 * 60));
+
+  if (diffMinutes < 60) {
+    return `${diffMinutes} хвилин тому`;
+  } else if (diffHours < 24) {
+    return `${diffHours} годин тому`;
+  } else if (diffDays === 1) {
+    return 'Вчора';
+  } else if (diffDays < 7) {
+    return `${diffDays} днів тому`;
+  } else {
+    return notificationDate.toLocaleString('uk-UA', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+  }
+};
+
+// Функція для отримання кольору для типу сповіщення
+const getNotificationColor = (type: AdminNotification['type']): string => {
+  const colorMap: Record<AdminNotification['type'], string> = {
+    new_user_registration: 'bg-blue-500',
+    project_created: 'bg-green-500',
+    system_alert: 'bg-red-500',
+    user_report: 'bg-orange-500',
+    system_update: 'bg-purple-500',
+  };
+  return colorMap[type] || 'bg-savoy';
+};
+
+// Функція для отримання кольору для рейтингу
+const getRankColor = (index: number): string => {
+  if (index === 0) return 'bg-yellow-500'; // Золото для 1 місця
+  if (index === 1) return 'bg-gray-400'; // Срібло для 2 місця
+  if (index === 2) return 'bg-amber-600'; // Бронза для 3 місця
+  return 'bg-gray-300'; // Сірий для інших
 };
 
 // Завантажуємо дані при монтуванні
