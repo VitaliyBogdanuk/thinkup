@@ -195,7 +195,7 @@ const projects = computed(() => {
 const getStatusText = (status: Project["status"]): string => {
   const map = {
     draft: "Чернетка",
-    pending_ai: "AI аналіз",
+    pending_ai: "Очікує затвердження", // Показуємо як "Очікує затвердження", оскільки це проміжний статус
     pending_approval: "Очікує затвердження",
     active: "Активний",
     completed: "Завершено",
@@ -207,7 +207,7 @@ const getStatusText = (status: Project["status"]): string => {
 const getStatusClass = (status: Project["status"]): string => {
   const map = {
     draft: "bg-gray-100 text-gray-700",
-    pending_ai: "bg-blue-100 text-blue-700",
+    pending_ai: "bg-yellow-100 text-yellow-700", // Використовуємо той самий стиль, що й pending_approval
     pending_approval: "bg-yellow-100 text-yellow-700",
     active: "bg-green-100 text-green-700",
     completed: "bg-gray-100 text-gray-700",
