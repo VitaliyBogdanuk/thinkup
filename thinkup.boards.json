@@ -1,0 +1,1083 @@
+[{
+  "_id": {
+    "$oid": "693df4951b55efaa84106e70"
+  },
+  "id": "499ff073-7759-45c4-a62b-020860056830",
+  "name": "Будь-яка дошка",
+  "columns": [
+    {
+      "id": "52a3c12c-a755-46e1-9a95-22ab10d61a1d",
+      "name": "Зробити",
+      "tasks": [
+        {
+          "id": "52a96e6f-1213-46f6-8ae3-6a8fb00b126e",
+          "name": "Приклад назви",
+          "description": "Приклад опису"
+        }
+      ]
+    },
+    {
+      "id": "c46c6c66-9da0-42f2-97fd-1c212e4e8de2",
+      "name": "В процесі",
+      "tasks": []
+    },
+    {
+      "id": "3e6f2fa2-1c93-4409-85b7-4660c36a1242",
+      "name": "Виконано",
+      "tasks": []
+    }
+  ]
+},
+{
+  "_id": {
+    "$oid": "693df4951b55efaa84106e71"
+  },
+  "id": "2bfafb2e-4e62-4834-85d7-76caf616e662",
+  "name": "Розробка веб-додатку для управління проєктами",
+  "columns": [
+    {
+      "id": "9841ca6c-5bd4-418b-9db1-3cd3a40ae87f",
+      "name": "Зробити",
+      "tasks": [
+        {
+          "id": "70fed457-9341-4cf9-b2f5-5a6a0078231f",
+          "name": "Збір та аналіз вимог",
+          "description": "Детальний аналіз технічного завдання та вимог замовника",
+          "priority": "high",
+          "estimatedHours": 25
+        },
+        {
+          "id": "992f37aa-97ba-42e2-bcbb-d09b629bd118",
+          "name": "Створення плану проєкту",
+          "description": "Розробка детального плану виконання проєкту",
+          "priority": "high",
+          "estimatedHours": 12.5
+        },
+        {
+          "id": "740b7a8a-7d12-49e9-8429-553433e73477",
+          "name": "Проектування бази даних",
+          "description": "Створення ER-діаграми та схемі БД",
+          "priority": "high",
+          "estimatedHours": 20
+        },
+        {
+          "id": "a0353652-532e-4713-8365-b9bf0fe16531",
+          "name": "Проектування API",
+          "description": "Опис endpoints та структури API",
+          "priority": "high",
+          "estimatedHours": 17.5
+        },
+        {
+          "id": "a8cfb919-c371-4c1c-8ffc-d3733afec01b",
+          "name": "Вибір технологій",
+          "description": "Визначення стеку технологій",
+          "priority": "medium",
+          "estimatedHours": 7.5
+        },
+        {
+          "id": "c83cb260-d2c6-421c-b528-693896c33ae8",
+          "name": "Створення wireframes",
+          "description": "Розробка макетів та структури інтерфейсу",
+          "priority": "high",
+          "estimatedHours": 15
+        },
+        {
+          "id": "65db9a85-f9b3-4149-9954-01c717187bbb",
+          "name": "UI дизайн",
+          "description": "Створення візуального дизайну інтерфейсу",
+          "priority": "high",
+          "estimatedHours": 25
+        },
+        {
+          "id": "ad181307-cc67-48ff-8a85-5e81024f380f",
+          "name": "UX оптимізація",
+          "description": "Покращення користувацького досвіду",
+          "priority": "medium",
+          "estimatedHours": 12.5
+        },
+        {
+          "id": "986d53bb-5118-4fa1-a339-c2c096f03d8b",
+          "name": "Налаштування серверу",
+          "description": "Конфігурація серверного середовища",
+          "priority": "high",
+          "estimatedHours": 10
+        },
+        {
+          "id": "11d5332c-3b21-45bf-8c5d-5473e1427e8d",
+          "name": "Розробка API",
+          "description": "Реалізація REST API endpoints",
+          "priority": "high",
+          "estimatedHours": 30
+        },
+        {
+          "id": "f2370d08-bc5a-4f44-ad17-366f91c295fe",
+          "name": "Робота з базою даних",
+          "description": "Створення моделей та міграцій БД",
+          "priority": "high",
+          "estimatedHours": 20
+        },
+        {
+          "id": "fe8f8edb-1446-4106-840f-8d529255b795",
+          "name": "Автентифікація та авторизація",
+          "description": "Реалізація системи безпеки",
+          "priority": "high",
+          "estimatedHours": 15
+        },
+        {
+          "id": "05c80514-61e4-48f6-9ea2-394bb86226d5",
+          "name": "Налаштування проєкту",
+          "description": "Ініціалізація frontend проєкту та конфігурація",
+          "priority": "high",
+          "estimatedHours": 7.5
+        },
+        {
+          "id": "30388366-a06c-4b81-b14b-39716d87d910",
+          "name": "Розробка компонентів",
+          "description": "Створення UI компонентів",
+          "priority": "high",
+          "estimatedHours": 37.5
+        },
+        {
+          "id": "89b3b27b-9f60-498c-87b0-d90e3d9ad499",
+          "name": "Інтеграція з API",
+          "description": "Підключення frontend до backend API",
+          "priority": "high",
+          "estimatedHours": 17.5
+        },
+        {
+          "id": "f458b334-5d1f-4615-adb3-d4a58e55e7d6",
+          "name": "Адаптивність",
+          "description": "Забезпечення responsive дизайну",
+          "priority": "medium",
+          "estimatedHours": 12.5
+        },
+        {
+          "id": "7ecbaff5-f054-4a83-90ba-42050080b20d",
+          "name": "Інтеграція frontend та backend",
+          "description": "Об'єднання всіх компонентів системи",
+          "priority": "high",
+          "estimatedHours": 25
+        },
+        {
+          "id": "5f1c56ad-be9f-4d6c-a588-cff0b0955fdb",
+          "name": "Налаштування CI/CD",
+          "description": "Автоматизація деплою",
+          "priority": "medium",
+          "estimatedHours": 12.5
+        },
+        {
+          "id": "8a1f77a7-0833-485b-9701-ca6e4d56d2b7",
+          "name": "Unit тести",
+          "description": "Написання та виконання unit тестів",
+          "priority": "medium",
+          "estimatedHours": 20
+        },
+        {
+          "id": "138b71fe-b894-468f-b340-df8909f85565",
+          "name": "Integration тести",
+          "description": "Тестування інтеграції компонентів",
+          "priority": "medium",
+          "estimatedHours": 15
+        },
+        {
+          "id": "4b97f2b4-dedd-463e-b9bd-2675a54ac658",
+          "name": "Виправлення помилок",
+          "description": "Багфікси та оптимізація",
+          "priority": "high",
+          "estimatedHours": 17.5
+        },
+        {
+          "id": "2e27bab0-5bf4-439c-aed7-b41d9edadb91",
+          "name": "Підготовка до деплою",
+          "description": "Фінальна перевірка та оптимізація",
+          "priority": "high",
+          "estimatedHours": 10
+        },
+        {
+          "id": "768f03f6-d68f-4c77-a734-08a64115e194",
+          "name": "Деплой на production",
+          "description": "Розгортання на production сервер",
+          "priority": "high",
+          "estimatedHours": 7.5
+        },
+        {
+          "id": "28521d37-7d07-49e8-9379-9cca9171e7a7",
+          "name": "Моніторинг та підтримка",
+          "description": "Налаштування моніторингу системи",
+          "priority": "low",
+          "estimatedHours": 5
+        }
+      ]
+    },
+    {
+      "id": "384862d0-8f4e-4c80-a9bb-2b793f37a025",
+      "name": "В процесі",
+      "tasks": []
+    },
+    {
+      "id": "f0d6cda8-b331-4852-b442-5db005204b53",
+      "name": "Виконано",
+      "tasks": []
+    }
+  ]
+},
+{
+  "_id": {
+    "$oid": "693df4961b55efaa84106e72"
+  },
+  "id": "689b29d7-904f-4d31-bf2e-f256e55ab756",
+  "name": "Мобільний додаток для доставки їжі",
+  "columns": [
+    {
+      "id": "5692bf99-aebc-4f59-b087-c83b514cdab7",
+      "name": "Зробити",
+      "tasks": [
+        {
+          "id": "8b738253-a99d-429f-8817-55ba595cc827",
+          "name": "Збір та аналіз вимог",
+          "description": "Детальний аналіз технічного завдання та вимог замовника",
+          "priority": "high",
+          "estimatedHours": 25
+        },
+        {
+          "id": "e39332a9-8514-47af-8eaa-4dd751192595",
+          "name": "Створення плану проєкту",
+          "description": "Розробка детального плану виконання проєкту",
+          "priority": "high",
+          "estimatedHours": 12.5
+        },
+        {
+          "id": "29b11504-ac0d-46b1-aff7-57ad17ee8945",
+          "name": "Проектування бази даних",
+          "description": "Створення ER-діаграми та схемі БД",
+          "priority": "high",
+          "estimatedHours": 20
+        },
+        {
+          "id": "9ef7b0df-f65f-447e-bcba-fe7b5ce6facc",
+          "name": "Проектування API",
+          "description": "Опис endpoints та структури API",
+          "priority": "high",
+          "estimatedHours": 17.5
+        },
+        {
+          "id": "35a3d987-3a8a-4cc1-8551-ccdb382340ad",
+          "name": "Вибір технологій",
+          "description": "Визначення стеку технологій",
+          "priority": "medium",
+          "estimatedHours": 7.5
+        },
+        {
+          "id": "24bfb4d5-1f30-4464-a5e2-8845e566481a",
+          "name": "Створення wireframes",
+          "description": "Розробка макетів та структури інтерфейсу",
+          "priority": "high",
+          "estimatedHours": 15
+        },
+        {
+          "id": "67a5a1fe-2b53-40f4-821b-bb4a373769b0",
+          "name": "UI дизайн",
+          "description": "Створення візуального дизайну інтерфейсу",
+          "priority": "high",
+          "estimatedHours": 25
+        },
+        {
+          "id": "e5b5fb71-5bbe-4932-b631-3764ce1775b4",
+          "name": "UX оптимізація",
+          "description": "Покращення користувацького досвіду",
+          "priority": "medium",
+          "estimatedHours": 12.5
+        },
+        {
+          "id": "4d5134f8-a141-4ce7-8fe8-dd7648e9c296",
+          "name": "Налаштування серверу",
+          "description": "Конфігурація серверного середовища",
+          "priority": "high",
+          "estimatedHours": 10
+        },
+        {
+          "id": "d7a965f8-db78-4623-8b7b-a2149079c498",
+          "name": "Розробка API",
+          "description": "Реалізація REST API endpoints",
+          "priority": "high",
+          "estimatedHours": 30
+        },
+        {
+          "id": "15a31d74-ebc0-4908-be44-e8730d9d395e",
+          "name": "Робота з базою даних",
+          "description": "Створення моделей та міграцій БД",
+          "priority": "high",
+          "estimatedHours": 20
+        },
+        {
+          "id": "e4d253a7-ce2e-4335-baf4-cf2476132d67",
+          "name": "Автентифікація та авторизація",
+          "description": "Реалізація системи безпеки",
+          "priority": "high",
+          "estimatedHours": 15
+        },
+        {
+          "id": "18cf0db2-2ea7-4fba-839d-1833009799b3",
+          "name": "Налаштування проєкту",
+          "description": "Ініціалізація frontend проєкту та конфігурація",
+          "priority": "high",
+          "estimatedHours": 7.5
+        },
+        {
+          "id": "35d3d7f5-face-4e12-bc8f-aebfe2dcfdd8",
+          "name": "Розробка компонентів",
+          "description": "Створення UI компонентів",
+          "priority": "high",
+          "estimatedHours": 37.5
+        },
+        {
+          "id": "8a9312d4-25c2-4221-b7dc-ec00fd1fb442",
+          "name": "Інтеграція з API",
+          "description": "Підключення frontend до backend API",
+          "priority": "high",
+          "estimatedHours": 17.5
+        },
+        {
+          "id": "09600fc2-62f8-45f4-a7aa-e8e7de4cb021",
+          "name": "Адаптивність",
+          "description": "Забезпечення responsive дизайну",
+          "priority": "medium",
+          "estimatedHours": 12.5
+        },
+        {
+          "id": "c362dc3a-3435-4800-81d4-8d3e09cfe1f6",
+          "name": "Інтеграція frontend та backend",
+          "description": "Об'єднання всіх компонентів системи",
+          "priority": "high",
+          "estimatedHours": 25
+        },
+        {
+          "id": "71ac714e-422a-4f8e-97b4-65e8c4cc6efd",
+          "name": "Налаштування CI/CD",
+          "description": "Автоматизація деплою",
+          "priority": "medium",
+          "estimatedHours": 12.5
+        },
+        {
+          "id": "8fdeb9f2-6c84-47e3-a73b-f17d04d8c1e0",
+          "name": "Unit тести",
+          "description": "Написання та виконання unit тестів",
+          "priority": "medium",
+          "estimatedHours": 20
+        },
+        {
+          "id": "b648587b-bafe-487c-96ce-d56d1749aa12",
+          "name": "Integration тести",
+          "description": "Тестування інтеграції компонентів",
+          "priority": "medium",
+          "estimatedHours": 15
+        },
+        {
+          "id": "59fa7f00-c88d-47e9-9d07-6cc3b77d1d74",
+          "name": "Виправлення помилок",
+          "description": "Багфікси та оптимізація",
+          "priority": "high",
+          "estimatedHours": 17.5
+        },
+        {
+          "id": "7fc2d096-fb05-4101-aefe-7b9e629cdf2c",
+          "name": "Підготовка до деплою",
+          "description": "Фінальна перевірка та оптимізація",
+          "priority": "high",
+          "estimatedHours": 10
+        },
+        {
+          "id": "fadbb822-081a-4711-8107-a8f64cc495f7",
+          "name": "Деплой на production",
+          "description": "Розгортання на production сервер",
+          "priority": "high",
+          "estimatedHours": 7.5
+        },
+        {
+          "id": "0b6de297-0574-4698-8668-17db0e5ebfa6",
+          "name": "Моніторинг та підтримка",
+          "description": "Налаштування моніторингу системи",
+          "priority": "low",
+          "estimatedHours": 5
+        }
+      ]
+    },
+    {
+      "id": "c3e8fc08-651b-416f-aaed-dbbc48ae8258",
+      "name": "В процесі",
+      "tasks": []
+    },
+    {
+      "id": "2ae707ca-dae4-4e9b-abcd-7d78f33e8341",
+      "name": "Виконано",
+      "tasks": []
+    }
+  ]
+},
+{
+  "_id": {
+    "$oid": "693df4961b55efaa84106e73"
+  },
+  "id": "d35ee504-da83-41d2-acb1-224c796b9c2c",
+  "name": "Редизайн корпоративного сайту",
+  "columns": [
+    {
+      "id": "467e9d3f-4c25-4617-818c-f5e50fc73416",
+      "name": "Зробити",
+      "tasks": [
+        {
+          "id": "790eb083-925e-4354-bed1-94fafc31d9c0",
+          "name": "Збір та аналіз вимог",
+          "description": "Детальний аналіз технічного завдання та вимог замовника",
+          "priority": "high",
+          "estimatedHours": 15
+        },
+        {
+          "id": "89db7099-bd6c-4353-b426-84352a046eb7",
+          "name": "Створення плану проєкту",
+          "description": "Розробка детального плану виконання проєкту",
+          "priority": "high",
+          "estimatedHours": 7.5
+        },
+        {
+          "id": "4accae2a-b0b8-4cca-83ca-e6920fcca50b",
+          "name": "Проектування бази даних",
+          "description": "Створення ER-діаграми та схемі БД",
+          "priority": "high",
+          "estimatedHours": 12
+        },
+        {
+          "id": "75f169af-477d-4564-95fc-b277b54c27bd",
+          "name": "Проектування API",
+          "description": "Опис endpoints та структури API",
+          "priority": "high",
+          "estimatedHours": 10.5
+        },
+        {
+          "id": "13acd8af-6876-4c82-a10f-f67773cef13c",
+          "name": "Вибір технологій",
+          "description": "Визначення стеку технологій",
+          "priority": "medium",
+          "estimatedHours": 4.5
+        },
+        {
+          "id": "fae840e7-2540-42b1-a2af-c49ec35cc3b9",
+          "name": "Створення wireframes",
+          "description": "Розробка макетів та структури інтерфейсу",
+          "priority": "high",
+          "estimatedHours": 9
+        },
+        {
+          "id": "475cc124-b18e-4b7d-89ee-0b98979ddfc6",
+          "name": "UI дизайн",
+          "description": "Створення візуального дизайну інтерфейсу",
+          "priority": "high",
+          "estimatedHours": 15
+        },
+        {
+          "id": "7cdb192a-6f37-4129-aa1d-ac30fe244ae2",
+          "name": "UX оптимізація",
+          "description": "Покращення користувацького досвіду",
+          "priority": "medium",
+          "estimatedHours": 7.5
+        },
+        {
+          "id": "b1c6d658-7c0c-42e1-98e9-64a6f7b9b64f",
+          "name": "Налаштування серверу",
+          "description": "Конфігурація серверного середовища",
+          "priority": "high",
+          "estimatedHours": 6
+        },
+        {
+          "id": "acde1438-6937-402c-85f1-ed970c1dccea",
+          "name": "Розробка API",
+          "description": "Реалізація REST API endpoints",
+          "priority": "high",
+          "estimatedHours": 18
+        },
+        {
+          "id": "23f55b9c-6415-40be-b16e-5a86044a4846",
+          "name": "Робота з базою даних",
+          "description": "Створення моделей та міграцій БД",
+          "priority": "high",
+          "estimatedHours": 12
+        },
+        {
+          "id": "dbe2b95f-f90b-4545-917a-af4c2a5b7921",
+          "name": "Автентифікація та авторизація",
+          "description": "Реалізація системи безпеки",
+          "priority": "high",
+          "estimatedHours": 9
+        },
+        {
+          "id": "cf7fa473-6ab7-4b39-849d-6764239c423c",
+          "name": "Налаштування проєкту",
+          "description": "Ініціалізація frontend проєкту та конфігурація",
+          "priority": "high",
+          "estimatedHours": 4.5
+        },
+        {
+          "id": "2e3b16e5-17b1-4bdb-8aa8-d821cffd4a79",
+          "name": "Розробка компонентів",
+          "description": "Створення UI компонентів",
+          "priority": "high",
+          "estimatedHours": 22.5
+        },
+        {
+          "id": "3cae21a2-45a0-4a14-88f5-debe08b44f4b",
+          "name": "Інтеграція з API",
+          "description": "Підключення frontend до backend API",
+          "priority": "high",
+          "estimatedHours": 10.5
+        },
+        {
+          "id": "71db9db3-4e3f-4ff5-8fe6-e8ce112f2524",
+          "name": "Адаптивність",
+          "description": "Забезпечення responsive дизайну",
+          "priority": "medium",
+          "estimatedHours": 7.5
+        },
+        {
+          "id": "c13cb685-bf0f-4e5e-a0df-da1e4379203e",
+          "name": "Інтеграція frontend та backend",
+          "description": "Об'єднання всіх компонентів системи",
+          "priority": "high",
+          "estimatedHours": 15
+        },
+        {
+          "id": "8d849444-8250-4488-abf0-ee299f5facc1",
+          "name": "Налаштування CI/CD",
+          "description": "Автоматизація деплою",
+          "priority": "medium",
+          "estimatedHours": 7.5
+        },
+        {
+          "id": "e3f51512-9a99-4c66-aeb9-f4faccf128f0",
+          "name": "Unit тести",
+          "description": "Написання та виконання unit тестів",
+          "priority": "medium",
+          "estimatedHours": 12
+        },
+        {
+          "id": "2b825dd0-9d86-408f-b96c-38c633b20c80",
+          "name": "Integration тести",
+          "description": "Тестування інтеграції компонентів",
+          "priority": "medium",
+          "estimatedHours": 9
+        },
+        {
+          "id": "bf244e2a-9372-4a05-a938-7957f6ab98b6",
+          "name": "Виправлення помилок",
+          "description": "Багфікси та оптимізація",
+          "priority": "high",
+          "estimatedHours": 10.5
+        }
+      ]
+    },
+    {
+      "id": "c25b4a24-adef-4306-a9cb-4f31e987e1dd",
+      "name": "В процесі",
+      "tasks": []
+    },
+    {
+      "id": "0ef02b67-f6ff-46be-9555-6d2e7098bbd7",
+      "name": "Виконано",
+      "tasks": []
+    }
+  ]
+},
+{
+  "_id": {
+    "$oid": "693df4961b55efaa84106e74"
+  },
+  "id": "8f896704-e5ce-4e0c-9070-bf393c5864e9",
+  "name": "Система аналітики для e-commerce",
+  "columns": [
+    {
+      "id": "4aa6813c-df02-4703-b834-052185aebf45",
+      "name": "Зробити",
+      "tasks": [
+        {
+          "id": "561d99b8-b328-4038-957b-977ac93a2d98",
+          "name": "Збір та аналіз вимог",
+          "description": "Детальний аналіз технічного завдання та вимог замовника",
+          "priority": "high",
+          "estimatedHours": 15
+        },
+        {
+          "id": "01d8c978-8e7f-4a2f-bbed-de432bd7b734",
+          "name": "Створення плану проєкту",
+          "description": "Розробка детального плану виконання проєкту",
+          "priority": "high",
+          "estimatedHours": 7.5
+        },
+        {
+          "id": "74037889-d97b-48b9-9295-2c0e9fd9bad5",
+          "name": "Проектування бази даних",
+          "description": "Створення ER-діаграми та схемі БД",
+          "priority": "high",
+          "estimatedHours": 12
+        },
+        {
+          "id": "6f4ac4c1-afdf-4daf-89c8-22413617e7ff",
+          "name": "Проектування API",
+          "description": "Опис endpoints та структури API",
+          "priority": "high",
+          "estimatedHours": 10.5
+        },
+        {
+          "id": "c16c8197-232d-4eac-bfbb-caa16a84bd14",
+          "name": "Вибір технологій",
+          "description": "Визначення стеку технологій",
+          "priority": "medium",
+          "estimatedHours": 4.5
+        },
+        {
+          "id": "2fed2d99-80ff-474e-869b-10101700a184",
+          "name": "Створення wireframes",
+          "description": "Розробка макетів та структури інтерфейсу",
+          "priority": "high",
+          "estimatedHours": 9
+        },
+        {
+          "id": "bcee4fca-7650-40b9-a817-03207f68ae9d",
+          "name": "UI дизайн",
+          "description": "Створення візуального дизайну інтерфейсу",
+          "priority": "high",
+          "estimatedHours": 15
+        },
+        {
+          "id": "050acb27-c77a-4f8e-9381-5f985d528054",
+          "name": "UX оптимізація",
+          "description": "Покращення користувацького досвіду",
+          "priority": "medium",
+          "estimatedHours": 7.5
+        },
+        {
+          "id": "b3266932-cb4f-4a0c-8334-36b55fb5e6ae",
+          "name": "Налаштування серверу",
+          "description": "Конфігурація серверного середовища",
+          "priority": "high",
+          "estimatedHours": 6
+        },
+        {
+          "id": "63ae2f5c-5f00-415b-b176-e4972bbc7d93",
+          "name": "Розробка API",
+          "description": "Реалізація REST API endpoints",
+          "priority": "high",
+          "estimatedHours": 18
+        },
+        {
+          "id": "22b6909a-1ec7-47df-a1ec-424cc0ad67c7",
+          "name": "Робота з базою даних",
+          "description": "Створення моделей та міграцій БД",
+          "priority": "high",
+          "estimatedHours": 12
+        },
+        {
+          "id": "eac4ff31-2111-4608-9d1e-c4db1d0f2e71",
+          "name": "Автентифікація та авторизація",
+          "description": "Реалізація системи безпеки",
+          "priority": "high",
+          "estimatedHours": 9
+        },
+        {
+          "id": "5501b446-e547-4955-a2c7-4c7f8021a31b",
+          "name": "Налаштування проєкту",
+          "description": "Ініціалізація frontend проєкту та конфігурація",
+          "priority": "high",
+          "estimatedHours": 4.5
+        },
+        {
+          "id": "d3c3d1e3-15c1-4930-9c72-831f4805919d",
+          "name": "Розробка компонентів",
+          "description": "Створення UI компонентів",
+          "priority": "high",
+          "estimatedHours": 22.5
+        },
+        {
+          "id": "6607c11c-a1a8-4658-a123-739a17a740df",
+          "name": "Інтеграція з API",
+          "description": "Підключення frontend до backend API",
+          "priority": "high",
+          "estimatedHours": 10.5
+        },
+        {
+          "id": "602798ab-73a4-4c52-9452-2f92e340ed0c",
+          "name": "Адаптивність",
+          "description": "Забезпечення responsive дизайну",
+          "priority": "medium",
+          "estimatedHours": 7.5
+        },
+        {
+          "id": "ca8fedf0-7f82-49a8-acfa-2f307b335e54",
+          "name": "Інтеграція frontend та backend",
+          "description": "Об'єднання всіх компонентів системи",
+          "priority": "high",
+          "estimatedHours": 15
+        },
+        {
+          "id": "a8d8c670-3640-4312-8e2d-9275e5b7958c",
+          "name": "Налаштування CI/CD",
+          "description": "Автоматизація деплою",
+          "priority": "medium",
+          "estimatedHours": 7.5
+        },
+        {
+          "id": "b1a71a30-416f-45fe-a443-5a534916adad",
+          "name": "Unit тести",
+          "description": "Написання та виконання unit тестів",
+          "priority": "medium",
+          "estimatedHours": 12
+        },
+        {
+          "id": "18163b07-c1c4-4d56-8f3d-169f266d1c9b",
+          "name": "Integration тести",
+          "description": "Тестування інтеграції компонентів",
+          "priority": "medium",
+          "estimatedHours": 9
+        },
+        {
+          "id": "d0f0fc5e-428a-416f-8b1b-658c45e6a4ca",
+          "name": "Виправлення помилок",
+          "description": "Багфікси та оптимізація",
+          "priority": "high",
+          "estimatedHours": 10.5
+        }
+      ]
+    },
+    {
+      "id": "eb332cdb-d92d-4c21-8caa-561e5af2643a",
+      "name": "В процесі",
+      "tasks": []
+    },
+    {
+      "id": "a9f3af9c-7b28-4db9-b08a-6ab65921a683",
+      "name": "Виконано",
+      "tasks": []
+    }
+  ]
+},
+{
+  "_id": {
+    "$oid": "693df4961b55efaa84106e75"
+  },
+  "id": "5522b176-d85e-4369-a122-9f28d83f276f",
+  "name": "E-commerce платформа для продажу одягу",
+  "columns": [
+    {
+      "id": "23c9342c-389f-4c42-a0d6-89c0116dcbbf",
+      "name": "Зробити",
+      "tasks": [
+        {
+          "id": "1b9f0d52-e57c-4d01-b918-a11d9b770052",
+          "name": "Збір та аналіз вимог",
+          "description": "Детальний аналіз технічного завдання та вимог замовника",
+          "priority": "high",
+          "estimatedHours": 25
+        },
+        {
+          "id": "d2abef3f-3a05-40bb-ad42-65ec3fee7944",
+          "name": "Створення плану проєкту",
+          "description": "Розробка детального плану виконання проєкту",
+          "priority": "high",
+          "estimatedHours": 12.5
+        },
+        {
+          "id": "210dbfa1-4134-4d2f-b365-8e75e1b17132",
+          "name": "Проектування бази даних",
+          "description": "Створення ER-діаграми та схемі БД",
+          "priority": "high",
+          "estimatedHours": 20
+        },
+        {
+          "id": "6406e30f-9dff-4ec5-b490-3d9ff9114bdf",
+          "name": "Проектування API",
+          "description": "Опис endpoints та структури API",
+          "priority": "high",
+          "estimatedHours": 17.5
+        },
+        {
+          "id": "856f2bcd-1515-4b15-bad9-54eeca8fcfe5",
+          "name": "Вибір технологій",
+          "description": "Визначення стеку технологій",
+          "priority": "medium",
+          "estimatedHours": 7.5
+        },
+        {
+          "id": "cbda9f60-4798-41f8-b0f5-a0111baf08f1",
+          "name": "Створення wireframes",
+          "description": "Розробка макетів та структури інтерфейсу",
+          "priority": "high",
+          "estimatedHours": 15
+        },
+        {
+          "id": "97d40ba4-d55a-41ef-9f53-ec84cd9db617",
+          "name": "UI дизайн",
+          "description": "Створення візуального дизайну інтерфейсу",
+          "priority": "high",
+          "estimatedHours": 25
+        },
+        {
+          "id": "749cca7f-02c4-4511-8b9d-b76593a3c802",
+          "name": "UX оптимізація",
+          "description": "Покращення користувацького досвіду",
+          "priority": "medium",
+          "estimatedHours": 12.5
+        },
+        {
+          "id": "78d082d1-fa57-4a7f-8811-a19823f68c36",
+          "name": "Налаштування серверу",
+          "description": "Конфігурація серверного середовища",
+          "priority": "high",
+          "estimatedHours": 10
+        },
+        {
+          "id": "b8057a09-5fbf-4129-be5b-4db07e22781d",
+          "name": "Розробка API",
+          "description": "Реалізація REST API endpoints",
+          "priority": "high",
+          "estimatedHours": 30
+        },
+        {
+          "id": "766c140f-6202-414c-8496-0555385fe3f8",
+          "name": "Робота з базою даних",
+          "description": "Створення моделей та міграцій БД",
+          "priority": "high",
+          "estimatedHours": 20
+        },
+        {
+          "id": "77adc6ce-5d3c-4c10-9f11-c5419ff55f38",
+          "name": "Автентифікація та авторизація",
+          "description": "Реалізація системи безпеки",
+          "priority": "high",
+          "estimatedHours": 15
+        },
+        {
+          "id": "ede617ea-9e07-4a1d-874c-5ba359503f6e",
+          "name": "Налаштування проєкту",
+          "description": "Ініціалізація frontend проєкту та конфігурація",
+          "priority": "high",
+          "estimatedHours": 7.5
+        },
+        {
+          "id": "4ca9fb15-dfc0-4ad4-818e-ce247196f1d1",
+          "name": "Розробка компонентів",
+          "description": "Створення UI компонентів",
+          "priority": "high",
+          "estimatedHours": 37.5
+        },
+        {
+          "id": "65f44c0e-e401-42d8-a02b-449545ec3e42",
+          "name": "Інтеграція з API",
+          "description": "Підключення frontend до backend API",
+          "priority": "high",
+          "estimatedHours": 17.5
+        },
+        {
+          "id": "11425b9b-c2ec-4b97-ae89-82ef34b3c1f6",
+          "name": "Адаптивність",
+          "description": "Забезпечення responsive дизайну",
+          "priority": "medium",
+          "estimatedHours": 12.5
+        },
+        {
+          "id": "4f513441-c5c4-4d28-8718-aa95b30cd0ad",
+          "name": "Інтеграція frontend та backend",
+          "description": "Об'єднання всіх компонентів системи",
+          "priority": "high",
+          "estimatedHours": 25
+        },
+        {
+          "id": "a1f35cc6-47cf-44b8-a37d-3f93ac06f61f",
+          "name": "Налаштування CI/CD",
+          "description": "Автоматизація деплою",
+          "priority": "medium",
+          "estimatedHours": 12.5
+        },
+        {
+          "id": "36fcca9a-c8e2-421e-a606-2b2786474a13",
+          "name": "Unit тести",
+          "description": "Написання та виконання unit тестів",
+          "priority": "medium",
+          "estimatedHours": 20
+        },
+        {
+          "id": "56048900-56ce-4fea-90c9-0f7c6e99771a",
+          "name": "Integration тести",
+          "description": "Тестування інтеграції компонентів",
+          "priority": "medium",
+          "estimatedHours": 15
+        },
+        {
+          "id": "31092e2e-070e-480b-8e5a-d6ae0082ad21",
+          "name": "Виправлення помилок",
+          "description": "Багфікси та оптимізація",
+          "priority": "high",
+          "estimatedHours": 17.5
+        },
+        {
+          "id": "a1afab88-faab-4221-a050-6e6055ef5ad1",
+          "name": "Підготовка до деплою",
+          "description": "Фінальна перевірка та оптимізація",
+          "priority": "high",
+          "estimatedHours": 10
+        },
+        {
+          "id": "c51cfd4b-eab1-4a87-adaa-c1f212d01970",
+          "name": "Деплой на production",
+          "description": "Розгортання на production сервер",
+          "priority": "high",
+          "estimatedHours": 7.5
+        },
+        {
+          "id": "971deae6-db8d-4a3b-bc6d-39fb097586d5",
+          "name": "Моніторинг та підтримка",
+          "description": "Налаштування моніторингу системи",
+          "priority": "low",
+          "estimatedHours": 5
+        }
+      ]
+    },
+    {
+      "id": "a95026cc-ec50-47fa-9825-77abc60f7dbb",
+      "name": "В процесі",
+      "tasks": []
+    },
+    {
+      "id": "6e2cff39-3467-41b0-8893-c8283765df1a",
+      "name": "Виконано",
+      "tasks": []
+    }
+  ]
+},
+{
+  "_id": {
+    "$oid": "693df4971b55efaa84106e76"
+  },
+  "id": "fd99ecaf-ee55-4b3b-b403-44fe8e5e7de4",
+  "name": "Лендінг-сторінка для стартапу",
+  "columns": [
+    {
+      "id": "dfc79045-c167-4735-b054-33a548cb8b18",
+      "name": "Зробити",
+      "tasks": [
+        {
+          "id": "caec5303-125e-488b-aecf-d3e1b0c91bb8",
+          "name": "Збір та аналіз вимог",
+          "description": "Детальний аналіз технічного завдання та вимог замовника",
+          "priority": "high",
+          "estimatedHours": 8
+        },
+        {
+          "id": "dc56acaf-fabd-48d5-b9ad-45efb23feee4",
+          "name": "Створення плану проєкту",
+          "description": "Розробка детального плану виконання проєкту",
+          "priority": "high",
+          "estimatedHours": 4
+        },
+        {
+          "id": "21a398d8-777d-40f4-8fd0-1c6c2322dbc1",
+          "name": "Проектування бази даних",
+          "description": "Створення ER-діаграми та схемі БД",
+          "priority": "high",
+          "estimatedHours": 6.4
+        },
+        {
+          "id": "a38f4297-5d3a-48ff-a029-e0639b299b25",
+          "name": "Проектування API",
+          "description": "Опис endpoints та структури API",
+          "priority": "high",
+          "estimatedHours": 5.6
+        },
+        {
+          "id": "30fc8592-dc2b-40be-ba0f-603f824c9301",
+          "name": "Вибір технологій",
+          "description": "Визначення стеку технологій",
+          "priority": "medium",
+          "estimatedHours": 2.4
+        },
+        {
+          "id": "014a30e2-551a-4814-9755-3cded85505e4",
+          "name": "Створення wireframes",
+          "description": "Розробка макетів та структури інтерфейсу",
+          "priority": "high",
+          "estimatedHours": 4.8
+        },
+        {
+          "id": "12a3e512-c2ca-474a-afed-fcf8203cbe3d",
+          "name": "UI дизайн",
+          "description": "Створення візуального дизайну інтерфейсу",
+          "priority": "high",
+          "estimatedHours": 8
+        },
+        {
+          "id": "8d6de41e-2c85-46ea-874c-778198f0b1f0",
+          "name": "UX оптимізація",
+          "description": "Покращення користувацького досвіду",
+          "priority": "medium",
+          "estimatedHours": 4
+        },
+        {
+          "id": "6e219d40-5d1c-4732-bb40-9c3aee739567",
+          "name": "Налаштування проєкту",
+          "description": "Ініціалізація frontend проєкту та конфігурація",
+          "priority": "high",
+          "estimatedHours": 2.4
+        },
+        {
+          "id": "1d3fae88-8ff8-40f6-998f-34243775cff6",
+          "name": "Розробка компонентів",
+          "description": "Створення UI компонентів",
+          "priority": "high",
+          "estimatedHours": 12
+        },
+        {
+          "id": "0de447ab-9ee5-4c22-b252-dc5417a43857",
+          "name": "Інтеграція з API",
+          "description": "Підключення frontend до backend API",
+          "priority": "high",
+          "estimatedHours": 5.6
+        },
+        {
+          "id": "b915b024-151f-442f-b553-db2120dd46b8",
+          "name": "Адаптивність",
+          "description": "Забезпечення responsive дизайну",
+          "priority": "medium",
+          "estimatedHours": 4
+        },
+        {
+          "id": "b7c74a68-06ac-4eff-be6a-a9884a4476a5",
+          "name": "Unit тести",
+          "description": "Написання та виконання unit тестів",
+          "priority": "medium",
+          "estimatedHours": 6.4
+        },
+        {
+          "id": "fef563eb-3ed7-45ab-b800-db08a5079d0c",
+          "name": "Integration тести",
+          "description": "Тестування інтеграції компонентів",
+          "priority": "medium",
+          "estimatedHours": 4.8
+        },
+        {
+          "id": "d7b34f31-3832-4176-a78c-86b498ee5151",
+          "name": "Виправлення помилок",
+          "description": "Багфікси та оптимізація",
+          "priority": "high",
+          "estimatedHours": 5.6
+        }
+      ]
+    },
+    {
+      "id": "9535698c-bf9b-463b-a13e-f23fb56ad2e5",
+      "name": "В процесі",
+      "tasks": []
+    },
+    {
+      "id": "1e91572e-6692-4646-a555-87ec9b8f744a",
+      "name": "Виконано",
+      "tasks": []
+    }
+  ]
+}]

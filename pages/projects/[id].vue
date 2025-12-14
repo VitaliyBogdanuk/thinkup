@@ -1,8 +1,10 @@
 <template>
   <section class="w-full h-full overflow-y-auto flex-1">
-    <HeaderComponent class="hidden md:block" />
     
-    <div v-if="!project" class="p-10 text-center text-gray-500">
+    <div v-if="isLoadingProject" class="p-10 text-center text-gray-500">
+      Завантаження проєкту...
+    </div>
+    <div v-else-if="!project" class="p-10 text-center text-gray-500">
       Проєкт не знайдено
     </div>
 
@@ -15,6 +17,24 @@
             <p class="text-sm md:text-base text-gray-600 line-clamp-3">{{ project.description }}</p>
           </div>
           <div class="flex flex-col sm:flex-row items-end sm:items-center gap-2 sm:gap-3">
+            <button
+              v-if="authStore.isAdmin && project && !isProtectedProject(project.id)"
+              @click.stop="showDeleteConfirm = true"
+              class="px-3 py-1.5 md:px-4 md:py-2 bg-red-100 text-red-700 rounded-lg hover:bg-red-200 transition-colors text-xs md:text-sm font-semibold whitespace-nowrap flex-shrink-0 flex items-center gap-1.5"
+              title="Видалити проєкт"
+            >
+              <TrashIcon class="w-4 h-4" />
+              <span>Видалити</span>
+            </button>
+            <button
+              v-else-if="authStore.isAdmin && project && isProtectedProject(project.id)"
+              disabled
+              class="px-3 py-1.5 md:px-4 md:py-2 bg-gray-100 text-gray-400 rounded-lg cursor-not-allowed text-xs md:text-sm font-semibold whitespace-nowrap flex-shrink-0 flex items-center gap-1.5"
+              title="Демо-дані не можна видаляти"
+            >
+              <TrashIcon class="w-4 h-4" />
+              <span>Видалити</span>
+            </button>
             <button
               v-if="(authStore.isAdmin || authStore.isTeacher) && project"
               @click="showEditModal = true"
@@ -214,16 +234,49 @@
       @close="closeReviewForm"
       @saved="handleReviewSaved"
     />
+
+    <!-- Модальне вікно підтвердження видалення -->
+    <div
+      v-if="showDeleteConfirm"
+      class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
+      @click.self="showDeleteConfirm = false"
+    >
+      <div class="bg-white rounded-xl shadow-lg max-w-md w-full p-6">
+        <h3 class="text-xl font-bold text-gray-800 mb-4">Підтвердження видалення</h3>
+        <p class="text-gray-600 mb-6">
+          Ви впевнені, що хочете видалити проєкт <strong>"{{ project?.name }}"</strong>?
+          <br />
+          <span class="text-red-600 font-semibold">Цю дію неможливо скасувати!</span>
+        </p>
+        <div class="flex gap-3 justify-end">
+          <button
+            @click="showDeleteConfirm = false"
+            class="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors font-semibold"
+          >
+            Скасувати
+          </button>
+          <button
+            @click="confirmDelete"
+            :disabled="isDeleting"
+            class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors font-semibold disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+          >
+            <span v-if="isDeleting">Видалення...</span>
+            <span v-else>Видалити</span>
+          </button>
+        </div>
+      </div>
+    </div>
   </section>
 </template>
 
 <script setup lang="ts">
-import { computed, ref, watch } from "vue";
+import { computed, ref, watch, onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
-import { PencilIcon } from "@heroicons/vue/24/outline";
+import { PencilIcon, TrashIcon } from "@heroicons/vue/24/outline";
 import { useProjectsStore } from "~~/stores/projects";
 import { useAuthStore } from "~~/stores/auth";
-import HeaderComponent from "~~/components/HeaderComponent.vue";
+import { useProjectsApi } from "~/composables/useApi";
+import { isProtectedProject } from "~/composables/useProtectedData";
 import Columns from "~~/components/Columns.vue";
 import FormTasks from "~~/components/form/Tasks.vue";
 import ApproveTeam from "~~/components/project/ApproveTeam.vue";
@@ -236,8 +289,49 @@ const router = useRouter();
 const projectsStore = useProjectsStore();
 const authStore = useAuthStore();
 
-const projectId = route.params.id as string;
-const project = computed(() => projectsStore.getProjectById(projectId));
+const projectId = computed(() => route.params.id as string);
+const project = computed(() => {
+  const id = projectId.value;
+  if (!id) return undefined;
+  return projectsStore.getProjectById(id);
+});
+const isLoadingProject = ref(false);
+
+// Завантажуємо проєкт з API, якщо його немає в store
+const loadProject = async (id: string) => {
+  if (!id) return;
+  
+  // Перевіряємо, чи проєкт вже є в store
+  const existingProject = projectsStore.getProjectById(id);
+  if (existingProject) {
+    return;
+  }
+  
+  isLoadingProject.value = true;
+  try {
+    const projectsApi = useProjectsApi();
+    const loadedProject = await projectsApi.getProjectById(id);
+    
+    // Додаємо проєкт до store, якщо його там немає
+    if (loadedProject) {
+      const alreadyExists = projectsStore.getProjectById(loadedProject.id);
+      if (!alreadyExists) {
+        projectsStore.projects.push(loadedProject);
+      }
+    }
+  } catch (error) {
+    console.error('Failed to load project:', error);
+  } finally {
+    isLoadingProject.value = false;
+  }
+};
+
+// Завантажуємо проєкт при зміні ID в маршруті
+watch(projectId, (newId) => {
+  if (newId) {
+    loadProject(newId);
+  }
+}, { immediate: true });
 
 // Локальний стан для лічильника команди (для оновлення в реальному часі)
 const teamCount = ref(0);
@@ -248,6 +342,10 @@ const showEditModal = ref(false);
 // Модальне вікно відгуку про студента
 const showReviewModal = ref(false);
 const selectedStudentId = ref<string | null>(null);
+
+// Модальне вікно підтвердження видалення
+const showDeleteConfirm = ref(false);
+const isDeleting = ref(false);
 
 // Ініціалізуємо teamCount при завантаженні проєкту
 watch(project, (newProject) => {
@@ -358,6 +456,29 @@ const handleReviewSaved = () => {
 const handleProjectUpdated = (updatedProjectId: string) => {
   showEditModal.value = false;
   // Проєкт оновлюється автоматично через реактивність store
+};
+
+// Видалення проєкту
+const confirmDelete = async () => {
+  if (!project.value) return;
+  
+  isDeleting.value = true;
+  try {
+    await projectsStore.deleteProject(project.value.id);
+    showDeleteConfirm.value = false;
+    // Перенаправляємо на сторінку проєктів
+    router.push('/projects');
+  } catch (error: any) {
+    console.error('Failed to delete project:', error);
+    const errorMessage = error?.data?.message || error?.message || 'Помилка при видаленні проєкту. Спробуйте ще раз.';
+    if (error?.statusCode === 403 || errorMessage.includes('demo data') || errorMessage.includes('protected')) {
+      alert('Неможливо видалити демо-дані. Цей проєкт захищений від видалення.');
+    } else {
+      alert(errorMessage);
+    }
+  } finally {
+    isDeleting.value = false;
+  }
 };
 </script>
 

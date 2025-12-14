@@ -59,16 +59,29 @@ const store = useKanbanStore();
 const projectsStore = useProjectsStore();
 const { boards } = storeToRefs(store);
 
-const boardId = route.params.board.toString();
+// Безпечно отримуємо boardId з параметрів маршруту
+const boardId = computed(() => {
+  const boardParam = route.params.board;
+  if (Array.isArray(boardParam)) {
+    return boardParam[0] || '';
+  }
+  return boardParam?.toString() || '';
+});
+
 const boardName = computed(() => {
+  const currentBoardId = boardId.value;
+  if (!currentBoardId) {
+    return "Дошка";
+  }
+  
   // Спочатку шукаємо дошку
-  const board = boards.value?.find((board) => board.id === boardId);
+  const board = boards.value?.find((board) => board.id === currentBoardId);
   if (board?.name) {
     return board.name;
   }
   
   // Якщо дошка не знайдена, шукаємо проєкт за boardId
-  const project = projectsStore.projects.find((p) => p.boardId === boardId);
+  const project = projectsStore.projects.find((p) => p.boardId === currentBoardId);
   if (project?.name) {
     return project.name;
   }
@@ -81,7 +94,7 @@ const editBoardFormState = isEditBoardFormOpen();
 const addBoardFormState = isAddBoardFormOpen();
 const isFormOpenState = isTaskFormOpen();
 const taskToEditState = taskToEdit();
-const boardIdInView = ref<string>(boardId);
+const boardIdInView = ref<string>(boardId.value || '');
 const isMobileMenuOpen = ref<boolean>(false);
 
 //Methods

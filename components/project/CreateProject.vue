@@ -24,8 +24,10 @@
               type="text"
               required
               placeholder="напр. Розробка веб-додатку для управління проєктами"
-              class="w-full"
+              :class="['w-full', validationErrors.name ? 'border-red-500 focus:ring-red-500' : '']"
+              @blur="validateForm"
             />
+            <span v-if="validationErrors.name" class="text-red-600 text-sm">{{ validationErrors.name }}</span>
           </div>
 
           <div class="flex flex-col gap-2">
@@ -36,8 +38,10 @@
               required
               rows="3"
               placeholder="Короткий опис проєкту"
-              class="w-full"
+              :class="['w-full', validationErrors.description ? 'border-red-500 focus:ring-red-500' : '']"
+              @blur="validateForm"
             />
+            <span v-if="validationErrors.description" class="text-red-600 text-sm">{{ validationErrors.description }}</span>
           </div>
 
           <div class="flex flex-col gap-2">
@@ -88,8 +92,10 @@
               required
               rows="8"
               placeholder="Детальне технічне завдання проєкту або завантажте файл..."
-              class="w-full"
+              :class="['w-full', validationErrors.technicalSpecification ? 'border-red-500 focus:ring-red-500' : '']"
+              @blur="validateForm"
             />
+            <span v-if="validationErrors.technicalSpecification" class="text-red-600 text-sm">{{ validationErrors.technicalSpecification }}</span>
             <p class="text-sm text-gray-600">AI проаналізує ТЗ та автоматично створить структуру проєкту</p>
             <p class="text-xs text-gray-500 mt-1">Підтримувані формати: .txt</p>
           </div>
@@ -122,9 +128,12 @@
               id="deadline"
               v-model="formData.deadline"
               type="date"
-              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-savoy/50 cursor-pointer"
+              :min="new Date().toISOString().split('T')[0]"
+              :class="['w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 cursor-pointer', validationErrors.deadline ? 'border-red-500 focus:ring-red-500' : 'border-gray-300 focus:ring-savoy/50']"
               @click="(e) => (e.target as HTMLInputElement).showPicker()"
+              @change="validateForm"
             />
+            <span v-if="validationErrors.deadline" class="text-red-600 text-sm">{{ validationErrors.deadline }}</span>
           </div>
 
           <div class="flex flex-col gap-4">
@@ -144,6 +153,7 @@
                     placeholder="напр. Frontend Developer"
                     required
                     class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-savoy/50"
+                    @blur="validateForm"
                   />
                 </div>
                 
@@ -156,14 +166,17 @@
                     placeholder="Кількість"
                     required
                     class="w-full sm:w-24 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-savoy/50"
+                    @blur="validateForm"
+                    @input="() => { if (role.required < 1) role.required = 1; }"
                   />
                   
                   <!-- Кнопка видалення -->
                   <button
                     type="button"
                     @click="removeRole(index)"
-                    class="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors flex-shrink-0"
-                    title="Видалити роль"
+                    :disabled="formData.roles.length <= 1"
+                    :class="['p-2 rounded-lg transition-colors flex-shrink-0', formData.roles.length <= 1 ? 'text-gray-300 cursor-not-allowed' : 'text-red-500 hover:bg-red-50']"
+                    :title="formData.roles.length <= 1 ? 'Має бути мінімум одна роль' : 'Видалити роль'"
                   >
                     <TrashIcon class="w-5 h-5" />
                   </button>
@@ -182,6 +195,7 @@
               </svg>
               Додати роль
             </button>
+            <span v-if="validationErrors.roles" class="text-red-600 text-sm mt-1">{{ validationErrors.roles }}</span>
           </div>
 
           <div class="flex flex-col sm:flex-row gap-3 justify-end">
@@ -227,6 +241,7 @@ const authStore = useAuthStore();
 const fileInput = ref<HTMLInputElement | null>(null);
 const uploadedFileName = ref<string>("");
 const fileUploadError = ref<string>("");
+const validationErrors = ref<Record<string, string>>({});
 
 // Дозволені формати файлів
 const allowedFileTypes = [".txt"];
@@ -308,7 +323,15 @@ const addRole = () => {
 };
 
 const removeRole = (index: number) => {
+  // Не дозволяємо видалити останню роль
+  if (formData.value.roles.length <= 1) {
+    return;
+  }
   formData.value.roles.splice(index, 1);
+  // Очищаємо помилку валідації для ролей
+  if (validationErrors.value.roles) {
+    delete validationErrors.value.roles;
+  }
 };
 
 const closeModal = () => {
@@ -327,9 +350,55 @@ const resetForm = () => {
   };
   uploadedFileName.value = "";
   fileUploadError.value = "";
+  validationErrors.value = {};
   if (fileInput.value) {
     fileInput.value.value = "";
   }
+};
+
+const validateForm = (): boolean => {
+  validationErrors.value = {};
+
+  // Валідація назви
+  if (!formData.value.name || formData.value.name.trim().length < 3) {
+    validationErrors.value.name = "Назва проєкту має містити мінімум 3 символи";
+  }
+
+  // Валідація опису
+  if (!formData.value.description || formData.value.description.trim().length < 10) {
+    validationErrors.value.description = "Опис проєкту має містити мінімум 10 символів";
+  }
+
+  // Валідація технічного завдання
+  if (!formData.value.technicalSpecification || formData.value.technicalSpecification.trim().length < 20) {
+    validationErrors.value.technicalSpecification = "Технічне завдання має містити мінімум 20 символів";
+  }
+
+  // Валідація дедлайну
+  if (formData.value.deadline) {
+    const deadlineDate = new Date(formData.value.deadline);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    
+    if (deadlineDate < today) {
+      validationErrors.value.deadline = "Дедлайн не може бути в минулому";
+    }
+  }
+
+  // Валідація ролей
+  if (!formData.value.roles || formData.value.roles.length === 0) {
+    validationErrors.value.roles = "Потрібно додати мінімум одну роль";
+  } else {
+    const invalidRoles = formData.value.roles.filter(
+      (role) => !role.name || role.name.trim().length === 0 || !role.required || role.required < 1
+    );
+    
+    if (invalidRoles.length > 0) {
+      validationErrors.value.roles = "Всі ролі повинні мати назву та кількість не менше 1";
+    }
+  }
+
+  return Object.keys(validationErrors.value).length === 0;
 };
 
 const handleSubmit = async () => {
@@ -337,17 +406,29 @@ const handleSubmit = async () => {
     return;
   }
 
+  // Валідація форми
+  if (!validateForm()) {
+    // Прокручуємо до першої помилки
+    const firstErrorField = Object.keys(validationErrors.value)[0];
+    const errorElement = document.getElementById(firstErrorField);
+    if (errorElement) {
+      errorElement.scrollIntoView({ behavior: "smooth", block: "center" });
+      errorElement.focus();
+    }
+    return;
+  }
+
   const projectRoles: ProjectRole[] = formData.value.roles.map((role) => ({
     id: uuidv4(),
-    name: role.name,
+    name: role.name.trim(),
     required: role.required,
     assigned: [],
   }));
 
   const project = projectsStore.createProject({
-    name: formData.value.name,
-    description: formData.value.description,
-    technicalSpecification: formData.value.technicalSpecification,
+    name: formData.value.name.trim(),
+    description: formData.value.description.trim(),
+    technicalSpecification: formData.value.technicalSpecification.trim(),
     category: formData.value.category,
     complexity: formData.value.complexity,
     deadline: formData.value.deadline,

@@ -1,6 +1,7 @@
 import { defineStore } from "pinia";
 import { v4 as uuidv4 } from "uuid";
-import { useStorage } from "@vueuse/core";
+import { useBoardsApi } from "~/composables/useApi";
+import { useBoardsApi } from "~/composables/useApi";
 
 const defaultBoards: Board[] = [
   {
@@ -103,13 +104,11 @@ const migrateData = (boards: Board[] | undefined): Board[] => {
 
 export const useKanbanStore = defineStore("kanban", {
   state: () => {
-    const storedBoards = useStorage<Board[]>("board", defaultBoards);
-    // Застосовуємо міграцію при ініціалізації
-    const migratedBoards = migrateData(storedBoards.value);
-    storedBoards.value = migratedBoards;
-    
+    // Використовуємо звичайний масив замість useStorage
+    // Дані будуть завантажуватися з MongoDB через loadBoards()
     return {
-      boards: storedBoards,
+      boards: [] as Board[],
+      isInitialized: false,
     };
   },
   getters: {
@@ -134,23 +133,55 @@ export const useKanbanStore = defineStore("kanban", {
       columnId: string,
       taskInfos: Omit<Task, "id">
     ) {
+      if (!this.boards || this.boards.length === 0) {
+        console.error('Boards not initialized');
+        return;
+      }
+
+      const board = this.boards.find((board) => board.id === boardId);
+      if (!board || !board.columns) {
+        console.error(`Board with id ${boardId} not found or has no columns`);
+        return;
+      }
+
+      const column = board.columns.find((column) => column.id === columnId);
+      if (!column) {
+        console.error(`Column with id ${columnId} not found`);
+        return;
+      }
+
       const newTask = { id: uuidv4(), ...taskInfos };
-      this.boards
-        ?.find((board) => board.id === boardId)!
-        .columns.find((column) => column.id === columnId)!
-        .tasks.push(newTask);
+      column.tasks.push(newTask);
+      
+      // Синхронізуємо з MongoDB
+      this.syncBoardToMongo(boardId);
     },
     removeTaskFromColumn(boardId: string, columnId: string, editedTask: Task) {
+      if (!this.boards || this.boards.length === 0) {
+        console.error('Boards not initialized');
+        return;
+      }
+
+      const board = this.boards.find((board) => board.id === boardId);
+      if (!board || !board.columns) {
+        console.error(`Board with id ${boardId} not found or has no columns`);
+        return;
+      }
+
+      const column = board.columns.find((column) => column.id === columnId);
+      if (!column) {
+        console.error(`Column with id ${columnId} not found`);
+        return;
+      }
+
       const boardTasks = this.getColumnTasks(boardId, columnId);
-      const filteredTasks = boardTasks!.filter(
+      const filteredTasks = (boardTasks || []).filter(
         (task) => task.id !== editedTask.id
       );
       //Removing task from original column
-      this.boards!.find((board) => board.id === boardId)!.columns.find(
-        (column) => column.id === columnId
-      )!.tasks = filteredTasks;
+      column.tasks = filteredTasks;
     },
-    createNewBoard(boardName: string) {
+    async createNewBoard(boardName: string) {
       const boardTemplate: Board = {
         id: uuidv4(),
         name: boardName,
@@ -162,6 +193,14 @@ export const useKanbanStore = defineStore("kanban", {
       };
       //Modifing state
       this.boards?.push(boardTemplate);
+      
+      // Синхронізуємо з MongoDB
+      try {
+        const boardsApi = useBoardsApi();
+        await boardsApi.createBoard(boardTemplate);
+      } catch (error) {
+        console.error('Failed to create board in MongoDB:', error);
+      }
     },
     editTask(
       boardId: string,
@@ -181,27 +220,77 @@ export const useKanbanStore = defineStore("kanban", {
         );
 
         //Modifing state
-        this.boards!.find((board) => board.id === boardId)!.columns.find(
-          (column) => column.id === columnId
-        )!.tasks = modifiedTasks;
+        if (!this.boards || this.boards.length === 0) {
+          console.error('Boards not initialized');
+          return;
+        }
+
+        const board = this.boards.find((board) => board.id === boardId);
+        if (!board || !board.columns) {
+          console.error(`Board with id ${boardId} not found or has no columns`);
+          return;
+        }
+
+        const column = board.columns.find((column) => column.id === columnId);
+        if (!column) {
+          console.error(`Column with id ${columnId} not found`);
+          return;
+        }
+
+        column.tasks = modifiedTasks;
+        
+        // Синхронізуємо з MongoDB
+        this.syncBoardToMongo(boardId);
       }
     },
     createNewColumn(boardId: string, columnName: string) {
-      this.boards!.find((board) => board.id === boardId)!.columns.push({
+      if (!this.boards || this.boards.length === 0) {
+        console.error('Boards not initialized');
+        return;
+      }
+
+      const board = this.boards.find((board) => board.id === boardId);
+      if (!board) {
+        console.error(`Board with id ${boardId} not found`);
+        return;
+      }
+
+      if (!board.columns) {
+        board.columns = [];
+      }
+
+      board.columns.push({
         id: uuidv4(),
         name: columnName,
         tasks: [],
       });
+      
+      // Синхронізуємо з MongoDB
+      this.syncBoardToMongo(boardId);
     },
     editColumnName(boardId: string, columnId: string, columnName: string) {
       this.boards!.find((board) => board.id === boardId)!.columns.find(
         (column) => column.id === columnId
       )!.name = columnName;
+      // Синхронізуємо з MongoDB
+      this.syncBoardToMongo(boardId);
     },
     editBoard(boardId: string, newBoardName: string, newColumnsName: Column[]) {
-      const findBoard = this.boards!.find((board) => board.id === boardId)!;
+      if (!this.boards || this.boards.length === 0) {
+        console.error('Boards not initialized');
+        return;
+      }
+
+      const findBoard = this.boards.find((board) => board.id === boardId);
+      if (!findBoard) {
+        console.error(`Board with id ${boardId} not found`);
+        return;
+      }
+
       findBoard.name = newBoardName;
       findBoard.columns = newColumnsName;
+      // Синхронізуємо з MongoDB
+      this.syncBoardToMongo(boardId);
     },
     deleteBoard(boardId: string) {
       this.boards!.splice(
@@ -213,10 +302,62 @@ export const useKanbanStore = defineStore("kanban", {
       const index = this.boards!.findIndex((board) => board.id === updatedBoard.id);
       if (index !== -1) {
         this.boards![index] = updatedBoard;
+        // Синхронізуємо з MongoDB
+        this.syncBoardToMongo(updatedBoard.id);
       }
     },
     getBoardById(boardId: string): Board | undefined {
       return this.boards?.find((board) => board.id === boardId);
+    },
+    // Синхронізація дошки з MongoDB
+    async syncBoardToMongo(boardId: string) {
+      const board = this.getBoardById(boardId);
+      if (!board) return;
+      
+      try {
+        const boardsApi = useBoardsApi();
+        // Перевіряємо, чи дошка вже існує в MongoDB
+        try {
+          await boardsApi.getBoardById(boardId);
+          // Якщо існує, оновлюємо
+          await boardsApi.updateBoard(boardId, board);
+        } catch (error) {
+          // Якщо не існує, створюємо
+          await boardsApi.createBoard(board);
+        }
+      } catch (error) {
+        console.error(`Failed to sync board ${boardId} to MongoDB:`, error);
+      }
+    },
+    // Завантаження дошок з MongoDB
+    async loadBoards() {
+      if (this.isInitialized) {
+        return; // Вже завантажено
+      }
+
+      try {
+        const boardsApi = useBoardsApi();
+        const boards = await boardsApi.getAllBoards();
+        if (boards && boards.length > 0) {
+          // Застосовуємо міграцію даних та видаляємо дублікати за id
+          const migratedBoards = migrateData(boards);
+          this.boards = migratedBoards.reduce((acc, board) => {
+            if (!acc.find(b => b.id === board.id)) {
+              acc.push(board);
+            }
+            return acc;
+          }, [] as Board[]);
+        } else {
+          // Якщо немає дошок в MongoDB, використовуємо дефолтні
+          this.boards = defaultBoards;
+        }
+        this.isInitialized = true;
+      } catch (error) {
+        console.error('Failed to load boards from MongoDB:', error);
+        // Fallback на дефолтні дошки
+        this.boards = defaultBoards;
+        this.isInitialized = true;
+      }
     },
   },
 });

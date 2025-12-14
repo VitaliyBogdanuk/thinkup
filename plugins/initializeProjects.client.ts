@@ -11,6 +11,17 @@ export default defineNuxtPlugin(async () => {
   const projectsStore = useProjectsStore();
   const kanbanStore = useKanbanStore();
 
+  try {
+    // Завантажуємо дані з MongoDB
+    await projectsStore.loadAll();
+    
+    // Завантажуємо дошки з MongoDB
+    await kanbanStore.loadBoards();
+  } catch (error) {
+    console.error('Failed to load data from MongoDB:', error);
+    // Можна залишити fallback на localStorage або показати помилку
+  }
+
   // Ініціалізуємо проєкти з канбан-дошками та рекомендаціями
   for (const project of projectsStore.projects) {
     if (project.status === "draft") continue;

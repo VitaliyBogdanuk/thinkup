@@ -52,9 +52,16 @@
             class="bg-green-600 text-white"
           />
           <ButtonBase
+            v-if="!isProtectedBoard(boardId)"
             label="Видалити дошку"
             @action="removeBoard"
             class="bg-savoy text-white"
+          />
+          <ButtonBase
+            v-else
+            label="Видалити дошку (захищено)"
+            disabled
+            class="bg-gray-400 text-white cursor-not-allowed"
           />
         </div>
       </div>
@@ -63,6 +70,8 @@
 </template>
 <script setup lang="ts">
 import { useKanbanStore } from "~~/stores";
+import { isProtectedBoard } from "~/composables/useProtectedData";
+import { useBoardsApi } from "~/composables/useApi";
 import { XMarkIcon, TrashIcon } from "@heroicons/vue/24/outline";
 import { storeToRefs } from "pinia";
 
@@ -101,10 +110,27 @@ const removeColumnFromBoard = (columnId: string) => {
   boardColumns.value = filteredBoard;
 };
 
-const removeBoard = () => {
-  boardFormState.value = false;
-  router.push("/");
-  deleteBoard(boardId);
+const removeBoard = async () => {
+  if (isProtectedBoard(boardId)) {
+    alert('Неможливо видалити демо-дані. Ця дошка захищена від видалення.');
+    return;
+  }
+  
+  try {
+    const boardsApi = useBoardsApi();
+    await boardsApi.deleteBoard(boardId);
+    boardFormState.value = false;
+    router.push("/");
+    deleteBoard(boardId);
+  } catch (error: any) {
+    console.error('Failed to delete board:', error);
+    const errorMessage = error?.data?.message || error?.message || 'Помилка при видаленні дошки. Спробуйте ще раз.';
+    if (error?.statusCode === 403 || errorMessage.includes('demo data') || errorMessage.includes('protected')) {
+      alert('Неможливо видалити демо-дані. Ця дошка захищена від видалення.');
+    } else {
+      alert(errorMessage);
+    }
+  }
 };
 
 watch(boardFormState, () => {

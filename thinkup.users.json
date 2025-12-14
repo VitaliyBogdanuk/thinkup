@@ -1,0 +1,763 @@
+[{
+  "_id": {
+    "$oid": "693df4911b55efaa84106e61"
+  },
+  "id": "student-1",
+  "name": "student-1",
+  "email": "ivan.petrov@example.com",
+  "role": "student",
+  "fullName": "Іван Петров",
+  "course": 3,
+  "specialty": "Комп'ютерні науки",
+  "skills": [
+    {
+      "id": "skill-1",
+      "name": "Vue.js",
+      "category": "frontend",
+      "level": "middle",
+      "verified": true
+    },
+    {
+      "id": "skill-2",
+      "name": "TypeScript",
+      "category": "frontend",
+      "level": "middle",
+      "verified": true
+    },
+    {
+      "id": "skill-3",
+      "name": "Nuxt.js",
+      "category": "frontend",
+      "level": "junior",
+      "verified": true
+    },
+    {
+      "id": "skill-4",
+      "name": "CSS/SCSS",
+      "category": "frontend",
+      "level": "middle",
+      "verified": true
+    }
+  ],
+  "rating": 4.5,
+  "completedCourses": [
+    "course-1",
+    "course-2"
+  ],
+  "portfolio": {
+    "github": "https://github.com/ivan-petrov",
+    "projects": [
+      "project-1",
+      "project-2"
+    ]
+  },
+  "availability": 20,
+  "status": "available",
+  "createdAt": "2025-12-13T14:08:47.803Z"
+},
+{
+  "_id": {
+    "$oid": "693df4911b55efaa84106e62"
+  },
+  "id": "student-2",
+  "name": "student-2",
+  "email": "maria.kovalenko@example.com",
+  "role": "student",
+  "fullName": "Марія Коваленко",
+  "course": 4,
+  "specialty": "Комп'ютерні науки",
+  "skills": [
+    {
+      "id": "skill-5",
+      "name": "Node.js",
+      "category": "backend",
+      "level": "middle",
+      "verified": true
+    },
+    {
+      "id": "skill-6",
+      "name": "PostgreSQL",
+      "category": "backend",
+      "level": "middle",
+      "verified": true
+    },
+    {
+      "id": "skill-7",
+      "name": "Express.js",
+      "category": "backend",
+      "level": "junior",
+      "verified": true
+    },
+    {
+      "id": "skill-8",
+      "name": "REST API",
+      "category": "backend",
+      "level": "middle",
+      "verified": true
+    }
+  ],
+  "rating": 4.7,
+  "completedCourses": [
+    "course-1",
+    "course-3",
+    "course-4"
+  ],
+  "portfolio": {
+    "github": "https://github.com/maria-kovalenko",
+    "projects": [
+      "project-3"
+    ]
+  },
+  "availability": 15,
+  "status": "available",
+  "createdAt": "2025-12-13T14:08:47.803Z"
+},
+{
+  "_id": {
+    "$oid": "693df4921b55efaa84106e63"
+  },
+  "id": "student-3",
+  "name": "student-3",
+  "email": "oleksandr.sydorenko@example.com",
+  "role": "student",
+  "fullName": "Олександр Сидоренко",
+  "course": 2,
+  "specialty": "Дизайн",
+  "skills": [
+    {
+      "id": "skill-9",
+      "name": "Figma",
+      "category": "design",
+      "level": "middle",
+      "verified": true
+    },
+    {
+      "id": "skill-10",
+      "name": "Adobe XD",
+      "category": "design",
+      "level": "junior",
+      "verified": true
+    },
+    {
+      "id": "skill-11",
+      "name": "UI/UX Design",
+      "category": "design",
+      "level": "middle",
+      "verified": true
+    }
+  ],
+  "rating": 4.2,
+  "completedCourses": [
+    "course-5"
+  ],
+  "portfolio": {
+    "behance": "https://behance.net/oleksandr-sydorenko",
+    "projects": [
+      "project-4"
+    ]
+  },
+  "availability": 25,
+  "status": "available",
+  "createdAt": "2025-12-13T14:08:47.803Z"
+},
+{
+  "_id": {
+    "$oid": "693df4921b55efaa84106e64"
+  },
+  "id": "student-4",
+  "name": "student-4",
+  "email": "anna.melnyk@example.com",
+  "role": "student",
+  "fullName": "Анна Мельник",
+  "course": 3,
+  "specialty": "Комп'ютерні науки",
+  "skills": [
+    {
+      "id": "skill-12",
+      "name": "React",
+      "category": "frontend",
+      "level": "middle",
+      "verified": true
+    },
+    {
+      "id": "skill-13",
+      "name": "Redux",
+      "category": "frontend",
+      "level": "junior",
+      "verified": true
+    },
+    {
+      "id": "skill-14",
+      "name": "JavaScript",
+      "category": "frontend",
+      "level": "middle",
+      "verified": true
+    }
+  ],
+  "rating": 4.3,
+  "completedCourses": [
+    "course-1",
+    "course-2"
+  ],
+  "portfolio": {
+    "github": "https://github.com/anna-melnyk"
+  },
+  "availability": 18,
+  "status": "available",
+  "createdAt": "2025-12-13T14:08:47.803Z"
+},
+{
+  "_id": {
+    "$oid": "693df4921b55efaa84106e65"
+  },
+  "id": "student-5",
+  "name": "student-5",
+  "email": "dmitro.ivanov@example.com",
+  "role": "student",
+  "fullName": "Дмитро Іванов",
+  "course": 4,
+  "specialty": "Комп'ютерні науки",
+  "skills": [
+    {
+      "id": "skill-15",
+      "name": "Python",
+      "category": "backend",
+      "level": "middle",
+      "verified": true
+    },
+    {
+      "id": "skill-16",
+      "name": "Django",
+      "category": "backend",
+      "level": "junior",
+      "verified": true
+    },
+    {
+      "id": "skill-17",
+      "name": "Data Analysis",
+      "category": "analytics",
+      "level": "junior",
+      "verified": true
+    }
+  ],
+  "rating": 4,
+  "completedCourses": [
+    "course-6"
+  ],
+  "portfolio": {
+    "github": "https://github.com/dmitro-ivanov"
+  },
+  "availability": 12,
+  "status": "busy",
+  "createdAt": "2025-12-13T14:08:47.803Z"
+},
+{
+  "_id": {
+    "$oid": "693df4921b55efaa84106e66"
+  },
+  "id": "partner-1",
+  "name": "partner-1",
+  "email": "contact@techcompany.com",
+  "role": "partner",
+  "companyName": "Tech Solutions Ukraine",
+  "companyDescription": "Провідна IT компанія, що спеціалізується на веб-розробці",
+  "contactPhone": "+380501234567",
+  "createdAt": "2025-12-13T14:08:47.803Z"
+},
+{
+  "_id": {
+    "$oid": "693df4931b55efaa84106e67"
+  },
+  "id": "partner-2",
+  "name": "partner-2",
+  "email": "info@designstudio.com",
+  "role": "partner",
+  "companyName": "Creative Design Studio",
+  "companyDescription": "Студія дизайну та брендингу",
+  "contactPhone": "+380502345678",
+  "createdAt": "2025-12-13T14:08:47.803Z"
+},
+{
+  "_id": {
+    "$oid": "693df4931b55efaa84106e68"
+  },
+  "id": "teacher-1",
+  "name": "teacher-1",
+  "email": "professor.smith@university.edu",
+  "role": "teacher",
+  "fullName": "Професор Сміт",
+  "department": "Кафедра комп'ютерних наук",
+  "specialization": [
+    "Веб-розробка",
+    "Архітектура ПЗ"
+  ],
+  "createdAt": "2025-12-13T14:08:47.803Z"
+},
+{
+  "_id": {
+    "$oid": "693df4931b55efaa84106e69"
+  },
+  "id": "teacher-2",
+  "name": "teacher-2",
+  "email": "mentor.johnson@university.edu",
+  "role": "teacher",
+  "fullName": "Ментор Джонсон",
+  "department": "Кафедра дизайну",
+  "specialization": [
+    "UI/UX Design",
+    "Графічний дизайн"
+  ],
+  "createdAt": "2025-12-13T14:08:47.803Z"
+},
+{
+  "_id": {
+    "$oid": "693df6711b55efaa84106e77"
+  },
+  "id": "partner-1",
+  "name": "partner-1",
+  "email": "contact@techcompany.com",
+  "role": "partner",
+  "companyName": "Tech Solutions Ukraine",
+  "companyDescription": "Провідна IT компанія, що спеціалізується на веб-розробці",
+  "contactPhone": "+380501234567",
+  "createdAt": "2025-12-13T23:27:45.517Z"
+},
+{
+  "_id": {
+    "$oid": "693df6891b55efaa84106e78"
+  },
+  "id": "partner-1",
+  "name": "partner-1",
+  "email": "contact@techcompany.com",
+  "role": "partner",
+  "companyName": "Tech Solutions Ukraine",
+  "companyDescription": "Провідна IT компанія, що спеціалізується на веб-розробці",
+  "contactPhone": "+380501234567",
+  "createdAt": "2025-12-13T23:28:09.488Z"
+},
+{
+  "_id": {
+    "$oid": "693df68b1b55efaa84106e79"
+  },
+  "id": "partner-1",
+  "name": "partner-1",
+  "email": "contact@techcompany.com",
+  "role": "partner",
+  "companyName": "Tech Solutions Ukraine",
+  "companyDescription": "Провідна IT компанія, що спеціалізується на веб-розробці",
+  "contactPhone": "+380501234567",
+  "createdAt": "2025-12-13T23:28:11.653Z"
+},
+{
+  "_id": {
+    "$oid": "693df6941b55efaa84106e7a"
+  },
+  "id": "partner-1",
+  "name": "partner-1",
+  "email": "contact@techcompany.com",
+  "role": "partner",
+  "companyName": "Tech Solutions Ukraine",
+  "companyDescription": "Провідна IT компанія, що спеціалізується на веб-розробці",
+  "contactPhone": "+380501234567",
+  "createdAt": "2025-12-13T23:28:20.049Z"
+},
+{
+  "_id": {
+    "$oid": "693df6a21b55efaa84106e7b"
+  },
+  "id": "partner-1",
+  "name": "partner-1",
+  "email": "contact@techcompany.com",
+  "role": "partner",
+  "companyName": "Tech Solutions Ukraine",
+  "companyDescription": "Провідна IT компанія, що спеціалізується на веб-розробці",
+  "contactPhone": "+380501234567",
+  "createdAt": "2025-12-13T23:28:34.114Z"
+},
+{
+  "_id": {
+    "$oid": "693df6ae1b55efaa84106e7c"
+  },
+  "id": "partner-1",
+  "name": "partner-1",
+  "email": "contact@techcompany.com",
+  "role": "partner",
+  "companyName": "Tech Solutions Ukraine",
+  "companyDescription": "Провідна IT компанія, що спеціалізується на веб-розробці",
+  "contactPhone": "+380501234567",
+  "createdAt": "2025-12-13T23:28:46.581Z"
+},
+{
+  "_id": {
+    "$oid": "693df6bb1b55efaa84106e7d"
+  },
+  "id": "partner-1",
+  "name": "partner-1",
+  "email": "contact@techcompany.com",
+  "role": "partner",
+  "companyName": "Tech Solutions Ukraine",
+  "companyDescription": "Провідна IT компанія, що спеціалізується на веб-розробці",
+  "contactPhone": "+380501234567",
+  "createdAt": "2025-12-13T23:28:59.167Z"
+},
+{
+  "_id": {
+    "$oid": "693df7051b55efaa84106e7e"
+  },
+  "id": "partner-1",
+  "name": "partner-1",
+  "email": "contact@techcompany.com",
+  "role": "partner",
+  "companyName": "Tech Solutions Ukraine",
+  "companyDescription": "Провідна IT компанія, що спеціалізується на веб-розробці",
+  "contactPhone": "+380501234567",
+  "createdAt": "2025-12-13T23:30:13.430Z"
+},
+{
+  "_id": {
+    "$oid": "693df7091b55efaa84106e7f"
+  },
+  "id": "partner-1",
+  "name": "partner-1",
+  "email": "contact@techcompany.com",
+  "role": "partner",
+  "companyName": "Tech Solutions Ukraine",
+  "companyDescription": "Провідна IT компанія, що спеціалізується на веб-розробці",
+  "contactPhone": "+380501234567",
+  "createdAt": "2025-12-13T23:30:13.430Z"
+},
+{
+  "_id": {
+    "$oid": "693df712b8082e32b3f489ee"
+  },
+  "id": "student-1",
+  "name": "student-1",
+  "email": "ivan.petrov@example.com",
+  "role": "student",
+  "fullName": "Іван Петров",
+  "course": 3,
+  "specialty": "Комп'ютерні науки",
+  "skills": [
+    {
+      "id": "skill-1",
+      "name": "Vue.js",
+      "category": "frontend",
+      "level": "middle",
+      "verified": true
+    },
+    {
+      "id": "skill-2",
+      "name": "TypeScript",
+      "category": "frontend",
+      "level": "middle",
+      "verified": true
+    },
+    {
+      "id": "skill-3",
+      "name": "Nuxt.js",
+      "category": "frontend",
+      "level": "junior",
+      "verified": true
+    },
+    {
+      "id": "skill-4",
+      "name": "CSS/SCSS",
+      "category": "frontend",
+      "level": "middle",
+      "verified": true
+    }
+  ],
+  "rating": 4.5,
+  "completedCourses": [
+    "course-1",
+    "course-2"
+  ],
+  "portfolio": {
+    "github": "https://github.com/ivan-petrov",
+    "projects": [
+      "project-1",
+      "project-2"
+    ]
+  },
+  "availability": 20,
+  "status": "available",
+  "createdAt": "2025-12-13T23:30:13.430Z"
+},
+{
+  "_id": {
+    "$oid": "693df712b8082e32b3f489ef"
+  },
+  "id": "partner-1",
+  "name": "partner-1",
+  "email": "contact@techcompany.com",
+  "role": "partner",
+  "companyName": "Tech Solutions Ukraine",
+  "companyDescription": "Провідна IT компанія, що спеціалізується на веб-розробці",
+  "contactPhone": "+380501234567",
+  "createdAt": "2025-12-13T23:30:26.661Z"
+},
+{
+  "_id": {
+    "$oid": "693df712b8082e32b3f489f0"
+  },
+  "id": "partner-1",
+  "name": "partner-1",
+  "email": "contact@techcompany.com",
+  "role": "partner",
+  "companyName": "Tech Solutions Ukraine",
+  "companyDescription": "Провідна IT компанія, що спеціалізується на веб-розробці",
+  "contactPhone": "+380501234567",
+  "createdAt": "2025-12-13T23:30:26.784Z"
+},
+{
+  "_id": {
+    "$oid": "693df717b8082e32b3f489f1"
+  },
+  "id": "partner-1",
+  "name": "partner-1",
+  "email": "contact@techcompany.com",
+  "role": "partner",
+  "companyName": "Tech Solutions Ukraine",
+  "companyDescription": "Провідна IT компанія, що спеціалізується на веб-розробці",
+  "contactPhone": "+380501234567",
+  "createdAt": "2025-12-13T23:30:31.587Z"
+},
+{
+  "_id": {
+    "$oid": "693df717b8082e32b3f489f2"
+  },
+  "id": "partner-1",
+  "name": "partner-1",
+  "email": "contact@techcompany.com",
+  "role": "partner",
+  "companyName": "Tech Solutions Ukraine",
+  "companyDescription": "Провідна IT компанія, що спеціалізується на веб-розробці",
+  "contactPhone": "+380501234567",
+  "createdAt": "2025-12-13T23:30:31.514Z"
+},
+{
+  "_id": {
+    "$oid": "693df760cd9b23190b25c62d"
+  },
+  "id": "partner-1",
+  "name": "partner-1",
+  "email": "contact@techcompany.com",
+  "role": "partner",
+  "companyName": "Tech Solutions Ukraine",
+  "companyDescription": "Провідна IT компанія, що спеціалізується на веб-розробці",
+  "contactPhone": "+380501234567",
+  "createdAt": "2025-12-13T23:31:42.524Z"
+},
+{
+  "_id": {
+    "$oid": "693df760cd9b23190b25c62c"
+  },
+  "id": "partner-1",
+  "name": "partner-1",
+  "email": "contact@techcompany.com",
+  "role": "partner",
+  "companyName": "Tech Solutions Ukraine",
+  "companyDescription": "Провідна IT компанія, що спеціалізується на веб-розробці",
+  "contactPhone": "+380501234567",
+  "createdAt": "2025-12-13T23:31:42.515Z"
+},
+{
+  "_id": {
+    "$oid": "693df763cd9b23190b25c62e"
+  },
+  "id": "partner-1",
+  "name": "partner-1",
+  "email": "contact@techcompany.com",
+  "role": "partner",
+  "companyName": "Tech Solutions Ukraine",
+  "companyDescription": "Провідна IT компанія, що спеціалізується на веб-розробці",
+  "contactPhone": "+380501234567",
+  "createdAt": "2025-12-13T23:31:47.544Z"
+},
+{
+  "_id": {
+    "$oid": "693df763cd9b23190b25c62f"
+  },
+  "id": "partner-1",
+  "name": "partner-1",
+  "email": "contact@techcompany.com",
+  "role": "partner",
+  "companyName": "Tech Solutions Ukraine",
+  "companyDescription": "Провідна IT компанія, що спеціалізується на веб-розробці",
+  "contactPhone": "+380501234567",
+  "createdAt": "2025-12-13T23:31:47.631Z"
+},
+{
+  "_id": {
+    "$oid": "693df780ecf864b0f9dd6fe6"
+  },
+  "id": "partner-1",
+  "name": "partner-1",
+  "email": "contact@techcompany.com",
+  "role": "partner",
+  "companyName": "Tech Solutions Ukraine",
+  "companyDescription": "Провідна IT компанія, що спеціалізується на веб-розробці",
+  "contactPhone": "+380501234567",
+  "createdAt": "2025-12-13T23:32:14.799Z"
+},
+{
+  "_id": {
+    "$oid": "693df780ecf864b0f9dd6fe7"
+  },
+  "id": "partner-1",
+  "name": "partner-1",
+  "email": "contact@techcompany.com",
+  "role": "partner",
+  "companyName": "Tech Solutions Ukraine",
+  "companyDescription": "Провідна IT компанія, що спеціалізується на веб-розробці",
+  "contactPhone": "+380501234567",
+  "createdAt": "2025-12-13T23:32:14.786Z"
+},
+{
+  "_id": {
+    "$oid": "693df78becf864b0f9dd6fe8"
+  },
+  "id": "partner-1",
+  "name": "partner-1",
+  "email": "contact@techcompany.com",
+  "role": "partner",
+  "companyName": "Tech Solutions Ukraine",
+  "companyDescription": "Провідна IT компанія, що спеціалізується на веб-розробці",
+  "contactPhone": "+380501234567",
+  "createdAt": "2025-12-13T23:32:27.038Z"
+},
+{
+  "_id": {
+    "$oid": "693df78eecf864b0f9dd6fe9"
+  },
+  "id": "partner-1",
+  "name": "partner-1",
+  "email": "contact@techcompany.com",
+  "role": "partner",
+  "companyName": "Tech Solutions Ukraine",
+  "companyDescription": "Провідна IT компанія, що спеціалізується на веб-розробці",
+  "contactPhone": "+380501234567",
+  "createdAt": "2025-12-13T23:32:30.235Z"
+},
+{
+  "_id": {
+    "$oid": "693df790ecf864b0f9dd6fea"
+  },
+  "id": "partner-1",
+  "name": "partner-1",
+  "email": "contact@techcompany.com",
+  "role": "partner",
+  "companyName": "Tech Solutions Ukraine",
+  "companyDescription": "Провідна IT компанія, що спеціалізується на веб-розробці",
+  "contactPhone": "+380501234567",
+  "createdAt": "2025-12-13T23:32:30.235Z"
+},
+{
+  "_id": {
+    "$oid": "693df793ecf864b0f9dd6feb"
+  },
+  "id": "student-1",
+  "name": "student-1",
+  "email": "ivan.petrov@example.com",
+  "role": "student",
+  "fullName": "Іван Петров",
+  "course": 3,
+  "specialty": "Комп'ютерні науки",
+  "skills": [
+    {
+      "id": "skill-1",
+      "name": "Vue.js",
+      "category": "frontend",
+      "level": "middle",
+      "verified": true
+    },
+    {
+      "id": "skill-2",
+      "name": "TypeScript",
+      "category": "frontend",
+      "level": "middle",
+      "verified": true
+    },
+    {
+      "id": "skill-3",
+      "name": "Nuxt.js",
+      "category": "frontend",
+      "level": "junior",
+      "verified": true
+    },
+    {
+      "id": "skill-4",
+      "name": "CSS/SCSS",
+      "category": "frontend",
+      "level": "middle",
+      "verified": true
+    }
+  ],
+  "rating": 4.5,
+  "completedCourses": [
+    "course-1",
+    "course-2"
+  ],
+  "portfolio": {
+    "github": "https://github.com/ivan-petrov",
+    "projects": [
+      "project-1",
+      "project-2"
+    ]
+  },
+  "availability": 20,
+  "status": "available",
+  "createdAt": "2025-12-13T23:32:30.235Z"
+},
+{
+  "_id": {
+    "$oid": "693df79becf864b0f9dd6fec"
+  },
+  "id": "partner-1",
+  "name": "partner-1",
+  "email": "contact@techcompany.com",
+  "role": "partner",
+  "companyName": "Tech Solutions Ukraine",
+  "companyDescription": "Провідна IT компанія, що спеціалізується на веб-розробці",
+  "contactPhone": "+380501234567",
+  "createdAt": "2025-12-13T23:32:30.235Z"
+},
+{
+  "_id": {
+    "$oid": "693df7abecf864b0f9dd6fed"
+  },
+  "id": "partner-1",
+  "name": "partner-1",
+  "email": "contact@techcompany.com",
+  "role": "partner",
+  "companyName": "Tech Solutions Ukraine",
+  "companyDescription": "Провідна IT компанія, що спеціалізується на веб-розробці",
+  "contactPhone": "+380501234567",
+  "createdAt": "2025-12-13T23:32:59.183Z"
+},
+{
+  "_id": {
+    "$oid": "693df7aeecf864b0f9dd6fee"
+  },
+  "id": "partner-1",
+  "name": "partner-1",
+  "email": "contact@techcompany.com",
+  "role": "partner",
+  "companyName": "Tech Solutions Ukraine",
+  "companyDescription": "Провідна IT компанія, що спеціалізується на веб-розробці",
+  "contactPhone": "+380501234567",
+  "createdAt": "2025-12-13T23:33:02.577Z"
+},
+{
+  "_id": {
+    "$oid": "693df7b1ecf864b0f9dd6fef"
+  },
+  "id": "partner-1",
+  "name": "partner-1",
+  "email": "contact@techcompany.com",
+  "role": "partner",
+  "companyName": "Tech Solutions Ukraine",
+  "companyDescription": "Провідна IT компанія, що спеціалізується на веб-розробці",
+  "contactPhone": "+380501234567",
+  "createdAt": "2025-12-13T23:33:02.577Z"
+}]

@@ -78,6 +78,54 @@
         </div>
       </div>
 
+      <!-- Швидкі посилання -->
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <NuxtLink
+          to="/admin/students"
+          class="bg-white rounded-xl shadow-sm border border-gray-200 p-4 hover:shadow-md transition-shadow"
+        >
+          <div class="flex items-center gap-3">
+            <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+              <span class="text-2xl">👨‍🎓</span>
+            </div>
+            <div>
+              <h3 class="font-semibold text-gray-800">Студенти</h3>
+              <p class="text-sm text-gray-600">{{ studentsCount }} користувачів</p>
+            </div>
+          </div>
+        </NuxtLink>
+
+        <NuxtLink
+          to="/admin/teachers"
+          class="bg-white rounded-xl shadow-sm border border-gray-200 p-4 hover:shadow-md transition-shadow"
+        >
+          <div class="flex items-center gap-3">
+            <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
+              <span class="text-2xl">👨‍🏫</span>
+            </div>
+            <div>
+              <h3 class="font-semibold text-gray-800">Викладачі</h3>
+              <p class="text-sm text-gray-600">{{ teachersCount }} користувачів</p>
+            </div>
+          </div>
+        </NuxtLink>
+
+        <NuxtLink
+          to="/admin/partners"
+          class="bg-white rounded-xl shadow-sm border border-gray-200 p-4 hover:shadow-md transition-shadow"
+        >
+          <div class="flex items-center gap-3">
+            <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
+              <span class="text-2xl">🤝</span>
+            </div>
+            <div>
+              <h3 class="font-semibold text-gray-800">Партнери</h3>
+              <p class="text-sm text-gray-600">{{ partnersCount }} користувачів</p>
+            </div>
+          </div>
+        </NuxtLink>
+      </div>
+
       <!-- Останні події -->
       <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-3 sm:p-4 md:p-6">
         <h3 class="text-base sm:text-lg md:text-xl font-bold text-gray-800 mb-3 sm:mb-4">Останні події</h3>
@@ -105,7 +153,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from "vue";
+import { computed, onMounted } from "vue";
 import { useProjectsStore } from "~~/stores/projects";
 import { useAuthStore } from "~~/stores/auth";
 import type { AdminNotification, User } from "~~/types";
@@ -150,5 +198,14 @@ const formatTime = (date: Date): string => {
     minute: '2-digit'
   });
 };
+
+// Завантажуємо дані при монтуванні
+onMounted(async () => {
+  try {
+    await projectsStore.loadAll();
+  } catch (error) {
+    console.error('Failed to load data:', error);
+  }
+});
 </script>
 

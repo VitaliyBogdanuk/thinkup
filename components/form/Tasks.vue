@@ -82,10 +82,14 @@
                 id="estimated_hours"
                 v-model.number="estimatedHours"
                 type="number"
-                min="0"
+                step="0.1"
+                min="0.1"
                 placeholder="напр. 8"
-                class="w-full"
+                :class="['w-full', estimatedHoursError ? 'border-red-500 focus:ring-red-500' : '']"
+                @input="validateEstimatedHours"
+                @blur="validateEstimatedHours"
               />
+              <span v-if="estimatedHoursError" class="text-red-600 text-sm">{{ estimatedHoursError }}</span>
             </div>
           </template>
         </div>
@@ -137,6 +141,7 @@ const taskDescription = ref<string>("");
 const assignedStudentId = ref<string>("");
 const taskPriority = ref<"low" | "medium" | "high">("medium");
 const estimatedHours = ref<number | undefined>(undefined);
+const estimatedHoursError = ref<string>("");
 
 // Визначаємо, чи це проєктна дошка
 const isProjectBoard = computed(() => {
@@ -208,6 +213,21 @@ const availableStudents = computed(() => {
   return projectsStore.getAvailableStudents;
 });
 
+// Валідація оцінки часу
+const validateEstimatedHours = (): void => {
+  estimatedHoursError.value = "";
+  
+  if (estimatedHours.value !== undefined && estimatedHours.value !== null) {
+    if (estimatedHours.value <= 0) {
+      estimatedHoursError.value = "Оцінка часу має бути більше нуля";
+      estimatedHours.value = undefined;
+    } else if (estimatedHours.value < 0.1) {
+      estimatedHoursError.value = "Мінімальна оцінка: 0.1 години";
+      estimatedHours.value = 0.1;
+    }
+  }
+};
+
 //Methods
 const createNewTask = (): void => {
   const newTask: Omit<Task, "id"> = {
@@ -216,6 +236,12 @@ const createNewTask = (): void => {
   };
 
   if (isProjectBoard.value) {
+    // Валідація оцінки часу перед збереженням
+    validateEstimatedHours();
+    if (estimatedHoursError.value) {
+      return;
+    }
+    
     newTask.assignedTo = assignedStudentId.value || undefined;
     newTask.priority = taskPriority.value;
     newTask.estimatedHours = estimatedHours.value;
@@ -247,6 +273,12 @@ const editTaskInfos = (): void => {
   };
 
   if (isProjectBoard.value) {
+    // Валідація оцінки часу перед збереженням
+    validateEstimatedHours();
+    if (estimatedHoursError.value) {
+      return;
+    }
+    
     editedTask.assignedTo = assignedStudentId.value || undefined;
     editedTask.priority = taskPriority.value;
     editedTask.estimatedHours = estimatedHours.value;
@@ -278,6 +310,7 @@ const resetValues = (): void => {
   assignedStudentId.value = "";
   taskPriority.value = "medium";
   estimatedHours.value = undefined;
+  estimatedHoursError.value = "";
 };
 
 const buttonLabel = computed(() => {

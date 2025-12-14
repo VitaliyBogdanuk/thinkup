@@ -186,10 +186,11 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, onMounted, onUnmounted, nextTick } from "vue";
+import { computed, ref, onMounted, onUnmounted, nextTick, watch } from "vue";
 import { useRouter } from "vue-router";
 import { useAuthStore } from "~~/stores/auth";
 import { useProjectsStore } from "~~/stores/projects";
+import { useNotificationsStore } from "~~/stores/notifications";
 import NotificationPopup from "~~/components/NotificationPopup.vue";
 import type { 
   PartnerNotification,
@@ -202,6 +203,7 @@ import type {
 const router = useRouter();
 const authStore = useAuthStore();
 const projectsStore = useProjectsStore();
+const notificationsStore = useNotificationsStore();
 
 // Попап для сповіщень
 const notificationPopup = ref({
@@ -227,8 +229,10 @@ const closeNotification = () => {
 // Об'єднаний тип сповіщень
 type Notification = PartnerNotification | StudentNotification | TeacherNotification | AdminNotification;
 
-// Реф для сповіщень
+// Реф для сповіщень (реальні з БД + демо для демонстрації)
 const notifications = ref<Notification[]>([]);
+const realNotifications = ref<any[]>([]);
+const useRealNotifications = ref(true); // Прапорець для використання реальних сповіщень
 
 // Ініціалізація сповіщень залежно від ролі
 const initializeNotifications = () => {
@@ -437,8 +441,77 @@ const initializeNotifications = () => {
   }
 };
 
+// Завантаження реальних сповіщень
+const loadRealNotifications = async () => {
+  if (!authStore.currentUser?.id) {
+    // Якщо немає користувача, показуємо тільки демо сповіщення
+    initializeNotifications();
+    return;
+  }
+  
+  const role = authStore.userRole || authStore.currentUser.role;
+  if (!role) {
+    initializeNotifications();
+    return;
+  }
+  
+  try {
+    await notificationsStore.loadNotifications(authStore.currentUser.id, role);
+    const userNotifications = notificationsStore.getNotificationsByUser(
+      authStore.currentUser.id,
+      role
+    );
+    
+    // Конвертуємо сповіщення з БД в формат для відображення
+    realNotifications.value = userNotifications.map((n: any) => ({
+      id: n.id,
+      type: n.type,
+      title: n.title,
+      message: n.message,
+      read: n.read,
+      createdAt: n.createdAt instanceof Date ? n.createdAt : new Date(n.createdAt),
+      projectId: n.projectId,
+      studentId: n.studentId,
+      userId: n.userId,
+    }));
+    
+    // Завжди показуємо демо сповіщення разом з реальними
+    initializeNotifications();
+    const demoNotifications = [...notifications.value];
+    
+    // Об'єднуємо реальні та демо сповіщення
+    // Спочатку додаємо реальні сповіщення
+    const allNotifications = [...realNotifications.value] as Notification[];
+    
+    // Потім додаємо демо сповіщення, уникаючи дублікатів за ID
+    const realIds = new Set(realNotifications.value.map(n => n.id));
+    for (const demo of demoNotifications) {
+      if (!realIds.has(demo.id)) {
+        allNotifications.push(demo);
+      }
+    }
+    
+    // Сортуємо за датою створення (новіші спочатку)
+    allNotifications.sort((a, b) => {
+      const dateA = a.createdAt instanceof Date ? a.createdAt : new Date(a.createdAt);
+      const dateB = b.createdAt instanceof Date ? b.createdAt : new Date(b.createdAt);
+      return dateB.getTime() - dateA.getTime();
+    });
+    
+    notifications.value = allNotifications;
+  } catch (error) {
+    console.error('Failed to load real notifications:', error);
+    // Fallback на демо сповіщення
+    initializeNotifications();
+  }
+};
+
 // Комп'ютед властивості
 const unreadCount = computed(() => {
+  // Якщо є реальні сповіщення, використовуємо кількість зі store
+  if (useRealNotifications.value && realNotifications.value.length > 0) {
+    return notificationsStore.unreadCount + notifications.value.filter(n => !n.read && !realNotifications.value.find(r => r.id === n.id)).length;
+  }
   return notifications.value.filter(n => !n.read).length;
 });
 
@@ -454,15 +527,40 @@ const formatTimeAgo = (date: Date): string => {
   return `${Math.floor(diffInSeconds / 604800)} тиж тому`;
 };
 
-const markAsRead = (notificationId: string) => {
+const markAsRead = async (notificationId: string) => {
   const notification = notifications.value.find(n => n.id === notificationId);
   if (notification) {
     notification.read = true;
+    
+    // Оновлюємо в БД
+    if (authStore.currentUser?.id && (authStore.userRole || authStore.currentUser.role)) {
+      try {
+        await notificationsStore.markAsRead(
+          notificationId,
+          authStore.currentUser.id,
+          authStore.userRole || authStore.currentUser.role!
+        );
+      } catch (error) {
+        console.error('Failed to mark notification as read:', error);
+      }
+    }
   }
 };
 
-const markAllAsRead = () => {
+const markAllAsRead = async () => {
   notifications.value.forEach(n => n.read = true);
+  
+  // Оновлюємо в БД
+  if (authStore.currentUser?.id && (authStore.userRole || authStore.currentUser.role)) {
+    try {
+      await notificationsStore.markAllAsRead(
+        authStore.currentUser.id,
+        authStore.userRole || authStore.currentUser.role!
+      );
+    } catch (error) {
+      console.error('Failed to mark all notifications as read:', error);
+    }
+  }
 };
 
 const handleNotificationClick = (notification: Notification) => {
@@ -730,8 +828,18 @@ const getNotificationIconEmoji = (notification: Notification): string => {
 };
 
 // Ініціалізація при монтажі
-onMounted(() => {
-  initializeNotifications();
+// Завантажуємо реальні сповіщення при монтуванні та зміні користувача/ролі
+watch(
+  () => [authStore.currentUser?.id, authStore.userRole || authStore.currentUser?.role],
+  async () => {
+    await loadRealNotifications();
+  },
+  { immediate: true }
+);
+
+onMounted(async () => {
+  // Завжди завантажуємо реальні сповіщення та показуємо демо разом з ними
+  await loadRealNotifications();
 });
 </script>
 

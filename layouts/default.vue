@@ -3,7 +3,7 @@
     <div class="hidden md:block relative">
       <aside
         :class="[
-          'sidebar h-full bg-charcoal border-r border-gray-200 text-gray-300 overflow-y-auto flex-shrink-0 transition-all duration-300',
+          'sidebar h-full bg-charcoal border-r border-gray-200 text-gray-300 overflow-y-auto flex-shrink-0 transition-all duration-300 flex flex-col',
           isSidebarCollapsed ? 'w-20' : 'w-72'
         ]"
       >
@@ -148,13 +148,27 @@
         </NuxtLink>
         <NuxtLink
           to="/notifications"
-          class="flex gap-2 px-3 py-3 items-center hover:bg-gray-700 transition-colors rounded-r-3xl font-bold text-gray-300 justify-start"
+          class="flex gap-2 px-3 py-3 items-center hover:bg-gray-700 transition-colors rounded-r-3xl font-bold text-gray-300 justify-start relative"
           :class="isSidebarCollapsed ? 'mr-0' : 'mr-5'"
           exact-active-class="bg-savoy text-white"
           :title="isSidebarCollapsed ? 'Сповіщення' : ''"
         >
-          <ViewColumnsIcon class="w-5 h-5 flex-shrink-0" />
+          <div class="relative">
+            <ViewColumnsIcon class="w-5 h-5 flex-shrink-0" />
+            <span
+              v-if="notificationsStore.unreadCount > 0"
+              class="absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white text-xs font-bold rounded-full flex items-center justify-center"
+            >
+              {{ notificationsStore.unreadCount > 99 ? '99+' : notificationsStore.unreadCount }}
+            </span>
+          </div>
           <span v-if="!isSidebarCollapsed">Сповіщення</span>
+          <span
+            v-if="!isSidebarCollapsed && notificationsStore.unreadCount > 0"
+            class="ml-auto px-2 py-0.5 bg-red-500 text-white text-xs font-bold rounded-full"
+          >
+            {{ notificationsStore.unreadCount > 99 ? '99+' : notificationsStore.unreadCount }}
+          </span>
         </NuxtLink>
       </div>
       
@@ -181,13 +195,27 @@
         </NuxtLink>
         <NuxtLink
           to="/notifications"
-          class="flex gap-2 px-3 py-3 items-center hover:bg-gray-700 transition-colors rounded-r-3xl font-bold text-gray-300 justify-start"
+          class="flex gap-2 px-3 py-3 items-center hover:bg-gray-700 transition-colors rounded-r-3xl font-bold text-gray-300 justify-start relative"
           :class="isSidebarCollapsed ? 'mr-0' : 'mr-5'"
           exact-active-class="bg-savoy text-white"
           :title="isSidebarCollapsed ? 'Сповіщення' : ''"
         >
-          <ViewColumnsIcon class="w-5 h-5 flex-shrink-0" />
+          <div class="relative">
+            <ViewColumnsIcon class="w-5 h-5 flex-shrink-0" />
+            <span
+              v-if="notificationsStore.unreadCount > 0"
+              class="absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white text-xs font-bold rounded-full flex items-center justify-center"
+            >
+              {{ notificationsStore.unreadCount > 99 ? '99+' : notificationsStore.unreadCount }}
+            </span>
+          </div>
           <span v-if="!isSidebarCollapsed">Сповіщення</span>
+          <span
+            v-if="!isSidebarCollapsed && notificationsStore.unreadCount > 0"
+            class="ml-auto px-2 py-0.5 bg-red-500 text-white text-xs font-bold rounded-full"
+          >
+            {{ notificationsStore.unreadCount > 99 ? '99+' : notificationsStore.unreadCount }}
+          </span>
         </NuxtLink>
       </div>
       
@@ -214,13 +242,27 @@
         </NuxtLink>
         <NuxtLink
           to="/notifications"
-          class="flex gap-2 px-3 py-3 items-center hover:bg-gray-700 transition-colors rounded-r-3xl font-bold text-gray-300 justify-start"
+          class="flex gap-2 px-3 py-3 items-center hover:bg-gray-700 transition-colors rounded-r-3xl font-bold text-gray-300 justify-start relative"
           :class="isSidebarCollapsed ? 'mr-0' : 'mr-5'"
           exact-active-class="bg-savoy text-white"
           :title="isSidebarCollapsed ? 'Сповіщення' : ''"
         >
-          <ViewColumnsIcon class="w-5 h-5 flex-shrink-0" />
+          <div class="relative">
+            <ViewColumnsIcon class="w-5 h-5 flex-shrink-0" />
+            <span
+              v-if="notificationsStore.unreadCount > 0"
+              class="absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white text-xs font-bold rounded-full flex items-center justify-center"
+            >
+              {{ notificationsStore.unreadCount > 99 ? '99+' : notificationsStore.unreadCount }}
+            </span>
+          </div>
           <span v-if="!isSidebarCollapsed">Сповіщення</span>
+          <span
+            v-if="!isSidebarCollapsed && notificationsStore.unreadCount > 0"
+            class="ml-auto px-2 py-0.5 bg-red-500 text-white text-xs font-bold rounded-full"
+          >
+            {{ notificationsStore.unreadCount > 99 ? '99+' : notificationsStore.unreadCount }}
+          </span>
         </NuxtLink>
       </div>
       
@@ -236,6 +278,36 @@
           <span v-if="!isSidebarCollapsed">Панель адміністратора</span>
         </NuxtLink>
         <NuxtLink
+          to="/admin/students"
+          class="flex gap-2 px-3 py-3 items-center hover:bg-gray-700 transition-colors rounded-r-3xl font-bold text-gray-300 justify-start"
+          :class="isSidebarCollapsed ? 'mr-0' : 'mr-5'"
+          exact-active-class="bg-savoy text-white"
+          :title="isSidebarCollapsed ? 'Студенти' : ''"
+        >
+          <UserGroupIcon class="w-5 h-5 flex-shrink-0" />
+          <span v-if="!isSidebarCollapsed">Студенти</span>
+        </NuxtLink>
+        <NuxtLink
+          to="/admin/teachers"
+          class="flex gap-2 px-3 py-3 items-center hover:bg-gray-700 transition-colors rounded-r-3xl font-bold text-gray-300 justify-start"
+          :class="isSidebarCollapsed ? 'mr-0' : 'mr-5'"
+          exact-active-class="bg-savoy text-white"
+          :title="isSidebarCollapsed ? 'Викладачі' : ''"
+        >
+          <AcademicCapIcon class="w-5 h-5 flex-shrink-0" />
+          <span v-if="!isSidebarCollapsed">Викладачі</span>
+        </NuxtLink>
+        <NuxtLink
+          to="/admin/partners"
+          class="flex gap-2 px-3 py-3 items-center hover:bg-gray-700 transition-colors rounded-r-3xl font-bold text-gray-300 justify-start"
+          :class="isSidebarCollapsed ? 'mr-0' : 'mr-5'"
+          exact-active-class="bg-savoy text-white"
+          :title="isSidebarCollapsed ? 'Партнери' : ''"
+        >
+          <BuildingOfficeIcon class="w-5 h-5 flex-shrink-0" />
+          <span v-if="!isSidebarCollapsed">Партнери</span>
+        </NuxtLink>
+        <NuxtLink
           to="/projects"
           class="flex gap-2 px-3 py-3 items-center hover:bg-gray-700 transition-colors rounded-r-3xl font-bold text-gray-300 justify-start"
           :class="isSidebarCollapsed ? 'mr-0' : 'mr-5'"
@@ -247,13 +319,27 @@
         </NuxtLink>
         <NuxtLink
           to="/notifications"
-          class="flex gap-2 px-3 py-3 items-center hover:bg-gray-700 transition-colors rounded-r-3xl font-bold text-gray-300 justify-start"
+          class="flex gap-2 px-3 py-3 items-center hover:bg-gray-700 transition-colors rounded-r-3xl font-bold text-gray-300 justify-start relative"
           :class="isSidebarCollapsed ? 'mr-0' : 'mr-5'"
           exact-active-class="bg-savoy text-white"
           :title="isSidebarCollapsed ? 'Сповіщення' : ''"
         >
-          <ViewColumnsIcon class="w-5 h-5 flex-shrink-0" />
+          <div class="relative">
+            <ViewColumnsIcon class="w-5 h-5 flex-shrink-0" />
+            <span
+              v-if="notificationsStore.unreadCount > 0"
+              class="absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white text-xs font-bold rounded-full flex items-center justify-center"
+            >
+              {{ notificationsStore.unreadCount > 99 ? '99+' : notificationsStore.unreadCount }}
+            </span>
+          </div>
           <span v-if="!isSidebarCollapsed">Сповіщення</span>
+          <span
+            v-if="!isSidebarCollapsed && notificationsStore.unreadCount > 0"
+            class="ml-auto px-2 py-0.5 bg-red-500 text-white text-xs font-bold rounded-full"
+          >
+            {{ notificationsStore.unreadCount > 99 ? '99+' : notificationsStore.unreadCount }}
+          </span>
         </NuxtLink>
       </div>
 
@@ -283,6 +369,20 @@
       >
         <ViewColumnsIcon class="w-5 h-5 flex-shrink-0" />
         <span v-if="!isSidebarCollapsed">+ Створити нову дошку</span>
+      </div>
+
+      <!-- Футер сайдбару -->
+      <div class="mt-auto border-t border-gray-700 pt-4 px-2">
+        <NuxtLink
+          to="/about"
+          class="flex gap-2 px-3 py-3 items-center hover:bg-gray-700 transition-colors rounded-r-3xl font-bold text-gray-300 justify-start"
+          :class="isSidebarCollapsed ? 'mr-0' : 'mr-5'"
+          exact-active-class="bg-savoy text-white"
+          :title="isSidebarCollapsed ? 'Про нас' : ''"
+        >
+          <InformationCircleIcon class="w-5 h-5 flex-shrink-0" />
+          <span v-if="!isSidebarCollapsed">Про нас</span>
+        </NuxtLink>
       </div>
       </aside>
       <button
@@ -318,7 +418,8 @@ import { useStorage } from "@vueuse/core";
 import { useKanbanStore } from "~~/stores";
 import { useAuthStore } from "~~/stores/auth";
 import { useProjectsStore } from "~~/stores/projects";
-import { ChartBarSquareIcon, ViewColumnsIcon, ChevronLeftIcon, ChevronRightIcon, MagnifyingGlassIcon, XMarkIcon, UserIcon, ChevronDownIcon } from "@heroicons/vue/24/outline";
+import { useNotificationsStore } from "~~/stores/notifications";
+import { ChartBarSquareIcon, ViewColumnsIcon, ChevronLeftIcon, ChevronRightIcon, MagnifyingGlassIcon, XMarkIcon, UserIcon, ChevronDownIcon, UserGroupIcon, AcademicCapIcon, BuildingOfficeIcon, InformationCircleIcon } from "@heroicons/vue/24/outline";
 import { storeToRefs } from "pinia";
 import RoleSwitcher from "~~/components/RoleSwitcher.vue";
 import MobileHeader from "~~/components/MobileHeader.vue";
@@ -330,6 +431,7 @@ const boardFormState = isAddBoardFormOpen();
 const store = useKanbanStore();
 const authStore = useAuthStore();
 const projectsStore = useProjectsStore();
+const notificationsStore = useNotificationsStore();
 
 const { boards } = storeToRefs(store);
 
@@ -498,6 +600,25 @@ watch(() => route.path, () => {
   isRoleDropdownOpen.value = false;
 });
 
+// Завантаження сповіщень
+watch(
+  () => [authStore.currentUser?.id, authStore.userRole || authStore.currentUser?.role],
+  async ([userId, role]) => {
+    if (userId && role) {
+      try {
+        await notificationsStore.loadNotifications(userId, role);
+        await notificationsStore.updateUnreadCount(userId, role);
+      } catch (error) {
+        console.error('Failed to load notifications:', error);
+      }
+    }
+  },
+  { immediate: true }
+);
+
+// Оновлення кількості непрочитаних кожні 30 секунд
+let notificationsInterval: NodeJS.Timeout | null = null;
+
 onMounted(() => {
   document.addEventListener("mousedown", handleClickOutside);
   nextTick(() => {
@@ -505,10 +626,27 @@ onMounted(() => {
       // ref вже встановлений
     }
   });
+  
+  // Оновлюємо кількість непрочитаних кожні 30 секунд
+  if (authStore.currentUser?.id && (authStore.userRole || authStore.currentUser?.role)) {
+    notificationsInterval = setInterval(async () => {
+      try {
+        await notificationsStore.updateUnreadCount(
+          authStore.currentUser!.id!,
+          authStore.userRole || authStore.currentUser!.role!
+        );
+      } catch (error) {
+        console.error('Failed to update unread count:', error);
+      }
+    }, 30000);
+  }
 });
 
 onBeforeUnmount(() => {
   document.removeEventListener("mousedown", handleClickOutside);
+  if (notificationsInterval) {
+    clearInterval(notificationsInterval);
+  }
 });
 </script>
 

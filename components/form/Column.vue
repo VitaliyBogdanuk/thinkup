@@ -18,7 +18,7 @@
           autofocus
         />
         <div class="flex justify-between gap-5 mt-4">
-          <ButtonBase
+          <BaseButton
             label="Створити колонку"
             @action="createColumn"
             class="bg-savoy text-white"
@@ -33,17 +33,51 @@
 </template>
 <script setup lang="ts">
 import { useKanbanStore } from "~~/stores";
+import { useProjectsStore } from "~~/stores/projects";
 import { XMarkIcon } from "@heroicons/vue/24/outline";
+import BaseButton from "~~/components/base/Button.vue";
 
 const props = defineProps<{
   boardId?: string;
+  'board-id'?: string;
 }>();
 
-const { createNewColumn } = useKanbanStore();
+const kanbanStore = useKanbanStore();
+const projectsStore = useProjectsStore();
+const { createNewColumn } = kanbanStore;
 
 //Route
 const route = useRoute();
-const boardId = computed(() => props.boardId || route.params.board.toString());
+const boardId = computed(() => {
+  // Спочатку перевіряємо camelCase prop
+  if (props.boardId) {
+    return props.boardId;
+  }
+  // Потім перевіряємо kebab-case prop
+  if (props['board-id']) {
+    return props['board-id'];
+  }
+  
+  // Якщо prop не передано, намагаємося знайти проєкт за маршрутом
+  const projectId = route.params.id;
+  if (projectId) {
+    const project = projectsStore.getProjectById(projectId as string);
+    if (project?.boardId) {
+      return project.boardId;
+    }
+  }
+  
+  // Якщо не знайдено через проєкт, намагаємося отримати з маршруту
+  const boardParam = route.params.board;
+  if (boardParam) {
+    if (Array.isArray(boardParam)) {
+      return boardParam[0] || '';
+    }
+    return boardParam.toString();
+  }
+  
+  return '';
+});
 
 //Refs
 const isCreatingColumn = ref<boolean>(false);
@@ -51,8 +85,41 @@ const newColumnName = ref<string>("");
 
 //Methods
 const createColumn = (): void => {
+  let currentBoardId = boardId.value;
+  
+  // Якщо boardId не знайдено, спробуємо знайти через проєкт
+  if (!currentBoardId) {
+    const projectId = route.params.id;
+    if (projectId) {
+      const project = projectsStore.getProjectById(projectId as string);
+      if (project?.boardId) {
+        currentBoardId = project.boardId;
+      }
+    }
+  }
+
+  if (!currentBoardId) {
+    console.error('Board ID is not available', {
+      props: props,
+      routeParams: route.params,
+      projectId: route.params.id
+    });
+    alert('Помилка: ID дошки не знайдено. Спробуйте оновити сторінку.');
+    return;
+  }
+
+  // Перевіряємо, чи дошка існує
+  const board = kanbanStore.boards?.find(b => b.id === currentBoardId);
+  if (!board) {
+    console.error(`Board with id ${currentBoardId} not found in store`, {
+      availableBoards: kanbanStore.boards?.map(b => ({ id: b.id, name: b.name }))
+    });
+    alert('Помилка: Дошки не знайдено. Спробуйте оновити сторінку.');
+    return;
+  }
+
   if (useValidator(newColumnName.value)) {
-    createNewColumn(boardId.value, newColumnName.value);
+    createNewColumn(currentBoardId, newColumnName.value);
     newColumnName.value = "";
     isCreatingColumn.value = false;
   }

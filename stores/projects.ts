@@ -1,31 +1,20 @@
 import { defineStore } from "pinia";
 import { v4 as uuidv4 } from "uuid";
-import { useStorage } from "@vueuse/core";
+import { useProjectsApi, useUsersApi, useReviewsApi, useBoardsApi } from "~/composables/useApi";
 import { useKanbanStore } from "./index";
-import { initializeMockData } from "~~/utils/mockData";
+import { useNotificationsStore } from "./notifications";
 import { getSubtasksForStage } from "~~/utils/aiHelpers";
 
 export const useProjectsStore = defineStore("projects", {
-  state: () => {
-    const students = useStorage<Student[]>("students", []);
-    const partners = useStorage<Partner[]>("partners", []);
-    const teachers = useStorage<Teacher[]>("teachers", []);
-    const projects = useStorage<Project[]>("projects", []);
-    const partnerReviews = useStorage<PartnerReview[]>("partnerReviews", []);
-    
-    // Ініціалізуємо моковані дані при першому завантаженні
-    if (typeof window !== "undefined") {
-      initializeMockData(students.value, partners.value, teachers.value, projects.value);
-    }
-    
-    return {
-      projects,
-      students,
-      teachers,
-      partners,
-      partnerReviews,
-    };
-  },
+  state: () => ({
+    projects: [] as Project[],
+    students: [] as Student[],
+    teachers: [] as Teacher[],
+    partners: [] as Partner[],
+    partnerReviews: [] as PartnerReview[],
+    isLoading: false,
+    isInitialized: false,
+  }),
   getters: {
     getProjectById: (state) => (projectId: string): Project | undefined => {
       return state.projects.find((p) => p.id === projectId);
@@ -52,8 +41,63 @@ export const useProjectsStore = defineStore("projects", {
     },
   },
   actions: {
+    // Завантаження всіх даних з API
+    async loadAll() {
+      if (this.isInitialized && !this.isLoading) {
+        return; // Вже завантажено
+      }
+
+      this.isLoading = true;
+      try {
+        const projectsApi = useProjectsApi();
+        const usersApi = useUsersApi();
+        const reviewsApi = useReviewsApi();
+
+        // Завантажуємо всі дані паралельно
+        const [allUsers, allProjects, allReviews] = await Promise.all([
+          usersApi.getAllUsers(),
+          projectsApi.getAllProjects(),
+          reviewsApi.getAllReviews(),
+        ]);
+
+        // Розділяємо користувачів за ролями та видаляємо дублікати за id
+        const uniqueUsers = allUsers.reduce((acc, user) => {
+          if (!acc.find(u => u.id === user.id)) {
+            acc.push(user);
+          }
+          return acc;
+        }, [] as User[]);
+        
+        this.students = uniqueUsers.filter((u) => u.role === "student") as Student[];
+        this.partners = uniqueUsers.filter((u) => u.role === "partner") as Partner[];
+        this.teachers = uniqueUsers.filter((u) => u.role === "teacher") as Teacher[];
+
+        // Видаляємо дублікати проєктів за id
+        this.projects = allProjects.reduce((acc, project) => {
+          if (!acc.find(p => p.id === project.id)) {
+            acc.push(project);
+          }
+          return acc;
+        }, [] as Project[]);
+        
+        // Видаляємо дублікати відгуків за id
+        this.partnerReviews = allReviews.reduce((acc, review) => {
+          if (!acc.find(r => r.id === review.id)) {
+            acc.push(review);
+          }
+          return acc;
+        }, [] as PartnerReview[]);
+        this.isInitialized = true;
+      } catch (error) {
+        console.error("Failed to load data from MongoDB:", error);
+        throw error;
+      } finally {
+        this.isLoading = false;
+      }
+    },
+
     // Створення проєкту партнером
-    createProject(projectData: Omit<Project, "id" | "createdAt" | "updatedAt" | "status" | "boardId">): Project {
+    async createProject(projectData: Omit<Project, "id" | "createdAt" | "updatedAt" | "status" | "boardId">): Promise<Project> {
       const newProject: Project = {
         ...projectData,
         id: uuidv4(),
@@ -61,8 +105,32 @@ export const useProjectsStore = defineStore("projects", {
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
       };
-      this.projects.push(newProject);
-      return newProject;
+
+      try {
+        const projectsApi = useProjectsApi();
+        const savedProject = await projectsApi.createProject(newProject);
+        this.projects.push(savedProject);
+        
+        // Створюємо сповіщення про створення проєкту
+        try {
+          const notificationsStore = useNotificationsStore();
+          await notificationsStore.notifyProjectCreated(
+            savedProject.id,
+            savedProject.name,
+            savedProject.partnerId,
+            this.teachers
+          );
+        } catch (notifError) {
+          console.error("Failed to create notifications:", notifError);
+        }
+        
+        return savedProject;
+      } catch (error) {
+        console.error("Failed to create project in MongoDB:", error);
+        // Додаємо локально навіть якщо API не працює
+        this.projects.push(newProject);
+        return newProject;
+      }
     },
 
     // AI-аналіз ТЗ та генерація структури (симуляція)
@@ -153,25 +221,24 @@ export const useProjectsStore = defineStore("projects", {
           });
         });
 
+        // Оновлюємо дошку в MongoDB
+        const boardsApi = useBoardsApi();
+        await boardsApi.updateBoard(board.id, board).catch(console.error);
+
         project.boardId = board.id;
         project.board = board;
-        
-        // Оновлюємо проєкт з boardId
-        this.updateProject(project.id, {
-          boardId: board.id,
-          board: board,
-        });
       }
 
       project.aiAnalysis = aiAnalysis;
       project.status = "pending_approval";
       project.updatedAt = new Date().toISOString();
       
-      // Оновлюємо проєкт з AI аналізом та статусом
-      this.updateProject(project.id, {
+      // Оновлюємо проєкт в MongoDB
+      await this.updateProject(project.id, {
         aiAnalysis: aiAnalysis,
         status: "pending_approval",
-        updatedAt: new Date().toISOString(),
+        boardId: project.boardId,
+        updatedAt: project.updatedAt,
       });
     },
 
@@ -259,11 +326,17 @@ export const useProjectsStore = defineStore("projects", {
       project.recommendations = recommendations;
       project.updatedAt = new Date().toISOString();
 
+      // Оновлюємо проєкт в MongoDB
+      await this.updateProject(project.id, {
+        recommendations: recommendations,
+        updatedAt: project.updatedAt,
+      });
+
       return recommendations;
     },
 
     // Затвердження команди викладачем
-    approveTeam(projectId: string, studentIds: string[], teacherId: string): void {
+    async approveTeam(projectId: string, studentIds: string[], teacherId: string): Promise<void> {
       const project = this.getProjectById(projectId);
       if (!project) return;
 
@@ -272,38 +345,141 @@ export const useProjectsStore = defineStore("projects", {
       project.approvedAt = new Date().toISOString();
       project.status = "active";
       project.updatedAt = new Date().toISOString();
+
+      await this.updateProject(projectId, {
+        team: studentIds,
+        approvedBy: teacherId,
+        approvedAt: project.approvedAt,
+        status: "active",
+        updatedAt: project.updatedAt,
+      });
+      
+      // Створюємо сповіщення для призначених студентів
+      try {
+        const notificationsStore = useNotificationsStore();
+        for (const studentId of studentIds) {
+          await notificationsStore.createNotification({
+            userId: studentId,
+            role: "student",
+            type: "project_invitation",
+            title: "Вас призначено на проєкт",
+            message: `Вас призначено на проєкт "${project.name}"`,
+            projectId: project.id,
+          });
+        }
+      } catch (notifError) {
+        console.error("Failed to create notifications:", notifError);
+      }
     },
 
     // Оновлення проєкту
-    updateProject(projectId: string, updates: Partial<Project>): void {
+    async updateProject(projectId: string, updates: Partial<Project>): Promise<void> {
       const project = this.getProjectById(projectId);
       if (!project) return;
 
       Object.assign(project, updates);
       project.updatedAt = new Date().toISOString();
+
+      try {
+        const projectsApi = useProjectsApi();
+        await projectsApi.updateProject(projectId, project);
+      } catch (error) {
+        console.error("Failed to update project in MongoDB:", error);
+        // Дані вже оновлені локально
+      }
+    },
+
+    // Видалення проєкту (тільки для адмінів)
+    async deleteProject(projectId: string): Promise<void> {
+      const project = this.getProjectById(projectId);
+      if (!project) return;
+
+      try {
+        const projectsApi = useProjectsApi();
+        const boardsApi = useBoardsApi();
+        const kanbanStore = useKanbanStore();
+        
+        // Видаляємо пов'язану дошку, якщо вона є
+        if (project.boardId) {
+          console.log(`Attempting to delete board ${project.boardId} for project ${projectId}`);
+          try {
+            await boardsApi.deleteBoard(project.boardId);
+            console.log(`✓ Board ${project.boardId} deleted successfully`);
+            // Видаляємо дошку з локального стану
+            if (kanbanStore.boards) {
+              const boardIndex = kanbanStore.boards.findIndex(b => b.id === project.boardId);
+              if (boardIndex !== -1) {
+                kanbanStore.boards.splice(boardIndex, 1);
+                console.log(`✓ Board ${project.boardId} removed from local state`);
+              }
+            }
+          } catch (error: any) {
+            // Якщо дошка вже видалена на сервері (404) або захищена (403), це нормально
+            if (error?.statusCode === 404 || error?.statusCode === 403) {
+              console.log(`Board ${project.boardId} already deleted or protected, continuing`);
+            } else {
+              console.warn("Failed to delete board, continuing with project deletion:", error);
+            }
+          }
+        } else {
+          console.log(`Project ${projectId} has no boardId, skipping board deletion`);
+        }
+        
+        // Видаляємо проєкт
+        await projectsApi.deleteProject(projectId);
+        
+        // Видаляємо проєкт з локального стану
+        const index = this.projects.findIndex(p => p.id === projectId);
+        if (index !== -1) {
+          this.projects.splice(index, 1);
+        }
+      } catch (error: any) {
+        console.error("Failed to delete project in MongoDB:", error);
+        // Якщо це помилка про захищені дані, передаємо її далі
+        if (error?.statusCode === 403 || error?.data?.statusCode === 403) {
+          throw error;
+        }
+        throw error;
+      }
     },
 
     // Додавання студента
-    addStudent(student: Omit<Student, "id" | "createdAt">): Student {
+    async addStudent(student: Omit<Student, "id" | "createdAt">): Promise<Student> {
       const newStudent: Student = {
         ...student,
         id: uuidv4(),
         createdAt: new Date().toISOString(),
       };
-      this.students.push(newStudent);
-      return newStudent;
+
+      try {
+        const usersApi = useUsersApi();
+        const savedStudent = await usersApi.createUser(newStudent);
+        this.students.push(savedStudent as Student);
+        return savedStudent as Student;
+      } catch (error) {
+        console.error("Failed to create student in MongoDB:", error);
+        this.students.push(newStudent);
+        return newStudent;
+      }
     },
 
     // Оновлення профілю студента
-    updateStudent(studentId: string, updates: Partial<Student>): void {
+    async updateStudent(studentId: string, updates: Partial<Student>): Promise<void> {
       const student = this.getStudentById(studentId);
       if (!student) return;
 
       Object.assign(student, updates);
+
+      try {
+        const usersApi = useUsersApi();
+        await usersApi.updateUser(studentId, student);
+      } catch (error) {
+        console.error("Failed to update student in MongoDB:", error);
+      }
     },
 
     // Призначення задачі студенту
-    assignTaskToStudent(projectId: string, taskId: string, studentId: string): void {
+    async assignTaskToStudent(projectId: string, taskId: string, studentId: string): Promise<void> {
       const project = this.getProjectById(projectId);
       if (!project || !project.boardId) return;
 
@@ -318,18 +494,23 @@ export const useProjectsStore = defineStore("projects", {
           task.assignedTo = studentId;
         }
       });
+
+      // Оновлюємо дошку в MongoDB
+      const board = kanbanStore.boards?.find(b => b.id === project.boardId);
+      if (board) {
+        const boardsApi = useBoardsApi();
+        await boardsApi.updateBoard(board.id, board).catch(console.error);
+      }
     },
 
     // Прийняття запрошення на проєкт студентом
-    acceptProjectInvitation(projectId: string, studentId: string): void {
+    async acceptProjectInvitation(projectId: string, studentId: string): Promise<void> {
       const project = this.getProjectById(projectId);
       if (!project) return;
 
-      // Додаємо студента до команди, якщо його там ще немає
       if (!project.team.includes(studentId)) {
         project.team.push(studentId);
         
-        // Видаляємо заявку з масиву applications, якщо вона є
         if (project.applications) {
           const applicationIndex = project.applications.indexOf(studentId);
           if (applicationIndex > -1) {
@@ -337,7 +518,6 @@ export const useProjectsStore = defineStore("projects", {
           }
         }
         
-        // Знаходимо відповідну роль і додаємо студента
         const availableRole = project.roles.find(
           (role) => role.assigned.length < role.required
         );
@@ -346,68 +526,131 @@ export const useProjectsStore = defineStore("projects", {
         }
         
         project.updatedAt = new Date().toISOString();
+        await this.updateProject(projectId, project);
       }
     },
 
     // Подача заявки студентом на проєкт
-    applyToProject(projectId: string, studentId: string): void {
+    async applyToProject(projectId: string, studentId: string): Promise<void> {
       const project = this.getProjectById(projectId);
       if (!project) return;
 
-      // Ініціалізуємо масив заявок, якщо його немає
       if (!project.applications) {
         project.applications = [];
       }
 
-      // Додаємо заявку, якщо студент ще не подав заявку і не в команді
       if (!project.applications.includes(studentId) && !project.team.includes(studentId)) {
         project.applications.push(studentId);
         project.updatedAt = new Date().toISOString();
+        await this.updateProject(projectId, project);
+        
+        // Створюємо сповіщення для викладачів та партнера
+        try {
+          const notificationsStore = useNotificationsStore();
+          const student = this.getStudentById(studentId);
+          
+          // Сповіщення для викладачів
+          for (const teacher of this.teachers) {
+            await notificationsStore.createNotification({
+              userId: teacher.id,
+              role: "teacher",
+              type: "student_application",
+              title: "Нова заявка від студента",
+              message: `${student?.fullName || 'Студент'} подав заявку на проєкт "${project.name}"`,
+              projectId: project.id,
+              studentId: studentId,
+            });
+          }
+          
+          // Сповіщення для партнера
+          if (project.partnerId) {
+            await notificationsStore.createNotification({
+              userId: project.partnerId,
+              role: "partner",
+              type: "new_student_application",
+              title: "Нова заявка від студента",
+              message: `${student?.fullName || 'Студент'} подав заявку на ваш проєкт "${project.name}"`,
+              projectId: project.id,
+              studentId: studentId,
+            });
+          }
+        } catch (notifError) {
+          console.error("Failed to create notifications:", notifError);
+        }
       }
     },
 
     // Прийняття заявки студента викладачем
-    acceptStudentApplication(projectId: string, studentId: string, teacherId: string): void {
+    async acceptStudentApplication(projectId: string, studentId: string, teacherId: string): Promise<void> {
       const project = this.getProjectById(projectId);
       if (!project) return;
-
-      // Додаємо студента до команди, якщо його там ще немає
-      if (!project.team.includes(studentId)) {
-        project.team.push(studentId);
-        
-        // Видаляємо заявку з масиву applications
-        if (project.applications) {
-          const applicationIndex = project.applications.indexOf(studentId);
-          if (applicationIndex > -1) {
-            project.applications.splice(applicationIndex, 1);
-          }
-        }
-        
-        // Знаходимо відповідну роль і додаємо студента
-        const availableRole = project.roles.find(
-          (role) => role.assigned.length < role.required
-        );
-        if (availableRole) {
-          availableRole.assigned.push(studentId);
-        }
-        
-        project.updatedAt = new Date().toISOString();
+      
+      await this.acceptProjectInvitation(projectId, studentId);
+      
+      // Створюємо сповіщення для студента
+      try {
+        const notificationsStore = useNotificationsStore();
+        await notificationsStore.createNotification({
+          userId: studentId,
+          role: "student",
+          type: "project_invitation",
+          title: "Вашу заявку прийнято",
+          message: `Вашу заявку на проєкт "${project.name}" прийнято викладачем`,
+          projectId: project.id,
+        });
+      } catch (notifError) {
+        console.error("Failed to create notification:", notifError);
       }
     },
 
     // Затвердження проєкту викладачем
-    approveProjectByTeacher(projectId: string, teacherId: string): void {
+    async approveProjectByTeacher(projectId: string, teacherId: string): Promise<void> {
       const project = this.getProjectById(projectId);
       if (!project) return;
-
-      project.status = "active";
-      project.approvedBy = teacherId;
-      project.approvedAt = new Date().toISOString();
-      project.updatedAt = new Date().toISOString();
+      
+      await this.updateProject(projectId, {
+        status: "active",
+        approvedBy: teacherId,
+        approvedAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      });
+      
+      // Створюємо сповіщення про затвердження проєкту
+      try {
+        const notificationsStore = useNotificationsStore();
+        
+        // Сповіщення для партнера
+        if (project.partnerId) {
+          await notificationsStore.createNotification({
+            userId: project.partnerId,
+            role: "partner",
+            type: "project_approval",
+            title: "Проєкт затверджено",
+            message: `Ваш проєкт "${project.name}" затверджено викладачем`,
+            projectId: project.id,
+          });
+        }
+        
+        // Сповіщення для студентів, які призначені на проєкт
+        if (project.team && project.team.length > 0) {
+          for (const teamMember of project.team) {
+            await notificationsStore.createNotification({
+              userId: teamMember.studentId,
+              role: "student",
+              type: "project_update",
+              title: "Проєкт затверджено",
+              message: `Проєкт "${project.name}", на якому ви працюєте, затверджено викладачем`,
+              projectId: project.id,
+            });
+          }
+        }
+      } catch (notifError) {
+        console.error("Failed to create notifications:", notifError);
+      }
     },
 
     // Продовження терміну проєкту
-    extendProjectDeadline(projectId: string, days: number = 7): void {
+    async extendProjectDeadline(projectId: string, days: number = 7): Promise<void> {
       const project = this.getProjectById(projectId);
       if (!project || !project.deadline) return;
 
@@ -415,13 +658,14 @@ export const useProjectsStore = defineStore("projects", {
       const newDeadline = new Date(currentDeadline);
       newDeadline.setDate(newDeadline.getDate() + days);
       
-      project.deadline = newDeadline.toISOString().split("T")[0];
-      project.updatedAt = new Date().toISOString();
+      await this.updateProject(projectId, {
+        deadline: newDeadline.toISOString().split("T")[0],
+        updatedAt: new Date().toISOString(),
+      });
     },
 
     // Додавання відгуку партнера про студента
-    addPartnerReview(reviewData: Omit<PartnerReview, "id" | "date" | "createdAt">): PartnerReview {
-      // Перевіряємо, чи вже є відгук від цього партнера про цього студента в цьому проєкті
+    async addPartnerReview(reviewData: Omit<PartnerReview, "id" | "date" | "createdAt">): Promise<PartnerReview> {
       const existingReview = this.partnerReviews.find(
         (r) => r.partnerId === reviewData.partnerId && 
                r.studentId === reviewData.studentId && 
@@ -436,23 +680,35 @@ export const useProjectsStore = defineStore("projects", {
         createdAt: now.toISOString(),
       };
 
-      if (existingReview) {
-        // Оновлюємо існуючий відгук
-        const index = this.partnerReviews.indexOf(existingReview);
-        this.partnerReviews[index] = review;
-      } else {
-        // Додаємо новий відгук
-        this.partnerReviews.push(review);
+      try {
+        const reviewsApi = useReviewsApi();
+        const savedReview = await reviewsApi.createOrUpdateReview(review);
+        
+        if (existingReview) {
+          const index = this.partnerReviews.indexOf(existingReview);
+          this.partnerReviews[index] = savedReview;
+        } else {
+          this.partnerReviews.push(savedReview);
+        }
+
+        // Оновлюємо рейтинг студента
+        await this.updateStudentRating(reviewData.studentId);
+        return savedReview;
+      } catch (error) {
+        console.error("Failed to save review in MongoDB:", error);
+        if (existingReview) {
+          const index = this.partnerReviews.indexOf(existingReview);
+          this.partnerReviews[index] = review;
+        } else {
+          this.partnerReviews.push(review);
+        }
+        await this.updateStudentRating(reviewData.studentId);
+        return review;
       }
-
-      // Оновлюємо рейтинг студента на основі всіх відгуків
-      this.updateStudentRating(reviewData.studentId);
-
-      return review;
     },
 
     // Оновлення рейтингу студента на основі відгуків
-    updateStudentRating(studentId: string): void {
+    async updateStudentRating(studentId: string): Promise<void> {
       const student = this.getStudentById(studentId);
       if (!student) return;
 
@@ -461,7 +717,8 @@ export const useProjectsStore = defineStore("projects", {
 
       const averageRating = reviews.reduce((sum, review) => sum + review.rating, 0) / reviews.length;
       student.rating = parseFloat(averageRating.toFixed(1));
+      
+      await this.updateStudent(studentId, { rating: student.rating });
     },
   },
 });
-

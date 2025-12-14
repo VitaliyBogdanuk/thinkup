@@ -1,10 +1,10 @@
 import { defineStore } from "pinia";
-import { useStorage } from "@vueuse/core";
 import { useUsersApi } from "~/composables/useApi";
 
 export const useAuthStore = defineStore("auth", {
   state: () => ({
-    currentUser: useStorage<User | null>("currentUser", null),
+    currentUser: null as User | null,
+    isLoading: false,
   }),
   getters: {
     isAuthenticated: (state): boolean => {
@@ -29,7 +29,7 @@ export const useAuthStore = defineStore("auth", {
   actions: {
     async login(user: User) {
       this.currentUser = user;
-      // Опціональна синхронізація з MongoDB
+      // Синхронізуємо з API
       try {
         const usersApi = useUsersApi();
         await usersApi.createUser(user).catch(() => {
@@ -46,13 +46,25 @@ export const useAuthStore = defineStore("auth", {
     async updateUser(user: Partial<User>) {
       if (this.currentUser) {
         this.currentUser = { ...this.currentUser, ...user };
-        // Опціональна синхронізація з MongoDB
+        // Синхронізуємо з API
         try {
           const usersApi = useUsersApi();
           await usersApi.updateUser(this.currentUser.id, this.currentUser);
         } catch (error) {
           console.warn('Failed to sync user update to MongoDB:', error);
         }
+      }
+    },
+    async loadUser(userId: string) {
+      try {
+        this.isLoading = true;
+        const usersApi = useUsersApi();
+        const user = await usersApi.getUserById(userId);
+        this.currentUser = user;
+      } catch (error) {
+        console.error('Failed to load user:', error);
+      } finally {
+        this.isLoading = false;
       }
     },
   },

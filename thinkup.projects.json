@@ -1,0 +1,1506 @@
+[{
+  "_id": {
+    "$oid": "693df4931b55efaa84106e6a"
+  },
+  "name": "Розробка веб-додатку для управління проєктами",
+  "description": "Створення сучасного веб-додатку з канбан-дошками, призначенням задач та відстеженням прогресу команди",
+  "technicalSpecification": "ТЕХНІЧНЕ ЗАВДАННЯ\nРозробка веб-додатку для управління проєктами\n\n1. ОПИС ПРОЄКТУ\nНеобхідно розробити веб-додаток для управління проєктами з канбан-дошками, призначенням задач та відстеженням прогресу.\n\n2. ФУНКЦІОНАЛЬНІ ВИМОГИ\n- Аутентифікація та авторизація користувачів\n- Створення та управління проєктами\n- Канбан-дошки з drag & drop\n- Призначення задач користувачам\n- Коментарі та файли до задач\n\n3. ТЕХНІЧНІ ВИМОГИ\nFrontend: Vue.js 3 / Nuxt.js 3, TypeScript, Tailwind CSS\nBackend: Node.js з Express, PostgreSQL\nAPI: REST або GraphQL\nІнтеграції: GitHub API, Email сервіс\n\n4. ДИЗАЙН ТА UX\nСучасний інтуїтивний інтерфейс, темна/світла тема, адаптивний дизайн\n\n5. БЕЗПЕКА\nХешування паролів, валідація даних, захист від XSS/CSRF\n\n6. ДЕДЛАЙН\nПроєкт має бути завершений через 3 місяці.",
+  "category": "IT",
+  "complexity": "high",
+  "deadline": "2026-03-13",
+  "partnerId": "partner-1",
+  "status": "pending_approval",
+  "roles": [
+    {
+      "id": "403f52fe-2bb3-4d99-8b12-92422781fbd9",
+      "name": "Frontend Developer",
+      "required": 2,
+      "assigned": []
+    },
+    {
+      "id": "166f5371-57e1-4147-b187-c71d9a2201f8",
+      "name": "Backend Developer",
+      "required": 2,
+      "assigned": []
+    },
+    {
+      "id": "f2c29e7a-c2d7-46c9-9858-aec0c709a459",
+      "name": "UI/UX Designer",
+      "required": 1,
+      "assigned": []
+    }
+  ],
+  "team": [],
+  "id": "6da38f9c-05db-4e0e-951b-b431fde053cb",
+  "createdAt": "2025-11-27T22:51:23.123Z",
+  "updatedAt": "2025-12-13T14:08:48.086Z",
+  "boardId": "2bfafb2e-4e62-4834-85d7-76caf616e662",
+  "recommendations": [
+    {
+      "studentId": "student-1",
+      "student": {
+        "id": "student-1",
+        "name": "student-1",
+        "email": "ivan.petrov@example.com",
+        "role": "student",
+        "fullName": "Іван Петров",
+        "course": 3,
+        "specialty": "Комп'ютерні науки",
+        "skills": [
+          {
+            "id": "skill-1",
+            "name": "Vue.js",
+            "category": "frontend",
+            "level": "middle",
+            "verified": true
+          },
+          {
+            "id": "skill-2",
+            "name": "TypeScript",
+            "category": "frontend",
+            "level": "middle",
+            "verified": true
+          },
+          {
+            "id": "skill-3",
+            "name": "Nuxt.js",
+            "category": "frontend",
+            "level": "junior",
+            "verified": true
+          },
+          {
+            "id": "skill-4",
+            "name": "CSS/SCSS",
+            "category": "frontend",
+            "level": "middle",
+            "verified": true
+          }
+        ],
+        "rating": 4.5,
+        "completedCourses": [
+          "course-1",
+          "course-2"
+        ],
+        "portfolio": {
+          "github": "https://github.com/ivan-petrov",
+          "projects": [
+            "project-1",
+            "project-2"
+          ]
+        },
+        "availability": 20,
+        "status": "available",
+        "createdAt": "2025-12-13T14:08:47.803Z"
+      },
+      "matchPercentage": 95,
+      "reasons": [
+        "Відповідні навички: Vue.js, TypeScript, Nuxt.js, CSS/SCSS",
+        "Рейтинг: 4.5/5.0",
+        "Досвід: 2 завершених курсів",
+        "Висока доступність: 20 год/тиждень"
+      ],
+      "role": "Frontend Developer"
+    },
+    {
+      "studentId": "student-4",
+      "student": {
+        "id": "student-4",
+        "name": "student-4",
+        "email": "anna.melnyk@example.com",
+        "role": "student",
+        "fullName": "Анна Мельник",
+        "course": 3,
+        "specialty": "Комп'ютерні науки",
+        "skills": [
+          {
+            "id": "skill-12",
+            "name": "React",
+            "category": "frontend",
+            "level": "middle",
+            "verified": true
+          },
+          {
+            "id": "skill-13",
+            "name": "Redux",
+            "category": "frontend",
+            "level": "junior",
+            "verified": true
+          },
+          {
+            "id": "skill-14",
+            "name": "JavaScript",
+            "category": "frontend",
+            "level": "middle",
+            "verified": true
+          }
+        ],
+        "rating": 4.3,
+        "completedCourses": [
+          "course-1",
+          "course-2"
+        ],
+        "portfolio": {
+          "github": "https://github.com/anna-melnyk"
+        },
+        "availability": 18,
+        "status": "available",
+        "createdAt": "2025-12-13T14:08:47.803Z"
+      },
+      "matchPercentage": 95,
+      "reasons": [
+        "Відповідні навички: React, Redux, JavaScript",
+        "Рейтинг: 4.3/5.0",
+        "Досвід: 2 завершених курсів"
+      ],
+      "role": "Frontend Developer"
+    },
+    {
+      "studentId": "student-2",
+      "student": {
+        "id": "student-2",
+        "name": "student-2",
+        "email": "maria.kovalenko@example.com",
+        "role": "student",
+        "fullName": "Марія Коваленко",
+        "course": 4,
+        "specialty": "Комп'ютерні науки",
+        "skills": [
+          {
+            "id": "skill-5",
+            "name": "Node.js",
+            "category": "backend",
+            "level": "middle",
+            "verified": true
+          },
+          {
+            "id": "skill-6",
+            "name": "PostgreSQL",
+            "category": "backend",
+            "level": "middle",
+            "verified": true
+          },
+          {
+            "id": "skill-7",
+            "name": "Express.js",
+            "category": "backend",
+            "level": "junior",
+            "verified": true
+          },
+          {
+            "id": "skill-8",
+            "name": "REST API",
+            "category": "backend",
+            "level": "middle",
+            "verified": true
+          }
+        ],
+        "rating": 4.7,
+        "completedCourses": [
+          "course-1",
+          "course-3",
+          "course-4"
+        ],
+        "portfolio": {
+          "github": "https://github.com/maria-kovalenko",
+          "projects": [
+            "project-3"
+          ]
+        },
+        "availability": 15,
+        "status": "available",
+        "createdAt": "2025-12-13T14:08:47.803Z"
+      },
+      "matchPercentage": 95,
+      "reasons": [
+        "Відповідні навички: Node.js, PostgreSQL, Express.js, REST API",
+        "Рейтинг: 4.7/5.0",
+        "Досвід: 3 завершених курсів"
+      ],
+      "role": "Backend Developer"
+    },
+    {
+      "studentId": "student-3",
+      "student": {
+        "id": "student-3",
+        "name": "student-3",
+        "email": "oleksandr.sydorenko@example.com",
+        "role": "student",
+        "fullName": "Олександр Сидоренко",
+        "course": 2,
+        "specialty": "Дизайн",
+        "skills": [
+          {
+            "id": "skill-9",
+            "name": "Figma",
+            "category": "design",
+            "level": "middle",
+            "verified": true
+          },
+          {
+            "id": "skill-10",
+            "name": "Adobe XD",
+            "category": "design",
+            "level": "junior",
+            "verified": true
+          },
+          {
+            "id": "skill-11",
+            "name": "UI/UX Design",
+            "category": "design",
+            "level": "middle",
+            "verified": true
+          }
+        ],
+        "rating": 4.2,
+        "completedCourses": [
+          "course-5"
+        ],
+        "portfolio": {
+          "behance": "https://behance.net/oleksandr-sydorenko",
+          "projects": [
+            "project-4"
+          ]
+        },
+        "availability": 25,
+        "status": "available",
+        "createdAt": "2025-12-13T14:08:47.803Z"
+      },
+      "matchPercentage": 94,
+      "reasons": [
+        "Відповідні навички: Figma, Adobe XD, UI/UX Design",
+        "Рейтинг: 4.2/5.0",
+        "Досвід: 1 завершених курсів",
+        "Висока доступність: 25 год/тиждень"
+      ],
+      "role": "UI/UX Designer"
+    }
+  ]
+},
+{
+  "_id": {
+    "$oid": "693df4941b55efaa84106e6b"
+  },
+  "name": "Мобільний додаток для доставки їжі",
+  "description": "Розробка мобільного додатку для iOS та Android з функціоналом замовлення їжі, відстеження доставки та оплати",
+  "technicalSpecification": "ТЕХНІЧНЕ ЗАВДАННЯ\nМобільний додаток для доставки їжі\n\n1. ОПИС\nРозробка нативного мобільного додатку для платформ iOS та Android з повним функціоналом замовлення їжі.\n\n2. ФУНКЦІОНАЛЬНІСТЬ\n- Каталог ресторанів та страв\n- Кошик та оформлення замовлення\n- Система оплати (картки, готівка)\n- Відстеження доставки в реальному часі\n- Історія замовлень\n- Реєстрація та профіль користувача\n\n3. ТЕХНОЛОГІЇ\n- React Native або Flutter\n- Backend API на Node.js\n- База даних MongoDB\n- Push-сповіщення\n- Інтеграція з платіжними системами\n\n4. ДИЗАЙН\nСучасний мінімалістичний дизайн, зручна навігація, швидке завантаження\n\n5. ДЕДЛАЙН\n2 місяці з моменту початку.",
+  "category": "IT",
+  "complexity": "high",
+  "deadline": "2026-02-11",
+  "partnerId": "partner-1",
+  "status": "active",
+  "roles": [
+    {
+      "id": "47f19823-bac8-4da2-be24-42049a4712c5",
+      "name": "Mobile Developer (React Native)",
+      "required": 2,
+      "assigned": [
+        "student-1",
+        "student-4"
+      ]
+    },
+    {
+      "id": "78ade6b4-2f71-4e30-b032-2ac3fb3aad9d",
+      "name": "Backend Developer",
+      "required": 1,
+      "assigned": [
+        "student-2"
+      ]
+    },
+    {
+      "id": "76f8b15f-f1a6-4443-8a4b-7cd68a48255c",
+      "name": "UI/UX Designer",
+      "required": 1,
+      "assigned": [
+        "student-3"
+      ]
+    }
+  ],
+  "team": [
+    "student-1",
+    "student-2",
+    "student-3",
+    "student-4"
+  ],
+  "id": "12331f9b-369a-4e06-88fd-79bf73cf4c71",
+  "createdAt": "2025-12-05T04:41:30.944Z",
+  "updatedAt": "2025-12-13T14:08:48.093Z",
+  "boardId": "689b29d7-904f-4d31-bf2e-f256e55ab756",
+  "recommendations": [
+    {
+      "studentId": "student-2",
+      "student": {
+        "id": "student-2",
+        "name": "student-2",
+        "email": "maria.kovalenko@example.com",
+        "role": "student",
+        "fullName": "Марія Коваленко",
+        "course": 4,
+        "specialty": "Комп'ютерні науки",
+        "skills": [
+          {
+            "id": "skill-5",
+            "name": "Node.js",
+            "category": "backend",
+            "level": "middle",
+            "verified": true
+          },
+          {
+            "id": "skill-6",
+            "name": "PostgreSQL",
+            "category": "backend",
+            "level": "middle",
+            "verified": true
+          },
+          {
+            "id": "skill-7",
+            "name": "Express.js",
+            "category": "backend",
+            "level": "junior",
+            "verified": true
+          },
+          {
+            "id": "skill-8",
+            "name": "REST API",
+            "category": "backend",
+            "level": "middle",
+            "verified": true
+          }
+        ],
+        "rating": 4.7,
+        "completedCourses": [
+          "course-1",
+          "course-3",
+          "course-4"
+        ],
+        "portfolio": {
+          "github": "https://github.com/maria-kovalenko",
+          "projects": [
+            "project-3"
+          ]
+        },
+        "availability": 15,
+        "status": "available",
+        "createdAt": "2025-12-13T14:08:47.803Z"
+      },
+      "matchPercentage": 95,
+      "reasons": [
+        "Відповідні навички: Node.js, PostgreSQL, Express.js, REST API",
+        "Рейтинг: 4.7/5.0",
+        "Досвід: 3 завершених курсів"
+      ],
+      "role": "Backend Developer"
+    },
+    {
+      "studentId": "student-3",
+      "student": {
+        "id": "student-3",
+        "name": "student-3",
+        "email": "oleksandr.sydorenko@example.com",
+        "role": "student",
+        "fullName": "Олександр Сидоренко",
+        "course": 2,
+        "specialty": "Дизайн",
+        "skills": [
+          {
+            "id": "skill-9",
+            "name": "Figma",
+            "category": "design",
+            "level": "middle",
+            "verified": true
+          },
+          {
+            "id": "skill-10",
+            "name": "Adobe XD",
+            "category": "design",
+            "level": "junior",
+            "verified": true
+          },
+          {
+            "id": "skill-11",
+            "name": "UI/UX Design",
+            "category": "design",
+            "level": "middle",
+            "verified": true
+          }
+        ],
+        "rating": 4.2,
+        "completedCourses": [
+          "course-5"
+        ],
+        "portfolio": {
+          "behance": "https://behance.net/oleksandr-sydorenko",
+          "projects": [
+            "project-4"
+          ]
+        },
+        "availability": 25,
+        "status": "available",
+        "createdAt": "2025-12-13T14:08:47.803Z"
+      },
+      "matchPercentage": 94,
+      "reasons": [
+        "Відповідні навички: Figma, Adobe XD, UI/UX Design",
+        "Рейтинг: 4.2/5.0",
+        "Досвід: 1 завершених курсів",
+        "Висока доступність: 25 год/тиждень"
+      ],
+      "role": "UI/UX Designer"
+    },
+    {
+      "studentId": "student-4",
+      "student": {
+        "id": "student-4",
+        "name": "student-4",
+        "email": "anna.melnyk@example.com",
+        "role": "student",
+        "fullName": "Анна Мельник",
+        "course": 3,
+        "specialty": "Комп'ютерні науки",
+        "skills": [
+          {
+            "id": "skill-12",
+            "name": "React",
+            "category": "frontend",
+            "level": "middle",
+            "verified": true
+          },
+          {
+            "id": "skill-13",
+            "name": "Redux",
+            "category": "frontend",
+            "level": "junior",
+            "verified": true
+          },
+          {
+            "id": "skill-14",
+            "name": "JavaScript",
+            "category": "frontend",
+            "level": "middle",
+            "verified": true
+          }
+        ],
+        "rating": 4.3,
+        "completedCourses": [
+          "course-1",
+          "course-2"
+        ],
+        "portfolio": {
+          "github": "https://github.com/anna-melnyk"
+        },
+        "availability": 18,
+        "status": "available",
+        "createdAt": "2025-12-13T14:08:47.803Z"
+      },
+      "matchPercentage": 67,
+      "reasons": [
+        "Відповідні навички: React",
+        "Рейтинг: 4.3/5.0",
+        "Досвід: 2 завершених курсів"
+      ],
+      "role": "Mobile Developer (React Native)"
+    },
+    {
+      "studentId": "student-1",
+      "student": {
+        "id": "student-1",
+        "name": "student-1",
+        "email": "ivan.petrov@example.com",
+        "role": "student",
+        "fullName": "Іван Петров",
+        "course": 3,
+        "specialty": "Комп'ютерні науки",
+        "skills": [
+          {
+            "id": "skill-1",
+            "name": "Vue.js",
+            "category": "frontend",
+            "level": "middle",
+            "verified": true
+          },
+          {
+            "id": "skill-2",
+            "name": "TypeScript",
+            "category": "frontend",
+            "level": "middle",
+            "verified": true
+          },
+          {
+            "id": "skill-3",
+            "name": "Nuxt.js",
+            "category": "frontend",
+            "level": "junior",
+            "verified": true
+          },
+          {
+            "id": "skill-4",
+            "name": "CSS/SCSS",
+            "category": "frontend",
+            "level": "middle",
+            "verified": true
+          }
+        ],
+        "rating": 4.5,
+        "completedCourses": [
+          "course-1",
+          "course-2"
+        ],
+        "portfolio": {
+          "github": "https://github.com/ivan-petrov",
+          "projects": [
+            "project-1",
+            "project-2"
+          ]
+        },
+        "availability": 20,
+        "status": "available",
+        "createdAt": "2025-12-13T14:08:47.803Z"
+      },
+      "matchPercentage": 65,
+      "reasons": [
+        "Рейтинг: 4.5/5.0",
+        "Досвід: 2 завершених курсів",
+        "Висока доступність: 20 год/тиждень"
+      ],
+      "role": "Mobile Developer (React Native)"
+    }
+  ]
+},
+{
+  "_id": {
+    "$oid": "693df4941b55efaa84106e6c"
+  },
+  "name": "Редизайн корпоративного сайту",
+  "description": "Сучасний редизайн корпоративного сайту з покращеним UX та адаптивністю",
+  "technicalSpecification": "ТЕХНІЧНЕ ЗАВДАННЯ\nРедизайн корпоративного сайту\n\n1. МЕТА\nОновити дизайн та функціонал корпоративного сайту для покращення користувацького досвіду та конверсії.\n\n2. ВИМОГИ\n- Сучасний дизайн у корпоративних кольорах\n- Адаптивність для всіх пристроїв\n- Швидке завантаження сторінок\n- SEO оптимізація\n- Інтеграція з CRM системою\n\n3. ТЕХНОЛОГІЇ\n- HTML5, CSS3, JavaScript\n- Можливо використання Vue.js для інтерактивних елементів\n- CMS для управління контентом\n\n4. СТРУКТУРА\n- Головна сторінка\n- Про компанію\n- Послуги\n- Портфоліо\n- Контакти\n- Блог\n\n5. ДЕДЛАЙН\n1.5 місяці.",
+  "category": "Дизайн",
+  "complexity": "medium",
+  "deadline": "2026-01-27",
+  "partnerId": "partner-2",
+  "status": "pending_approval",
+  "roles": [
+    {
+      "id": "bc4ee273-1d7c-4f8b-b2a4-67968be0c79c",
+      "name": "UI/UX Designer",
+      "required": 2,
+      "assigned": []
+    },
+    {
+      "id": "32054ea4-414c-4737-b8ae-ba25fa44b571",
+      "name": "Frontend Developer",
+      "required": 1,
+      "assigned": []
+    }
+  ],
+  "team": [],
+  "id": "97430d13-d0d5-4ce9-8282-d687ae3ce35d",
+  "createdAt": "2025-12-05T14:33:25.553Z",
+  "updatedAt": "2025-12-13T14:08:48.097Z",
+  "boardId": "d35ee504-da83-41d2-acb1-224c796b9c2c",
+  "recommendations": [
+    {
+      "studentId": "student-1",
+      "student": {
+        "id": "student-1",
+        "name": "student-1",
+        "email": "ivan.petrov@example.com",
+        "role": "student",
+        "fullName": "Іван Петров",
+        "course": 3,
+        "specialty": "Комп'ютерні науки",
+        "skills": [
+          {
+            "id": "skill-1",
+            "name": "Vue.js",
+            "category": "frontend",
+            "level": "middle",
+            "verified": true
+          },
+          {
+            "id": "skill-2",
+            "name": "TypeScript",
+            "category": "frontend",
+            "level": "middle",
+            "verified": true
+          },
+          {
+            "id": "skill-3",
+            "name": "Nuxt.js",
+            "category": "frontend",
+            "level": "junior",
+            "verified": true
+          },
+          {
+            "id": "skill-4",
+            "name": "CSS/SCSS",
+            "category": "frontend",
+            "level": "middle",
+            "verified": true
+          }
+        ],
+        "rating": 4.5,
+        "completedCourses": [
+          "course-1",
+          "course-2"
+        ],
+        "portfolio": {
+          "github": "https://github.com/ivan-petrov",
+          "projects": [
+            "project-1",
+            "project-2"
+          ]
+        },
+        "availability": 20,
+        "status": "available",
+        "createdAt": "2025-12-13T14:08:47.803Z"
+      },
+      "matchPercentage": 95,
+      "reasons": [
+        "Відповідні навички: Vue.js, TypeScript, Nuxt.js, CSS/SCSS",
+        "Рейтинг: 4.5/5.0",
+        "Досвід: 2 завершених курсів",
+        "Висока доступність: 20 год/тиждень"
+      ],
+      "role": "Frontend Developer"
+    },
+    {
+      "studentId": "student-4",
+      "student": {
+        "id": "student-4",
+        "name": "student-4",
+        "email": "anna.melnyk@example.com",
+        "role": "student",
+        "fullName": "Анна Мельник",
+        "course": 3,
+        "specialty": "Комп'ютерні науки",
+        "skills": [
+          {
+            "id": "skill-12",
+            "name": "React",
+            "category": "frontend",
+            "level": "middle",
+            "verified": true
+          },
+          {
+            "id": "skill-13",
+            "name": "Redux",
+            "category": "frontend",
+            "level": "junior",
+            "verified": true
+          },
+          {
+            "id": "skill-14",
+            "name": "JavaScript",
+            "category": "frontend",
+            "level": "middle",
+            "verified": true
+          }
+        ],
+        "rating": 4.3,
+        "completedCourses": [
+          "course-1",
+          "course-2"
+        ],
+        "portfolio": {
+          "github": "https://github.com/anna-melnyk"
+        },
+        "availability": 18,
+        "status": "available",
+        "createdAt": "2025-12-13T14:08:47.803Z"
+      },
+      "matchPercentage": 95,
+      "reasons": [
+        "Відповідні навички: React, Redux, JavaScript",
+        "Рейтинг: 4.3/5.0",
+        "Досвід: 2 завершених курсів"
+      ],
+      "role": "Frontend Developer"
+    },
+    {
+      "studentId": "student-3",
+      "student": {
+        "id": "student-3",
+        "name": "student-3",
+        "email": "oleksandr.sydorenko@example.com",
+        "role": "student",
+        "fullName": "Олександр Сидоренко",
+        "course": 2,
+        "specialty": "Дизайн",
+        "skills": [
+          {
+            "id": "skill-9",
+            "name": "Figma",
+            "category": "design",
+            "level": "middle",
+            "verified": true
+          },
+          {
+            "id": "skill-10",
+            "name": "Adobe XD",
+            "category": "design",
+            "level": "junior",
+            "verified": true
+          },
+          {
+            "id": "skill-11",
+            "name": "UI/UX Design",
+            "category": "design",
+            "level": "middle",
+            "verified": true
+          }
+        ],
+        "rating": 4.2,
+        "completedCourses": [
+          "course-5"
+        ],
+        "portfolio": {
+          "behance": "https://behance.net/oleksandr-sydorenko",
+          "projects": [
+            "project-4"
+          ]
+        },
+        "availability": 25,
+        "status": "available",
+        "createdAt": "2025-12-13T14:08:47.803Z"
+      },
+      "matchPercentage": 94,
+      "reasons": [
+        "Відповідні навички: Figma, Adobe XD, UI/UX Design",
+        "Рейтинг: 4.2/5.0",
+        "Досвід: 1 завершених курсів",
+        "Висока доступність: 25 год/тиждень"
+      ],
+      "role": "UI/UX Designer"
+    }
+  ]
+},
+{
+  "_id": {
+    "$oid": "693df4941b55efaa84106e6d"
+  },
+  "name": "Система аналітики для e-commerce",
+  "description": "Розробка системи збору та аналізу даних для інтернет-магазину з візуалізацією метрик",
+  "technicalSpecification": "ТЕХНІЧНЕ ЗАВДАННЯ\nСистема аналітики для e-commerce\n\n1. ОПИС\nРозробка системи збору, обробки та візуалізації даних для інтернет-магазину.\n\n2. ФУНКЦІОНАЛЬНІСТЬ\n- Збір даних про продажі, користувачів, товари\n- Дашборд з ключовими метриками\n- Звіти та аналітика\n- Прогнози та рекомендації\n- Експорт даних\n\n3. ТЕХНОЛОГІЇ\n- Python для обробки даних\n- PostgreSQL для зберігання\n- React для дашборду\n- Chart.js для візуалізації\n- API для інтеграції з магазином\n\n4. МЕТРИКИ\n- Обсяг продажів\n- Конверсія\n- Середній чек\n- Популярні товари\n- Географія покупців\n\n5. ДЕДЛАЙН\n2 місяці.",
+  "category": "Аналітика",
+  "complexity": "medium",
+  "deadline": "2026-02-11",
+  "partnerId": "partner-1",
+  "status": "pending_approval",
+  "roles": [
+    {
+      "id": "6c2dd5c0-fd53-4269-bef4-63a39777abfb",
+      "name": "Data Analyst",
+      "required": 1,
+      "assigned": []
+    },
+    {
+      "id": "553d9bfb-cc09-46e3-b4fd-99fd4697f173",
+      "name": "Backend Developer (Python)",
+      "required": 1,
+      "assigned": []
+    },
+    {
+      "id": "1af66afc-1e25-4d4a-a08b-00c7e95a5488",
+      "name": "Frontend Developer",
+      "required": 1,
+      "assigned": []
+    }
+  ],
+  "team": [],
+  "id": "188546c8-b4f3-46a1-8588-fa3a8d3a6640",
+  "createdAt": "2025-12-01T09:38:22.615Z",
+  "updatedAt": "2025-12-13T14:08:48.102Z",
+  "boardId": "8f896704-e5ce-4e0c-9070-bf393c5864e9",
+  "recommendations": [
+    {
+      "studentId": "student-2",
+      "student": {
+        "id": "student-2",
+        "name": "student-2",
+        "email": "maria.kovalenko@example.com",
+        "role": "student",
+        "fullName": "Марія Коваленко",
+        "course": 4,
+        "specialty": "Комп'ютерні науки",
+        "skills": [
+          {
+            "id": "skill-5",
+            "name": "Node.js",
+            "category": "backend",
+            "level": "middle",
+            "verified": true
+          },
+          {
+            "id": "skill-6",
+            "name": "PostgreSQL",
+            "category": "backend",
+            "level": "middle",
+            "verified": true
+          },
+          {
+            "id": "skill-7",
+            "name": "Express.js",
+            "category": "backend",
+            "level": "junior",
+            "verified": true
+          },
+          {
+            "id": "skill-8",
+            "name": "REST API",
+            "category": "backend",
+            "level": "middle",
+            "verified": true
+          }
+        ],
+        "rating": 4.7,
+        "completedCourses": [
+          "course-1",
+          "course-3",
+          "course-4"
+        ],
+        "portfolio": {
+          "github": "https://github.com/maria-kovalenko",
+          "projects": [
+            "project-3"
+          ]
+        },
+        "availability": 15,
+        "status": "available",
+        "createdAt": "2025-12-13T14:08:47.803Z"
+      },
+      "matchPercentage": 95,
+      "reasons": [
+        "Відповідні навички: Node.js, PostgreSQL, Express.js, REST API",
+        "Рейтинг: 4.7/5.0",
+        "Досвід: 3 завершених курсів"
+      ],
+      "role": "Backend Developer (Python)"
+    },
+    {
+      "studentId": "student-1",
+      "student": {
+        "id": "student-1",
+        "name": "student-1",
+        "email": "ivan.petrov@example.com",
+        "role": "student",
+        "fullName": "Іван Петров",
+        "course": 3,
+        "specialty": "Комп'ютерні науки",
+        "skills": [
+          {
+            "id": "skill-1",
+            "name": "Vue.js",
+            "category": "frontend",
+            "level": "middle",
+            "verified": true
+          },
+          {
+            "id": "skill-2",
+            "name": "TypeScript",
+            "category": "frontend",
+            "level": "middle",
+            "verified": true
+          },
+          {
+            "id": "skill-3",
+            "name": "Nuxt.js",
+            "category": "frontend",
+            "level": "junior",
+            "verified": true
+          },
+          {
+            "id": "skill-4",
+            "name": "CSS/SCSS",
+            "category": "frontend",
+            "level": "middle",
+            "verified": true
+          }
+        ],
+        "rating": 4.5,
+        "completedCourses": [
+          "course-1",
+          "course-2"
+        ],
+        "portfolio": {
+          "github": "https://github.com/ivan-petrov",
+          "projects": [
+            "project-1",
+            "project-2"
+          ]
+        },
+        "availability": 20,
+        "status": "available",
+        "createdAt": "2025-12-13T14:08:47.803Z"
+      },
+      "matchPercentage": 95,
+      "reasons": [
+        "Відповідні навички: Vue.js, TypeScript, Nuxt.js, CSS/SCSS",
+        "Рейтинг: 4.5/5.0",
+        "Досвід: 2 завершених курсів",
+        "Висока доступність: 20 год/тиждень"
+      ],
+      "role": "Frontend Developer"
+    },
+    {
+      "studentId": "student-4",
+      "student": {
+        "id": "student-4",
+        "name": "student-4",
+        "email": "anna.melnyk@example.com",
+        "role": "student",
+        "fullName": "Анна Мельник",
+        "course": 3,
+        "specialty": "Комп'ютерні науки",
+        "skills": [
+          {
+            "id": "skill-12",
+            "name": "React",
+            "category": "frontend",
+            "level": "middle",
+            "verified": true
+          },
+          {
+            "id": "skill-13",
+            "name": "Redux",
+            "category": "frontend",
+            "level": "junior",
+            "verified": true
+          },
+          {
+            "id": "skill-14",
+            "name": "JavaScript",
+            "category": "frontend",
+            "level": "middle",
+            "verified": true
+          }
+        ],
+        "rating": 4.3,
+        "completedCourses": [
+          "course-1",
+          "course-2"
+        ],
+        "portfolio": {
+          "github": "https://github.com/anna-melnyk"
+        },
+        "availability": 18,
+        "status": "available",
+        "createdAt": "2025-12-13T14:08:47.803Z"
+      },
+      "matchPercentage": 95,
+      "reasons": [
+        "Відповідні навички: React, Redux, JavaScript",
+        "Рейтинг: 4.3/5.0",
+        "Досвід: 2 завершених курсів"
+      ],
+      "role": "Frontend Developer"
+    }
+  ]
+},
+{
+  "_id": {
+    "$oid": "693df4951b55efaa84106e6e"
+  },
+  "name": "E-commerce платформа для продажу одягу",
+  "description": "Розробка повнофункціонального інтернет-магазину з системою управління товарами, кошиком та оплатою",
+  "technicalSpecification": "ТЕХНІЧНЕ ЗАВДАННЯ\nE-commerce платформа для продажу одягу\n\n1. ОПИС\nРозробка сучасного інтернет-магазину для продажу одягу з повним функціоналом e-commerce.\n\n2. ФУНКЦІОНАЛЬНІСТЬ\n- Каталог товарів з фільтрами та пошуком\n- Кошик та оформлення замовлення\n- Система оплати та доставки\n- Особистий кабінет користувача\n- Адмін-панель для управління товарами\n\n3. ТЕХНОЛОГІЇ\n- Frontend: Vue.js 3, Nuxt.js\n- Backend: Node.js, Express\n- База даних: PostgreSQL\n- Платіжна система: Stripe\n\n4. ДЕДЛАЙН\nЗавершено.",
+  "category": "IT",
+  "complexity": "high",
+  "deadline": "2025-11-13",
+  "partnerId": "partner-1",
+  "status": "completed",
+  "roles": [
+    {
+      "id": "921cdcf3-a3e7-49c4-a6a1-0253e0852ac0",
+      "name": "Frontend Developer",
+      "required": 2,
+      "assigned": [
+        "student-1",
+        "student-4"
+      ]
+    },
+    {
+      "id": "2d6c3dc0-3e4e-4dc0-908b-4425395b6ef1",
+      "name": "Backend Developer",
+      "required": 1,
+      "assigned": [
+        "student-2"
+      ]
+    },
+    {
+      "id": "2822e0a3-9979-4305-935b-174943d9a238",
+      "name": "UI/UX Designer",
+      "required": 1,
+      "assigned": [
+        "student-3"
+      ]
+    }
+  ],
+  "team": [
+    "student-1",
+    "student-2",
+    "student-3",
+    "student-4"
+  ],
+  "approvedBy": "teacher-1",
+  "approvedAt": "2025-08-15T14:08:47.803Z",
+  "id": "fe160626-e72b-4603-a834-760c435a5fd8",
+  "createdAt": "2025-11-19T18:08:17.838Z",
+  "updatedAt": "2025-12-13T14:08:48.108Z",
+  "boardId": "5522b176-d85e-4369-a122-9f28d83f276f",
+  "recommendations": [
+    {
+      "studentId": "student-1",
+      "student": {
+        "id": "student-1",
+        "name": "student-1",
+        "email": "ivan.petrov@example.com",
+        "role": "student",
+        "fullName": "Іван Петров",
+        "course": 3,
+        "specialty": "Комп'ютерні науки",
+        "skills": [
+          {
+            "id": "skill-1",
+            "name": "Vue.js",
+            "category": "frontend",
+            "level": "middle",
+            "verified": true
+          },
+          {
+            "id": "skill-2",
+            "name": "TypeScript",
+            "category": "frontend",
+            "level": "middle",
+            "verified": true
+          },
+          {
+            "id": "skill-3",
+            "name": "Nuxt.js",
+            "category": "frontend",
+            "level": "junior",
+            "verified": true
+          },
+          {
+            "id": "skill-4",
+            "name": "CSS/SCSS",
+            "category": "frontend",
+            "level": "middle",
+            "verified": true
+          }
+        ],
+        "rating": 4.5,
+        "completedCourses": [
+          "course-1",
+          "course-2"
+        ],
+        "portfolio": {
+          "github": "https://github.com/ivan-petrov",
+          "projects": [
+            "project-1",
+            "project-2"
+          ]
+        },
+        "availability": 20,
+        "status": "available",
+        "createdAt": "2025-12-13T14:08:47.803Z"
+      },
+      "matchPercentage": 95,
+      "reasons": [
+        "Відповідні навички: Vue.js, TypeScript, Nuxt.js, CSS/SCSS",
+        "Рейтинг: 4.5/5.0",
+        "Досвід: 2 завершених курсів",
+        "Висока доступність: 20 год/тиждень"
+      ],
+      "role": "Frontend Developer"
+    },
+    {
+      "studentId": "student-4",
+      "student": {
+        "id": "student-4",
+        "name": "student-4",
+        "email": "anna.melnyk@example.com",
+        "role": "student",
+        "fullName": "Анна Мельник",
+        "course": 3,
+        "specialty": "Комп'ютерні науки",
+        "skills": [
+          {
+            "id": "skill-12",
+            "name": "React",
+            "category": "frontend",
+            "level": "middle",
+            "verified": true
+          },
+          {
+            "id": "skill-13",
+            "name": "Redux",
+            "category": "frontend",
+            "level": "junior",
+            "verified": true
+          },
+          {
+            "id": "skill-14",
+            "name": "JavaScript",
+            "category": "frontend",
+            "level": "middle",
+            "verified": true
+          }
+        ],
+        "rating": 4.3,
+        "completedCourses": [
+          "course-1",
+          "course-2"
+        ],
+        "portfolio": {
+          "github": "https://github.com/anna-melnyk"
+        },
+        "availability": 18,
+        "status": "available",
+        "createdAt": "2025-12-13T14:08:47.803Z"
+      },
+      "matchPercentage": 95,
+      "reasons": [
+        "Відповідні навички: React, Redux, JavaScript",
+        "Рейтинг: 4.3/5.0",
+        "Досвід: 2 завершених курсів"
+      ],
+      "role": "Frontend Developer"
+    },
+    {
+      "studentId": "student-2",
+      "student": {
+        "id": "student-2",
+        "name": "student-2",
+        "email": "maria.kovalenko@example.com",
+        "role": "student",
+        "fullName": "Марія Коваленко",
+        "course": 4,
+        "specialty": "Комп'ютерні науки",
+        "skills": [
+          {
+            "id": "skill-5",
+            "name": "Node.js",
+            "category": "backend",
+            "level": "middle",
+            "verified": true
+          },
+          {
+            "id": "skill-6",
+            "name": "PostgreSQL",
+            "category": "backend",
+            "level": "middle",
+            "verified": true
+          },
+          {
+            "id": "skill-7",
+            "name": "Express.js",
+            "category": "backend",
+            "level": "junior",
+            "verified": true
+          },
+          {
+            "id": "skill-8",
+            "name": "REST API",
+            "category": "backend",
+            "level": "middle",
+            "verified": true
+          }
+        ],
+        "rating": 4.7,
+        "completedCourses": [
+          "course-1",
+          "course-3",
+          "course-4"
+        ],
+        "portfolio": {
+          "github": "https://github.com/maria-kovalenko",
+          "projects": [
+            "project-3"
+          ]
+        },
+        "availability": 15,
+        "status": "available",
+        "createdAt": "2025-12-13T14:08:47.803Z"
+      },
+      "matchPercentage": 95,
+      "reasons": [
+        "Відповідні навички: Node.js, PostgreSQL, Express.js, REST API",
+        "Рейтинг: 4.7/5.0",
+        "Досвід: 3 завершених курсів"
+      ],
+      "role": "Backend Developer"
+    },
+    {
+      "studentId": "student-3",
+      "student": {
+        "id": "student-3",
+        "name": "student-3",
+        "email": "oleksandr.sydorenko@example.com",
+        "role": "student",
+        "fullName": "Олександр Сидоренко",
+        "course": 2,
+        "specialty": "Дизайн",
+        "skills": [
+          {
+            "id": "skill-9",
+            "name": "Figma",
+            "category": "design",
+            "level": "middle",
+            "verified": true
+          },
+          {
+            "id": "skill-10",
+            "name": "Adobe XD",
+            "category": "design",
+            "level": "junior",
+            "verified": true
+          },
+          {
+            "id": "skill-11",
+            "name": "UI/UX Design",
+            "category": "design",
+            "level": "middle",
+            "verified": true
+          }
+        ],
+        "rating": 4.2,
+        "completedCourses": [
+          "course-5"
+        ],
+        "portfolio": {
+          "behance": "https://behance.net/oleksandr-sydorenko",
+          "projects": [
+            "project-4"
+          ]
+        },
+        "availability": 25,
+        "status": "available",
+        "createdAt": "2025-12-13T14:08:47.803Z"
+      },
+      "matchPercentage": 94,
+      "reasons": [
+        "Відповідні навички: Figma, Adobe XD, UI/UX Design",
+        "Рейтинг: 4.2/5.0",
+        "Досвід: 1 завершених курсів",
+        "Висока доступність: 25 год/тиждень"
+      ],
+      "role": "UI/UX Designer"
+    }
+  ]
+},
+{
+  "_id": {
+    "$oid": "693df4951b55efaa84106e6f"
+  },
+  "name": "Лендінг-сторінка для стартапу",
+  "description": "Створення сучасної лендінг-сторінки з анімаціями та формою зворотного зв'язку",
+  "technicalSpecification": "ТЕХНІЧНЕ ЗАВДАННЯ\nЛендінг-сторінка для стартапу\n\n1. ОПИС\nРозробка односторінкового сайту для презентації стартапу з формою зворотного зв'язку.\n\n2. ВИМОГИ\n- Сучасний дизайн\n- Адаптивність\n- Швидке завантаження\n- SEO оптимізація\n\n3. ТЕХНОЛОГІЇ\n- HTML5, CSS3, JavaScript\n- Анімації на CSS/JS\n\n4. ДЕДЛАЙН\nЗавершено.",
+  "category": "Дизайн",
+  "complexity": "low",
+  "deadline": "2025-10-14",
+  "partnerId": "partner-2",
+  "status": "completed",
+  "roles": [
+    {
+      "id": "34d394a8-995b-4b55-8249-c38e2d483de6",
+      "name": "UI/UX Designer",
+      "required": 1,
+      "assigned": [
+        "student-3"
+      ]
+    },
+    {
+      "id": "280f72f0-5d09-4b06-8340-9faf54ebf478",
+      "name": "Frontend Developer",
+      "required": 1,
+      "assigned": [
+        "student-1"
+      ]
+    }
+  ],
+  "team": [
+    "student-1",
+    "student-3"
+  ],
+  "approvedBy": "teacher-2",
+  "approvedAt": "2025-09-14T14:08:47.803Z",
+  "id": "53dd0fad-f5da-4933-a3a8-eddb098a1ef3",
+  "createdAt": "2025-12-09T22:14:13.937Z",
+  "updatedAt": "2025-12-13T14:08:48.112Z",
+  "boardId": "fd99ecaf-ee55-4b3b-b403-44fe8e5e7de4",
+  "recommendations": [
+    {
+      "studentId": "student-1",
+      "student": {
+        "id": "student-1",
+        "name": "student-1",
+        "email": "ivan.petrov@example.com",
+        "role": "student",
+        "fullName": "Іван Петров",
+        "course": 3,
+        "specialty": "Комп'ютерні науки",
+        "skills": [
+          {
+            "id": "skill-1",
+            "name": "Vue.js",
+            "category": "frontend",
+            "level": "middle",
+            "verified": true
+          },
+          {
+            "id": "skill-2",
+            "name": "TypeScript",
+            "category": "frontend",
+            "level": "middle",
+            "verified": true
+          },
+          {
+            "id": "skill-3",
+            "name": "Nuxt.js",
+            "category": "frontend",
+            "level": "junior",
+            "verified": true
+          },
+          {
+            "id": "skill-4",
+            "name": "CSS/SCSS",
+            "category": "frontend",
+            "level": "middle",
+            "verified": true
+          }
+        ],
+        "rating": 4.5,
+        "completedCourses": [
+          "course-1",
+          "course-2"
+        ],
+        "portfolio": {
+          "github": "https://github.com/ivan-petrov",
+          "projects": [
+            "project-1",
+            "project-2"
+          ]
+        },
+        "availability": 20,
+        "status": "available",
+        "createdAt": "2025-12-13T14:08:47.803Z"
+      },
+      "matchPercentage": 95,
+      "reasons": [
+        "Відповідні навички: Vue.js, TypeScript, Nuxt.js, CSS/SCSS",
+        "Рейтинг: 4.5/5.0",
+        "Досвід: 2 завершених курсів",
+        "Висока доступність: 20 год/тиждень"
+      ],
+      "role": "Frontend Developer"
+    },
+    {
+      "studentId": "student-4",
+      "student": {
+        "id": "student-4",
+        "name": "student-4",
+        "email": "anna.melnyk@example.com",
+        "role": "student",
+        "fullName": "Анна Мельник",
+        "course": 3,
+        "specialty": "Комп'ютерні науки",
+        "skills": [
+          {
+            "id": "skill-12",
+            "name": "React",
+            "category": "frontend",
+            "level": "middle",
+            "verified": true
+          },
+          {
+            "id": "skill-13",
+            "name": "Redux",
+            "category": "frontend",
+            "level": "junior",
+            "verified": true
+          },
+          {
+            "id": "skill-14",
+            "name": "JavaScript",
+            "category": "frontend",
+            "level": "middle",
+            "verified": true
+          }
+        ],
+        "rating": 4.3,
+        "completedCourses": [
+          "course-1",
+          "course-2"
+        ],
+        "portfolio": {
+          "github": "https://github.com/anna-melnyk"
+        },
+        "availability": 18,
+        "status": "available",
+        "createdAt": "2025-12-13T14:08:47.803Z"
+      },
+      "matchPercentage": 95,
+      "reasons": [
+        "Відповідні навички: React, Redux, JavaScript",
+        "Рейтинг: 4.3/5.0",
+        "Досвід: 2 завершених курсів"
+      ],
+      "role": "Frontend Developer"
+    },
+    {
+      "studentId": "student-3",
+      "student": {
+        "id": "student-3",
+        "name": "student-3",
+        "email": "oleksandr.sydorenko@example.com",
+        "role": "student",
+        "fullName": "Олександр Сидоренко",
+        "course": 2,
+        "specialty": "Дизайн",
+        "skills": [
+          {
+            "id": "skill-9",
+            "name": "Figma",
+            "category": "design",
+            "level": "middle",
+            "verified": true
+          },
+          {
+            "id": "skill-10",
+            "name": "Adobe XD",
+            "category": "design",
+            "level": "junior",
+            "verified": true
+          },
+          {
+            "id": "skill-11",
+            "name": "UI/UX Design",
+            "category": "design",
+            "level": "middle",
+            "verified": true
+          }
+        ],
+        "rating": 4.2,
+        "completedCourses": [
+          "course-5"
+        ],
+        "portfolio": {
+          "behance": "https://behance.net/oleksandr-sydorenko",
+          "projects": [
+            "project-4"
+          ]
+        },
+        "availability": 25,
+        "status": "available",
+        "createdAt": "2025-12-13T14:08:47.803Z"
+      },
+      "matchPercentage": 94,
+      "reasons": [
+        "Відповідні навички: Figma, Adobe XD, UI/UX Design",
+        "Рейтинг: 4.2/5.0",
+        "Досвід: 1 завершених курсів",
+        "Висока доступність: 25 год/тиждень"
+      ],
+      "role": "UI/UX Designer"
+    }
+  ]
+}]

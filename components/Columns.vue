@@ -29,7 +29,7 @@
         />
       </TransitionGroup>
     </div>
-    <FormColumn :board-id="boardId.value" />
+    <FormColumn :board-id="boardId" />
   </div>
 </template>
 
@@ -40,12 +40,31 @@ import { useProjectsStore } from "~~/stores/projects";
 
 const props = defineProps<{
   boardId?: string;
+  'board-id'?: string;
   isProjectBoard?: boolean;
 }>();
 
 //Route
 const route = useRoute();
-const boardId = computed(() => props.boardId || route.params.board.toString());
+const boardId = computed(() => {
+  // Спочатку перевіряємо camelCase prop
+  if (props.boardId) {
+    return props.boardId;
+  }
+  // Потім перевіряємо kebab-case prop
+  if (props['board-id']) {
+    return props['board-id'];
+  }
+  // Якщо prop не передано, намагаємося отримати з маршруту
+  const boardParam = route.params.board;
+  if (boardParam) {
+    if (Array.isArray(boardParam)) {
+      return boardParam[0] || '';
+    }
+    return boardParam.toString();
+  }
+  return '';
+});
 
 //Store
 const store = useKanbanStore();

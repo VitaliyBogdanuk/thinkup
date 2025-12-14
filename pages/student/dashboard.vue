@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="w-full h-full">
     <section class="w-full h-full overflow-y-auto flex-1 p-3 sm:p-4 md:p-10 bg-lightGray">
       <h1 class="text-lg sm:text-xl md:text-2xl font-bold text-gray-800 mb-3 sm:mb-4 md:mb-6">Мій профіль</h1>
 
@@ -337,9 +337,10 @@
     </section>
 
     <!-- Модальне вікно для відгуку партнера -->
-    <div v-if="selectedPartnerReview" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-      <div class="bg-white rounded-xl max-w-md w-full max-h-[90vh] overflow-y-auto">
-        <div class="p-4 sm:p-6">
+    <Teleport to="body">
+      <div v-if="selectedPartnerReview" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-xl max-w-md w-full max-h-[90vh] overflow-y-auto">
+          <div class="p-4 sm:p-6">
           <!-- Заголовок -->
           <div class="flex items-center justify-between mb-4">
             <h3 class="text-lg font-bold text-gray-800">Відгук партнера</h3>
@@ -411,19 +412,22 @@
           >
             Закрити
           </button>
+          </div>
         </div>
       </div>
-    </div>
-  </div>
+    </Teleport>
 
-  <!-- Попап для сповіщень -->
-  <NotificationPopup
-    :is-open="notificationPopup.isOpen"
-    :title="notificationPopup.title"
-    :message="notificationPopup.message"
-    :type="notificationPopup.type"
-    @close="closeNotification"
-  />
+    <!-- Попап для сповіщень -->
+    <Teleport to="body">
+      <NotificationPopup
+        :is-open="notificationPopup.isOpen"
+        :title="notificationPopup.title"
+        :message="notificationPopup.message"
+        :type="notificationPopup.type"
+        @close="closeNotification"
+      />
+    </Teleport>
+  </div>
 </template>
 
 <script setup lang="ts">
