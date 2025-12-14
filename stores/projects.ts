@@ -29,7 +29,14 @@ export const useProjectsStore = defineStore("projects", {
       return state.students.filter((s) => s.status === "available");
     },
     getProjectsPendingApproval: (state): Project[] => {
-      return state.projects.filter((p) => p.status === "pending_approval");
+      return state.projects
+        .filter((p) => p.status === "pending_approval")
+        .sort((a, b) => {
+          // Сортуємо за датою створення: нові зверху
+          const dateA = new Date(a.createdAt).getTime();
+          const dateB = new Date(b.createdAt).getTime();
+          return dateB - dateA;
+        });
     },
     getReviewsByStudent: (state) => (studentId: string): PartnerReview[] => {
       return state.partnerReviews.filter((r) => r.studentId === studentId);
@@ -110,10 +117,27 @@ export const useProjectsStore = defineStore("projects", {
         updatedAt: new Date().toISOString(),
       };
 
+      // Створюємо канбан-дошку одразу після створення проєкту
+      const kanbanStore = useKanbanStore();
+      kanbanStore.createNewBoard(newProject.name);
+      const board = kanbanStore.boards?.[kanbanStore.boards.length - 1];
+
+      if (board) {
+        newProject.boardId = board.id;
+        newProject.board = board;
+      }
+
       try {
         const projectsApi = useProjectsApi();
         const savedProject = await projectsApi.createProject(newProject);
         this.projects.push(savedProject);
+        
+        // Оновлюємо проєкт з boardId, якщо дошка була створена
+        if (board && savedProject.boardId !== board.id) {
+          await this.updateProject(savedProject.id, {
+            boardId: board.id,
+          });
+        }
         
         // Створюємо сповіщення про створення проєкту
         try {
@@ -201,10 +225,17 @@ export const useProjectsStore = defineStore("projects", {
         ].filter(Boolean),
       };
 
-      // Створюємо канбан-дошку для проєкту
+      // Створюємо канбан-дошку для проєкту (якщо її ще немає)
       const kanbanStore = useKanbanStore();
-      kanbanStore.createNewBoard(project.name);
-      const board = kanbanStore.boards?.[kanbanStore.boards.length - 1];
+      let board = project.boardId 
+        ? kanbanStore.getBoardById(project.boardId) || kanbanStore.boards?.find(b => b.id === project.boardId)
+        : null;
+
+      // Якщо дошки немає, створюємо нову
+      if (!board) {
+        kanbanStore.createNewBoard(project.name);
+        board = kanbanStore.boards?.[kanbanStore.boards.length - 1];
+      }
 
       if (board) {
         // Генеруємо детальні задачі на основі етапів
