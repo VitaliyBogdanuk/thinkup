@@ -220,6 +220,7 @@
 </template>
 
 <script setup lang="ts">
+import { ref, watch } from "vue";
 import { v4 as uuidv4 } from "uuid";
 import { XMarkIcon, TrashIcon } from "@heroicons/vue/24/outline";
 import { useProjectsStore } from "~~/stores/projects";
@@ -320,6 +321,10 @@ const removeUploadedFile = () => {
 
 const addRole = () => {
   formData.value.roles.push({ name: "", required: 1 });
+  // Очищаємо помилку валідації для ролей
+  if (validationErrors.value.roles) {
+    delete validationErrors.value.roles;
+  }
 };
 
 const removeRole = (index: number) => {
@@ -333,6 +338,12 @@ const removeRole = (index: number) => {
     delete validationErrors.value.roles;
   }
 };
+
+watch(() => formData.value.roles.length, () => {
+  if (formData.value.roles.length > 0 && validationErrors.value.roles) {
+    delete validationErrors.value.roles;
+  }
+});
 
 const closeModal = () => {
   emit("close");

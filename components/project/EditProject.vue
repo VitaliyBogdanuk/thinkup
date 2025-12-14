@@ -154,7 +154,8 @@
                   <button
                     type="button"
                     @click="removeRole(index)"
-                    class="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors flex-shrink-0"
+                    :disabled="formData.roles.length === 1"
+                    class="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors flex-shrink-0 disabled:opacity-50 disabled:cursor-not-allowed"
                     title="Видалити роль"
                   >
                     <TrashIcon class="w-5 h-5" />
@@ -175,6 +176,8 @@
               Додати роль
             </button>
           </div>
+
+          <div v-if="rolesError" class="text-red-600 text-sm px-2">{{ rolesError }}</div>
 
           <div class="flex flex-col sm:flex-row gap-3 justify-end">
             <button
@@ -221,6 +224,7 @@ const authStore = useAuthStore();
 const fileInput = ref<HTMLInputElement | null>(null);
 const uploadedFileName = ref<string>("");
 const fileUploadError = ref<string>("");
+const rolesError = ref<string>("");
 
 // Дозволені формати файлів
 const allowedFileTypes = [".txt"];
@@ -262,6 +266,7 @@ watch(() => props.isOpen, (isOpen) => {
       };
       uploadedFileName.value = "";
       fileUploadError.value = "";
+      rolesError.value = "";
     }
   }
 }, { immediate: true });
@@ -272,6 +277,7 @@ const handleFileUpload = async (event: Event) => {
   
   // Очищаємо попередні помилки
   fileUploadError.value = "";
+  rolesError.value = "";
   
   if (!file) return;
 
@@ -321,11 +327,21 @@ const removeUploadedFile = () => {
 
 const addRole = () => {
   formData.value.roles.push({ name: "", required: 1 });
+  rolesError.value = "";
 };
 
 const removeRole = (index: number) => {
+  if (formData.value.roles.length === 1) {
+    rolesError.value = "Додайте принаймні одну роль на проєкті.";
+    return;
+  }
   formData.value.roles.splice(index, 1);
+  rolesError.value = "";
 };
+
+watch(() => formData.value.roles.length, () => {
+  if (formData.value.roles.length > 0) rolesError.value = "";
+});
 
 const closeModal = () => {
   emit("close");
@@ -336,6 +352,19 @@ const handleSubmit = async () => {
   
   if (!authStore.currentUser || (authStore.currentUser.role !== "admin" && authStore.currentUser.role !== "teacher")) {
     return;
+  }
+
+  if (!formData.value.roles || formData.value.roles.length === 0) {
+    rolesError.value = "Додайте принаймні одну роль на проєкті.";
+    return;
+  }
+
+  // Перевіряємо, що усі ролі мають назву та кількість
+  for (const r of formData.value.roles) {
+    if (!r.name || !r.name.trim() || !r.required || r.required < 1) {
+      rolesError.value = "Усі ролі повинні мати назву та кількість (не менше 1).";
+      return;
+    }
   }
 
   const project = projectsStore.getProjectById(props.projectId);
