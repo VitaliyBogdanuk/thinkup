@@ -389,7 +389,7 @@
           
           <!-- Текст відгуку -->
           <div class="mb-4">
-            <p class="text-gray-700 leading-relaxed">{{ selectedPartnerReview.comment }}</p>
+            <p class="text-gray-700 leading-relaxed whitespace-pre-wrap break-words">{{ selectedPartnerReview.comment }}</p>
           </div>
           
           <!-- Навички -->

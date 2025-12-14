@@ -70,7 +70,9 @@
             
             <!-- Додаткові дії для сповіщень -->
             <div v-if="!notification.read && notification.projectId" class="flex flex-wrap gap-2 mt-3">
+              <!-- Загальна кнопка "Перейти до проєкту" показується тільки якщо немає специфічної кнопки для ролі -->
               <button
+                v-if="!hasSpecificActionButton(notification)"
                 @click.stop="navigateToProject(notification.projectId!, notification.id)"
                 class="px-4 py-2 bg-savoy text-white rounded-lg hover:bg-savoy/90 transition-colors text-sm"
               >
@@ -576,6 +578,35 @@ const hasAppliedToProject = (projectId: string): boolean => {
   const project = projectsStore.getProjectById(projectId);
   if (!project || !project.applications) return false;
   return project.applications.includes(authStore.currentUser.id);
+};
+
+// Перевіряє, чи є специфічна кнопка для цього типу сповіщення
+const hasSpecificActionButton = (notification: Notification): boolean => {
+  if (!authStore.currentUser) return false;
+  
+  // Для партнера: є специфічні кнопки для заявок та дедлайнів
+  if (authStore.isPartner) {
+    const partnerNotif = notification as PartnerNotification;
+    return partnerNotif.type === 'new_student_application' || 
+           partnerNotif.type === 'project_deadline';
+  }
+  
+  // Для студента: є специфічні кнопки для запрошень та нових проєктів
+  if (authStore.isStudent) {
+    const studentNotif = notification as StudentNotification;
+    return studentNotif.type === 'project_invitation' || 
+           studentNotif.type === 'new_project';
+  }
+  
+  // Для викладача: є специфічні кнопки для затвердження, заявок студентів
+  if (authStore.isTeacher) {
+    const teacherNotif = notification as TeacherNotification;
+    return teacherNotif.type === 'project_submission' || 
+           teacherNotif.type === 'student_application' ||
+           teacherNotif.type === 'project_approval';
+  }
+  
+  return false;
 };
 
 const navigateToProject = (projectId: string, notificationId?: string) => {
