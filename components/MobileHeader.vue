@@ -51,26 +51,43 @@
             <NuxtLink
               to="/partner/profile"
               @click="isNavMenuOpen = false"
-              class="block px-4 py-4 bg-gray-700 hover:bg-gray-600 rounded-lg text-gray-300 font-semibold transition-colors"
+              class="flex items-center gap-3 px-4 py-4 bg-gray-700 hover:bg-gray-600 rounded-lg text-gray-300 font-semibold transition-colors"
               active-class="bg-savoy text-white"
             >
+              <UserIcon class="w-5 h-5 flex-shrink-0" />
               Мій профіль
             </NuxtLink>
             <NuxtLink
               to="/projects"
               @click="isNavMenuOpen = false"
-              class="block px-4 py-4 bg-gray-700 hover:bg-gray-600 rounded-lg text-gray-300 font-semibold transition-colors"
+              class="flex items-center gap-3 px-4 py-4 bg-gray-700 hover:bg-gray-600 rounded-lg text-gray-300 font-semibold transition-colors"
               active-class="bg-savoy text-white"
             >
+              <BriefcaseIcon class="w-5 h-5 flex-shrink-0" />
               Мої проєкти
             </NuxtLink>
             <NuxtLink
               to="/notifications"
               @click="isNavMenuOpen = false"
-              class="block px-4 py-4 bg-gray-700 hover:bg-gray-600 rounded-lg text-gray-300 font-semibold transition-colors"
+              class="flex items-center gap-3 px-4 py-4 bg-gray-700 hover:bg-gray-600 rounded-lg text-gray-300 font-semibold transition-colors relative"
               active-class="bg-savoy text-white"
             >
+              <div class="relative">
+                <BellIcon class="w-5 h-5 flex-shrink-0" />
+                <span
+                  v-if="notificationsStore.unreadCount > 0"
+                  class="absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white text-xs font-bold rounded-full flex items-center justify-center"
+                >
+                  {{ notificationsStore.unreadCount > 99 ? '99+' : notificationsStore.unreadCount }}
+                </span>
+              </div>
               Сповіщення
+              <span
+                v-if="notificationsStore.unreadCount > 0"
+                class="ml-auto px-2 py-0.5 bg-red-500 text-white text-xs font-bold rounded-full"
+              >
+                {{ notificationsStore.unreadCount > 99 ? '99+' : notificationsStore.unreadCount }}
+              </span>
             </NuxtLink>
           </div>
 
@@ -78,26 +95,43 @@
             <NuxtLink
               to="/teacher/dashboard"
               @click="isNavMenuOpen = false"
-              class="block px-4 py-4 bg-gray-700 hover:bg-gray-600 rounded-lg text-gray-300 font-semibold transition-colors"
+              class="flex items-center gap-3 px-4 py-4 bg-gray-700 hover:bg-gray-600 rounded-lg text-gray-300 font-semibold transition-colors"
               active-class="bg-savoy text-white"
             >
+              <Squares2X2Icon class="w-5 h-5 flex-shrink-0" />
               Панель викладача
             </NuxtLink>
             <NuxtLink
               to="/projects"
               @click="isNavMenuOpen = false"
-              class="block px-4 py-4 bg-gray-700 hover:bg-gray-600 rounded-lg text-gray-300 font-semibold transition-colors"
+              class="flex items-center gap-3 px-4 py-4 bg-gray-700 hover:bg-gray-600 rounded-lg text-gray-300 font-semibold transition-colors"
               active-class="bg-savoy text-white"
             >
+              <BriefcaseIcon class="w-5 h-5 flex-shrink-0" />
               Всі проєкти
             </NuxtLink>
             <NuxtLink
               to="/notifications"
               @click="isNavMenuOpen = false"
-              class="block px-4 py-4 bg-gray-700 hover:bg-gray-600 rounded-lg text-gray-300 font-semibold transition-colors"
+              class="flex items-center gap-3 px-4 py-4 bg-gray-700 hover:bg-gray-600 rounded-lg text-gray-300 font-semibold transition-colors relative"
               active-class="bg-savoy text-white"
             >
+              <div class="relative">
+                <BellIcon class="w-5 h-5 flex-shrink-0" />
+                <span
+                  v-if="notificationsStore.unreadCount > 0"
+                  class="absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white text-xs font-bold rounded-full flex items-center justify-center"
+                >
+                  {{ notificationsStore.unreadCount > 99 ? '99+' : notificationsStore.unreadCount }}
+                </span>
+              </div>
               Сповіщення
+              <span
+                v-if="notificationsStore.unreadCount > 0"
+                class="ml-auto px-2 py-0.5 bg-red-500 text-white text-xs font-bold rounded-full"
+              >
+                {{ notificationsStore.unreadCount > 99 ? '99+' : notificationsStore.unreadCount }}
+              </span>
             </NuxtLink>
           </div>
 
@@ -105,26 +139,43 @@
             <NuxtLink
               to="/student/dashboard"
               @click="isNavMenuOpen = false"
-              class="block px-4 py-4 bg-gray-700 hover:bg-gray-600 rounded-lg text-gray-300 font-semibold transition-colors"
+              class="flex items-center gap-3 px-4 py-4 bg-gray-700 hover:bg-gray-600 rounded-lg text-gray-300 font-semibold transition-colors"
               active-class="bg-savoy text-white"
             >
+              <UserIcon class="w-5 h-5 flex-shrink-0" />
               Мій профіль
             </NuxtLink>
             <NuxtLink
               to="/projects"
               @click="isNavMenuOpen = false"
-              class="block px-4 py-4 bg-gray-700 hover:bg-gray-600 rounded-lg text-gray-300 font-semibold transition-colors"
+              class="flex items-center gap-3 px-4 py-4 bg-gray-700 hover:bg-gray-600 rounded-lg text-gray-300 font-semibold transition-colors"
               active-class="bg-savoy text-white"
             >
+              <BriefcaseIcon class="w-5 h-5 flex-shrink-0" />
               Всі проєкти
             </NuxtLink>
             <NuxtLink
               to="/notifications"
               @click="isNavMenuOpen = false"
-              class="block px-4 py-4 bg-gray-700 hover:bg-gray-600 rounded-lg text-gray-300 font-semibold transition-colors"
+              class="flex items-center gap-3 px-4 py-4 bg-gray-700 hover:bg-gray-600 rounded-lg text-gray-300 font-semibold transition-colors relative"
               active-class="bg-savoy text-white"
             >
+              <div class="relative">
+                <BellIcon class="w-5 h-5 flex-shrink-0" />
+                <span
+                  v-if="notificationsStore.unreadCount > 0"
+                  class="absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white text-xs font-bold rounded-full flex items-center justify-center"
+                >
+                  {{ notificationsStore.unreadCount > 99 ? '99+' : notificationsStore.unreadCount }}
+                </span>
+              </div>
               Сповіщення
+              <span
+                v-if="notificationsStore.unreadCount > 0"
+                class="ml-auto px-2 py-0.5 bg-red-500 text-white text-xs font-bold rounded-full"
+              >
+                {{ notificationsStore.unreadCount > 99 ? '99+' : notificationsStore.unreadCount }}
+              </span>
             </NuxtLink>
           </div>
 
@@ -145,28 +196,72 @@
 
           <div v-if="authStore.isAdmin" class="space-y-4">
             <NuxtLink
-              to="/"
+              to="/admin"
               @click="isNavMenuOpen = false"
-              class="block px-4 py-4 bg-gray-700 hover:bg-gray-600 rounded-lg text-gray-300 font-semibold transition-colors"
+              class="flex items-center gap-3 px-4 py-4 bg-gray-700 hover:bg-gray-600 rounded-lg text-gray-300 font-semibold transition-colors"
               active-class="bg-savoy text-white"
             >
-              Головна
+              <Squares2X2Icon class="w-5 h-5 flex-shrink-0" />
+              Панель адміністратора
+            </NuxtLink>
+            <NuxtLink
+              to="/admin/students"
+              @click="isNavMenuOpen = false"
+              class="flex items-center gap-3 px-4 py-4 bg-gray-700 hover:bg-gray-600 rounded-lg text-gray-300 font-semibold transition-colors"
+              active-class="bg-savoy text-white"
+            >
+              <UserGroupIcon class="w-5 h-5 flex-shrink-0" />
+              Студенти
+            </NuxtLink>
+            <NuxtLink
+              to="/admin/teachers"
+              @click="isNavMenuOpen = false"
+              class="flex items-center gap-3 px-4 py-4 bg-gray-700 hover:bg-gray-600 rounded-lg text-gray-300 font-semibold transition-colors"
+              active-class="bg-savoy text-white"
+            >
+              <AcademicCapIcon class="w-5 h-5 flex-shrink-0" />
+              Викладачі
+            </NuxtLink>
+            <NuxtLink
+              to="/admin/partners"
+              @click="isNavMenuOpen = false"
+              class="flex items-center gap-3 px-4 py-4 bg-gray-700 hover:bg-gray-600 rounded-lg text-gray-300 font-semibold transition-colors"
+              active-class="bg-savoy text-white"
+            >
+              <BuildingOfficeIcon class="w-5 h-5 flex-shrink-0" />
+              Партнери
             </NuxtLink>
             <NuxtLink
               to="/projects"
               @click="isNavMenuOpen = false"
-              class="block px-4 py-4 bg-gray-700 hover:bg-gray-600 rounded-lg text-gray-300 font-semibold transition-colors"
+              class="flex items-center gap-3 px-4 py-4 bg-gray-700 hover:bg-gray-600 rounded-lg text-gray-300 font-semibold transition-colors"
               active-class="bg-savoy text-white"
             >
+              <BriefcaseIcon class="w-5 h-5 flex-shrink-0" />
               Всі проєкти
             </NuxtLink>
             <NuxtLink
               to="/notifications"
               @click="isNavMenuOpen = false"
-              class="block px-4 py-4 bg-gray-700 hover:bg-gray-600 rounded-lg text-gray-300 font-semibold transition-colors"
+              class="flex items-center gap-3 px-4 py-4 bg-gray-700 hover:bg-gray-600 rounded-lg text-gray-300 font-semibold transition-colors relative"
               active-class="bg-savoy text-white"
             >
+              <div class="relative">
+                <BellIcon class="w-5 h-5 flex-shrink-0" />
+                <span
+                  v-if="notificationsStore.unreadCount > 0"
+                  class="absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white text-xs font-bold rounded-full flex items-center justify-center"
+                >
+                  {{ notificationsStore.unreadCount > 99 ? '99+' : notificationsStore.unreadCount }}
+                </span>
+              </div>
               Сповіщення
+              <span
+                v-if="notificationsStore.unreadCount > 0"
+                class="ml-auto px-2 py-0.5 bg-red-500 text-white text-xs font-bold rounded-full"
+              >
+                {{ notificationsStore.unreadCount > 99 ? '99+' : notificationsStore.unreadCount }}
+              </span>
             </NuxtLink>
           </div>
 
@@ -178,6 +273,19 @@
             + Створити нову дошку
           </div>
         </nav>
+
+        <!-- Футер мобільного меню -->
+        <div class="border-t border-gray-600 p-6">
+          <NuxtLink
+            to="/about"
+            @click="isNavMenuOpen = false"
+            class="flex items-center gap-3 px-4 py-4 bg-gray-700 hover:bg-gray-600 rounded-lg text-gray-300 font-semibold transition-colors"
+            active-class="bg-savoy text-white"
+          >
+            <InformationCircleIcon class="w-5 h-5 flex-shrink-0" />
+            Про нас
+          </NuxtLink>
+        </div>
       </div>
     </transition>
 
@@ -234,17 +342,27 @@ import {
   ChartBarSquareIcon, 
   Bars3Icon, 
   XMarkIcon, 
-  UserIcon 
+  UserIcon,
+  BellIcon,
+  BriefcaseIcon,
+  Squares2X2Icon,
+  UserGroupIcon,
+  AcademicCapIcon,
+  BuildingOfficeIcon,
+  InformationCircleIcon
 } from "@heroicons/vue/24/outline";
 import { useAuthStore } from "~~/stores/auth";
 import { useKanbanStore } from "~~/stores";
 import { useProjectsStore } from "~~/stores/projects";
+import { useNotificationsStore } from "~~/stores/notifications";
 import { storeToRefs } from "pinia";
 import { mockPartners, mockStudents, mockTeachers, mockAdmin } from "~~/utils/mockData";
+import type { UserRole, User, Student, Teacher, Partner } from "~~/types";
 
 const router = useRouter();
 const authStore = useAuthStore();
 const projectsStore = useProjectsStore();
+const notificationsStore = useNotificationsStore();
 const store = useKanbanStore();
 
 const { boards } = storeToRefs(store);
