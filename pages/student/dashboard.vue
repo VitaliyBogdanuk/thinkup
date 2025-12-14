@@ -389,7 +389,7 @@
           
           <!-- Текст відгуку -->
           <div class="mb-4">
-            <p class="text-gray-700 leading-relaxed">{{ selectedPartnerReview.comment }}</p>
+            <p class="response-txt text-gray-700 leading-relaxed">{{ selectedPartnerReview.comment }}</p>
           </div>
           
           <!-- Навички -->
@@ -893,5 +893,9 @@ const unreadCount = ref(0);
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
+}
+
+.response-txt {
+  word-wrap: break-word;
 }
 </style>
